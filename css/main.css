@@ -9,19 +9,10 @@
   font-style: normal; 
   src: url("../fonts/RobotoBold.eot"),url("../fonts/RobotoBold.woff");
 }
-f
-
-html, body{
-  height: 80%;
-  width: 100%;
-}
 
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  font: 12px;
+  font: 11px;
   font-family: "Roboto",sans-serif, helvetica,arial;
-  background-color:#EEEEEE;
 }
 
 a {
@@ -29,6 +20,16 @@ a {
 	border: none;
 }
 
+/* general typography */
+.leaflet-popup-content-wrapper 
+{
+	font: 12px "Roboto",sans-serif, helvetica,arial;
+}
+	
+.MapExpress.Tools.IdentifyMapCommand 
+{
+
+}
 
 .forum-element-container {
    margin-top: 15px;

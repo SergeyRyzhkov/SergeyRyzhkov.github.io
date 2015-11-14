@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeDXFromView = true;
+}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+<link href="http://cdn.muicss.com/mui-0.2.1/css/mui.min.css" rel="stylesheet" type="text/css" />
+<script src="http://cdn.muicss.com/mui-0.2.1/js/mui.min.js"></script>
+<script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+<script>
+    var firstData = '@Url.Content("~/Areas/Map/Data/boundary_wgs.json")';
+    var secondData = '@Url.Content("~/Areas/Map/Data/geojson-sample.json")';
+</script>
+<script src="~/Areas/Map/Scripts/mapExpress-leaflet.js"></script>
+
+<style type="text/css">
+    html, body {
+        height: 100%;
+    }
+
+    #page-wrapper {
+        min-height: 100%;
+        overflow: visible;
+    }
+
+    body {
+        margin: 0;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        overflow: hidden;
+    }
+</style>
+
+<script type="text/javascript">
+var map = L.map('page-wrapper',{zoomControl:false}).setView([56.00222, 47.25194], 12);
+var mapManager = new MapExpress.Tools.MapManager (map);
+mapManager.renderMap();
+
+
+</script>

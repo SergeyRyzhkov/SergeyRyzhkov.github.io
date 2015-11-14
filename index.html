@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0"/>
+
+<title>ГИС Скоростные магистрали</title>
+
+<link rel="stylesheet" href="css/leaflet.css"/>
+<link rel="stylesheet" href="css/bootstrap.min.css"/>
+<link rel="stylesheet" href="css/font-awesome.css"/>
+<link rel="stylesheet" href="css/main.css"/>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script src="js/leaflet.js"></script>
+<script src="js/mapExpress-leaflet.js"></script>
+<script src="js/defaultMapModel.js"></script>
+<script src="js/Leaflet.Editable.js"></script>
+<script src="js/initializeMap.js"></script>
+
+
+<style type="text/css">
+html, body { height: 100% }
+#map { min-height: 100%; }
+body {
+    margin: 0;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 12px;
+    overflow: hidden;
+}
+</style>
+
+</head>
+<body>
+<div id="map"></div>
+
+<script type="text/javascript">
+InitializeMap (map);
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+
+
+</script>
+</body></html>
