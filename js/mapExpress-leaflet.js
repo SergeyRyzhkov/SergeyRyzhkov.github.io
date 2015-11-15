@@ -2448,18 +2448,23 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 	},
 
 	_createCommandContent: function(mapCommand, panelBody) {
+		var that = this;
 		var commandContent = mapCommand.createContent(panelBody);
 		commandContent.command = mapCommand;
 		//L.DomEvent
 		//    .on(commandContent, 'mousedown dblclick', L.DomEvent.stopPropagation)
 		//    .on(commandContent, 'click', L.DomEvent.stop)
 		//    .on(commandContent, 'click', fn, this)
-		 //   .on(commandContent, 'click', this._refocusOnMap, this);
+		//   .on(commandContent, 'click', this._refocusOnMap, this);
 
 		L.DomEvent
 			.addListener(commandContent, 'click', L.DomEvent.stopPropagation)
 			.addListener(commandContent, 'click', L.DomEvent.preventDefault)
 			.addListener(commandContent, 'click', function() {
+				if (that._activeCommand){
+					that._activeCommand.deactivate();
+				}
+				that._activeCommand = commandContent.command;
 				commandContent.command.activate();
 			});
 		return commandContent;
