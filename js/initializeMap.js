@@ -10,23 +10,24 @@ function InitializeMap(mapDiv) {
 	L.control.layers(mapManager._getBaseObj(), mapManager._getOverlayObj()).addTo(map);
 
 	var toolbar = new MapExpress.Tools.MapToolbar(mapManager);
-	var layersCommand = MapExpress.Service.showLayerControlMapCommand(mapManager);
+	var layersCommand = new MapExpress.Tools.ShowLayerControlMapCommand(mapManager);
 	var idCommand = MapExpress.Service.identifyMapCommand(mapManager);
 
 	var createParcelCommand = new MapExpress.Tools.CreateParcelCommand(mapManager);
 	var createLineCommand = new MapExpress.Tools.CreateLineCommand(mapManager);
 	var createPointCommand = new MapExpress.Tools.CreatePointCommand(mapManager);
-	
+
 
 	toolbar.addCommand(layersCommand);
 	toolbar.addCommand(idCommand);
 	toolbar.addCommand(createParcelCommand);
 	toolbar.addCommand(createLineCommand);
 	toolbar.addCommand(createPointCommand);
-	
+	toolbar.addCommand(new MapExpress.Tools.BoxZoom(mapManager));
+
 
 	map.addControl(toolbar);
-	
+
 
 	L.control.zoom({
 		position: 'topleft'
@@ -38,6 +39,46 @@ function InitializeMap(mapDiv) {
 
 	return map;
 };
+
+MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.extend({
+
+	options: {
+		buttonClassName: 'btn btn-default btn-sm text-center'
+	},
+
+	initialize: function(mapManager, options) {
+		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
+		L.setOptions(this, options);
+		this._active = false;
+	},
+
+	createContent: function(toolBarContainer) {
+		//var a = L.DomUtil.create('a', 'btn btn-primary', toolBarContainer);
+		//var span = L.DomUtil.create('span', 'glyphicon glyphicon-info-sign', a);
+		//return a;
+		//
+
+		var button = L.DomUtil.create('button', this.options.buttonClassName, toolBarContainer);
+		var li = L.DomUtil.create('i', 'fa fa-bars fa-lg fa-fw', button);
+
+		button.setAttribute('data-toggle', 'tooltip');
+		button.setAttribute('data-placement', 'bottom');
+		button.setAttribute('title', 'Управление картой');
+		button.setAttribute('id', "showLayerControlMapCommand");
+
+		return button;
+	},
+
+	activate: function() {
+		MapExpress.Utils.Promise.qAjax("./templates/mapsettings.html", true).then(
+			function(data) {
+				$('#main-sidebar-wrapper').html = data;
+				$(".sidebar.left").trigger("sidebar:open");
+			}
+		);
+	}
+});
+
 
 MapExpress.Tools.CreateParcelCommand = MapExpress.Tools.BaseMapCommand.extend({
 	options: {

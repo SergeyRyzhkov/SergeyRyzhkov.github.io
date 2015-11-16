@@ -12,8 +12,10 @@
 <link rel="stylesheet" href="css/main.css"/>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+ 
+<script src="js/simpler-sidebar.js"></script>
 <script src="js/bootstrap.min.js"></script>
-
 <script src="js/leaflet.js"></script>
 <script src="js/mapExpress-leaflet.js"></script>
 <script src="js/defaultMapModel.js"></script>
@@ -33,9 +35,28 @@ body {
 
 </head>
 <body>
+
 <div id="map"></div>
 
+<div id="main-sidebar" class="main-sidebar main-sidebar-left">
+	<div id="main-sidebar-wrapper" class="main-sidebar-wrapper"></div>
+</div>
+
 <script type="text/javascript">
+// Sidebar on right side
+ $(document).ready(function() {
+             $('#main-sidebar').simplerSidebar({
+                    opener: '#showLayerControlMapCommand',
+                    animation: {
+                        easing: "easeOutQuint"
+                    },
+                    sidebar: {
+                        align: 'left',
+                        closingLinks: '.close-sb'
+                    }
+                });
+            });
+
 InitializeMap (map);
 
 $(function () {

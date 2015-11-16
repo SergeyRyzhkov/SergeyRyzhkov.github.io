@@ -15,10 +15,6 @@ body {
   font-family: "Roboto",sans-serif, helvetica,arial;
 }
 
-a {
-	outline: none;
-	border: none;
-}
 
 /* general typography */
 .leaflet-popup-content-wrapper 
@@ -31,46 +27,61 @@ a {
 
 }
 
-.forum-element-container {
-   margin-top: 15px;
-   margin-bottom: 10px;
+.main-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background-color: #FFF;
+    color: white;
+    width: 300px;
+	background-color:white;
+	box-shadow:0 -1px 24px rgba(0,0,0,0.4);
+	font-family: "Roboto";
 }
 
+.main-sidebar-left {
+    left: 0;
+    text-align: left;
+}
 
-.forum-element-title {
-	padding: 10px 10px 10px;
-    border-radius: 8px 8px 0 0;
+.main-sidebar-wrapper {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1em;
+}
+
+.map-settings-header {
+   padding: 1px 1px 1px;
+    border-radius: 1px 1px 1px 1px;
 	font-size: 18px;
 	font-weight: 700;
 	color: #FFFFFF;
-    text-shadow: 0px -1px 0px #286090;
-    background-image: linear-gradient(to bottom, #337AB7 0px, #2B669A 100%);
-    background-repeat: repeat-x;
     border-color: #2B669A;
-	font-family: "RobotoBold"
+	font-family: "Roboto";
 }
 
-.forum-element-items-container {
-	background-color: #FFFFFF;
-    padding: 20px;	
-	border-radius: 0 0 8px 8px;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
-	
+.map-settings-content {
+	background-color: #fff;
+    list-style: outside none none;
+    margin: 0;
+    padding: 2px 2px 0;
 }
 
-.forum-element-items-container-border {
-	border-left:1px solid rgb(215, 223, 234);
-	border-right:1px solid rgb(215, 223, 234);
-	border-bottom:1px solid rgb(215, 223, 234);	
+.map-settings-content-item {
+    -moz-user-select: none;
+    background-color: #fff;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 0 2px;
+    color: #333;
+    cursor: pointer;
+    display: list-item;
+    margin-bottom: -1px;
+    padding: 10px 12px 12px;
+    text-decoration: none;
 }
-
-.forum-element-item-container {
-	background:rgb(247, 251, 253);
-	padding:20px;
-	border-top:1px solid rgb(215, 223, 234);
-}
-
-
 
 
 

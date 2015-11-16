@@ -2218,6 +2218,9 @@ MapExpress.Service.tileProvider = function(url, options) {
 MapExpress.Service.wmsProvider = function(url, options) {
 	return new MapExpress.Service.WmsProvider(url, options);
 };;MapExpress.Tools.BaseMapCommand = L.Class.extend({
+
+	_active: false,
+
 	options: {
 
 	},
@@ -2247,6 +2250,62 @@ MapExpress.Service.wmsProvider = function(url, options) {
 
 MapExpress.Service.baseMapCommand = function(mapManager, options) {
 	return new MapExpress.Tools.BaseMapCommand(mapManager, options);
+};;MapExpress.Tools.BoxZoom = MapExpress.Tools.BaseMapCommand.extend({
+	options: {
+		buttonClassName: 'btn btn-default btn-sm text-center'
+	},
+
+	initialize: function(mapManager, options) {
+		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
+		L.setOptions(this, options);
+	},
+
+	createContent: function(toolBarContainer) {
+		var button = L.DomUtil.create('button', this.options.buttonClassName, toolBarContainer);
+		var li = L.DomUtil.create('i', 'fa fa-plus-square-o fa-lg fa-fw', button);
+		button.setAttribute('data-toggle', 'tooltip');
+		button.setAttribute('data-placement', 'bottom');
+		button.setAttribute('title', 'Увеличить');
+		return button;
+	},
+
+	activate: function() {
+		if (!this._active) {
+			var map = this._mapManager._map;
+			var _onMouseDown = map.boxZoom._onMouseDown;
+			map.boxZoom._onMouseDown = function(e) {
+				_onMouseDown.call(map.boxZoom, {
+					clientX: e.clientX,
+					clientY: e.clientY,
+					which: 1,
+					shiftKey: true
+				});
+			};
+
+			map.dragging.disable();
+			map.boxZoom.addHooks();
+
+			map.on('boxzoomend', function() {
+				map.dragging.enable();
+				map.boxZoom.removeHooks();
+			});
+		}
+	},
+
+	deactivate: function() {
+		var map = this._mapManager._map;
+		map.dragging.enable();
+		map.boxZoom.removeHooks();
+		map.off('boxzoomend', function() {
+			map.dragging.enable();
+			map.boxZoom.removeHooks();
+		});
+	}
+
+});
+
+MapExpress.Service.boxZoom = function(mapManager, options) {
+	return new MapExpress.Tools.BoxZoom(mapManager, options);
 };;MapExpress.Tools.IdentifyMapCommand = MapExpress.Tools.BaseMapCommand.extend({
 	options: {
 		buttonClassName: 'btn btn-default btn-sm text-center'
@@ -2258,7 +2317,6 @@ MapExpress.Service.baseMapCommand = function(mapManager, options) {
 	initialize: function(mapManager, options) {
 		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
 		L.setOptions(this, options);
-		this._active = false;
 	},
 
 	createContent: function(toolBarContainer) {
@@ -2281,12 +2339,10 @@ MapExpress.Service.baseMapCommand = function(mapManager, options) {
 		if (!this._active) {
 			this._mapManager._map.on('click', this.doCommand, this);
 		}
-		this._active = true;
 	},
 
 	deactivate: function() {
 		this._mapManager._map.off('click', this.doCommand, this);
-		this._active = false;
 	},
 
 	doCommand: function(args) {
@@ -2461,11 +2517,14 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 			.addListener(commandContent, 'click', L.DomEvent.stopPropagation)
 			.addListener(commandContent, 'click', L.DomEvent.preventDefault)
 			.addListener(commandContent, 'click', function() {
-				if (that._activeCommand){
+				if (that._activeCommand) {
 					that._activeCommand.deactivate();
+					that._activeCommand._active = false;
 				}
 				that._activeCommand = commandContent.command;
 				commandContent.command.activate();
+				commandContent.command._active = true;
+
 			});
 		return commandContent;
 	}
@@ -2474,37 +2533,6 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 
 MapExpress.Service.mapToolbar = function(mapManager, options) {
 	return new MapExpress.Tools.MapToolbar(mapManager, options);
-};;MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.extend({
-
-	options: {
-		buttonClassName: 'btn btn-default btn-sm text-center'
-	},
-
-	initialize: function(mapManager, options) {
-		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
-		L.setOptions(this, options);
-		this._active = false;
-	},
-
-	createContent: function(toolBarContainer) {
-		//var a = L.DomUtil.create('a', 'btn btn-primary', toolBarContainer);
-		//var span = L.DomUtil.create('span', 'glyphicon glyphicon-info-sign', a);
-		//return a;
-		//
-
-		var button = L.DomUtil.create('button', this.options.buttonClassName, toolBarContainer);
-		var li = L.DomUtil.create('i', 'fa fa-bars fa-lg fa-fw', button);
-
-		button.setAttribute('data-toggle', 'tooltip');
-		button.setAttribute('data-placement', 'bottom');
-		button.setAttribute('title', 'Слои');
-
-		return button;
-	},
-});
-
-MapExpress.Service.showLayerControlMapCommand = function(mapManager, options) {
-	return new MapExpress.Tools.ShowLayerControlMapCommand(mapManager, options);
 };;/* jshint ignore:start */
 (function() {
 
@@ -4613,7 +4641,7 @@ return Q;
 });
 /* jshint ignore:end */;(function(Q) {
 	"use strict";
-	MapExpress.Utils.Promise.qAjax = function(url, isGet) {
+	MapExpress.Utils.Promise.qAjax = function(url, isGet, dataType) {
 		var deferred = Q.defer();
 		if (!isGet) {
 			$.getJSON(url).done(function(data) {
@@ -4626,13 +4654,17 @@ return Q;
 					deferred.reject(error);
 				});
 		} else {
-			$.get(url).done(function(data) {
+			$.ajax({
+					url: url,
+					dataType: "html"
+				}).done(function(data) {
 					deferred.resolve(data);
 				})
 				.fail(function(xhr, textStatus, errorThrown) {
 					var error = new Error("Ajax request failed" + url);
 					error.textStatus = textStatus;
 					error.errorThrown = errorThrown;
+					console.log(error);
 					deferred.reject(error);
 				});
 		}
