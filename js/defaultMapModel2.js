@@ -70,103 +70,7 @@ defaultMapModel = {
 					"subdomains": "123"
 				}
 			}
-		}, {
-			"id": "Росреестр РФ ГКН",
-			"name": "Росреестр РФ ГКН",
-			"displayName": "Росреестр РФ ГКН",
-			"description": "Росреестр РФ ГКН",
-			"type": "overlay",
-			"visible": false,
-			"visibleIndex": 0,
-			"minZoom": 0,
-			"maxZoom": 23,
-			"selectable": false,
-			"queryable": true,
-
-			"layerClass": {
-				"constructor": "MapExpress.Layers.TileServiceLayer",
-				"args": [],
-				"options": {
-					"attribution": "Росреестр РФ"
-				}
-			},
-
-			"dataProviderClass": {
-				"constructor": "MapExpress.Service.MapServiceAgsProvider",
-				"args": [
-					"http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"
-				],
-				"options": {
-					"identifyLayersId": "0,1",
-					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer"
-				}
-			}
-		}
-		, {
-			"id": "ЗОУИТ ГКН",
-			"name": "ЗОУИТ ГКН",
-			"displayName": "ЗОУИТ ГКН",
-			"description": "ЗОУИТ ГКН",
-			"type": "overlay",
-			"visible": false,
-			"visibleIndex": 0,
-			"minZoom": 0,
-			"maxZoom": 23,
-			"selectable": false,
-			"queryable": true,
-
-			"layerClass": {
-				"constructor": "MapExpress.Layers.TileServiceLayer",
-				"args": [],
-				"options": {
-					"attribution": "Росреестр РФ"
-				}
-			},
-
-			"dataProviderClass": {
-				"constructor": "MapExpress.Service.MapServiceAgsProvider",
-				"args": [
-					"http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/ZOUIT/MapServer"
-				],
-				"options": {
-					"identifyLayersId": "0",
-					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/ZOUIT/MapServer"
-				}
-			}
-		}, 
-		{
-			"id": "Границы ГКН",
-			"name": "Границы ГКН",
-			"displayName": "Границы ГКН",
-			"description": "Границы ГКН",
-			"type": "overlay",
-			"visible": false,
-			"visibleIndex": 2,
-			"minZoom": 0,
-			"maxZoom": 23,
-			"selectable": false,
-			"queryable": true,
-
-			"layerClass": {
-				"constructor": "MapExpress.Layers.TileServiceLayer",
-				"args": [],
-				"options": {
-					"attribution": "Росреестр РФ"
-				}
-			},
-
-			"dataProviderClass": {
-				"constructor": "MapExpress.Service.MapServiceAgsProvider",
-				"args": [
-					"http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKNSelected/MapServer"
-				],
-				"options": {
-					"identifyLayersId": "7,8,9,10.11,12,13,14,15,16,17,18",
-					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKNSelected/MapServer"
-				}
-			}
-		}, 
-
+		},
 		{
 			"id": "Участки ВСМ",
 			"name": "Участки ВСМ",
@@ -174,7 +78,7 @@ defaultMapModel = {
 			"description": "Участки ВСМ",
 			"type": "overlay",
 			"visible": true,
-			"visibleIndex": 3,
+			"visibleIndex": 2,
 			"minZoom": 0,
 			"maxZoom": 23,
 			"selectable": false,
@@ -206,7 +110,7 @@ defaultMapModel = {
 			"description": "Полоса отвода",
 			"type": "overlay",
 			"visible": true,
-			"visibleIndex": 4,
+			"visibleIndex": 1,
 			"minZoom": 0,
 			"maxZoom": 23,
 			"selectable": false,

@@ -1,0 +1,38 @@
+<script id="mapSidebarTemplateId" type="text/x-jsrender">
+            <div  class="navbar-default sidebar" role="navigation" style="margin-top:0px; width: 270px;">
+                <div class="sidebar-nav navbar-collapse" >
+                    <h4 style="text-align: center">Содержание карты</h4>
+					<div style="line-height:15px;color: #777;font-size:0.9em;text-align: center">{{:displayName}}</div>
+					<ul class="nav" id="side-menu">
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Базовые карты<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+								{{for layers}}
+									{{if type === 'base'}}								
+										<li>
+											<a href="#">{{:displayName}}</a>
+										</li>
+									{{/if}}
+                               {{/for}}
+                            </ul>
+                        </li>
+						<li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Слои карты<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+								{{for layers}}
+									{{if type === 'overlay'}}								
+										<li>
+											<a href="#">{{:displayName}}</a>
+										</li>
+									{{/if}}
+                               {{/for}}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+</script>
+
+   

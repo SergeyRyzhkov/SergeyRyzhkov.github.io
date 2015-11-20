@@ -7,7 +7,6 @@ function InitializeMap(mapDiv) {
 	var mapManager = new MapExpress.Mapping.MapManager(map);
 	mapManager.renderMap(defaultMapModel);
 
-	L.control.layers(mapManager._getBaseObj(), mapManager._getOverlayObj()).addTo(map);
 
 	var toolbar = new MapExpress.Tools.MapToolbar(mapManager);
 	var layersCommand = new MapExpress.Tools.ShowLayerControlMapCommand(mapManager);
@@ -25,9 +24,14 @@ function InitializeMap(mapDiv) {
 	toolbar.addCommand(createPointCommand);
 	toolbar.addCommand(new MapExpress.Tools.BoxZoom(mapManager));
 
+	var toolbar2 = new MapExpress.Tools.MapToolbar(mapManager, {
+		position: "topright"
+	});
+	toolbar2.addCommand(new MapExpress.Tools.BaseMapManagerCommand(mapManager));
+
 
 	map.addControl(toolbar);
-
+	map.addControl(toolbar2);
 
 	L.control.zoom({
 		position: 'topleft'
@@ -37,8 +41,58 @@ function InitializeMap(mapDiv) {
 		imperial: true
 	});
 
+	//mapManager.moveOverlay("Полоса отвода", 0);
+
+	L.control.layers(mapManager._getBaseObj(), mapManager._getOverlayObj()).addTo(map);
+
 	return map;
 };
+
+MapExpress.Tools.BaseMapManagerCommand = MapExpress.Tools.BaseMapCommand.extend({
+
+	options: {
+		buttonClassName: 'btn btn-default btn-sm text-center',
+		_first: true
+	},
+
+	initialize: function(mapManager, options) {
+		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
+		L.setOptions(this, options);
+	},
+
+	createContent: function(toolBarContainer) {
+		var button = L.DomUtil.create('ul', 'nav navbar-top-links navbar-right', toolBarContainer);
+		button.setAttribute('data-toggle', 'tooltip');
+		button.setAttribute('data-placement', 'bottom');
+		button.setAttribute('title', 'Базовые слои');
+		button.setAttribute('id', 'baseMapManagerCommand')
+			//L.DomUtil.addClass(button, 'dropdown');
+			//var a = L.DomUtil.create('a', 'dropdown-toggle', button);
+			//a.setAttribute('data-toggle', 'dropdown');
+			//a.setAttribute('href', '#');
+
+		//var i = L.DomUtil.create('i', 'fa fa-bars fa-envelope fa-fw', a);
+
+		return button;
+	},
+
+	activate: function() {
+		if (!this._first) {
+			$('#baseMapManagerCommand').load("./templates/mapbasemaps.html");
+			this._first = true;
+		}
+
+		//var tmpl = $.templates("#myTemplate");
+		//document.getElementById("baseMapManagerCommand").innerHTML = tmpl.render(person);
+
+		//$.get('./templates/mapbasemaps.html', function(templ) {
+		//	console.log(templ);
+		//	var tmpl = $.templates(templ);
+		//	console.log(tmpl);
+		//document.getElementById("baseMapManagerCommand").innerHTML = tmpl.render(data);
+		//});
+	}
+});
 
 MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.extend({
 
@@ -49,14 +103,9 @@ MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.ex
 	initialize: function(mapManager, options) {
 		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
 		L.setOptions(this, options);
-		this._active = false;
 	},
 
 	createContent: function(toolBarContainer) {
-		//var a = L.DomUtil.create('a', 'btn btn-primary', toolBarContainer);
-		//var span = L.DomUtil.create('span', 'glyphicon glyphicon-info-sign', a);
-		//return a;
-		//
 
 		var button = L.DomUtil.create('button', this.options.buttonClassName, toolBarContainer);
 		var li = L.DomUtil.create('i', 'fa fa-bars fa-lg fa-fw', button);
@@ -70,12 +119,23 @@ MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.ex
 	},
 
 	activate: function() {
-		MapExpress.Utils.Promise.qAjax("./templates/mapsettings.html", true).then(
-			function(data) {
-				$('#main-sidebar-wrapper').html = data;
-				$(".sidebar.left").trigger("sidebar:open");
+		var that = this;
+
+		$("#mapSidebarTemplate").empty();
+
+		$("#mapSidebarTemplate").load("./templates/mapSidebar.html", function() {
+			if (!that._template) {
+				that._template = $.templates("#mapSidebarTemplateId");
 			}
-		);
+			
+			var model = that._mapManager.getMapModel();
+			var rend = that._template.render(model);
+		
+			$("#mapSidebarTemplate").html(rend);
+			$('#side-menu').metisMenu();
+			$("#mapSidebarTemplate").trigger("sidebar:open");
+		});
+
 	}
 });
 
