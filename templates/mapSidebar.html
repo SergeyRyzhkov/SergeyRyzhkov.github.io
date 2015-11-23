@@ -1,16 +1,24 @@
 <script id="mapSidebarTemplateId" type="text/x-jsrender">
             <div  class="navbar-default sidebar" role="navigation" style="margin-top:0px; width: 270px;">
                 <div class="sidebar-nav navbar-collapse" >
-                    <h4 style="text-align: center">Содержание карты</h4>
-					<div style="line-height:15px;color: #777;font-size:0.9em;text-align: center">{{:displayName}}</div>
+                    <h4 style="text-align: center">{{:displayName}}</h4>
 					<ul class="nav" id="side-menu">
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Базовые карты<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> <b>Базовые карты </b><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
 								{{for layers}}
 									{{if type === 'base'}}								
 										<li>
-											<a href="#">{{:displayName}}</a>
+											<div style="padding: 5px" id="{{:id}}">
+												{{if visible === false}}
+													<a href="#" class="text-muted" onclick ="toogleLayerVisible($(this));">{{:displayName}}</a>
+												{{/if}}
+												{{if visible === true}}
+													<a href="#" onclick ="toogleLayerVisible($(this));">{{:displayName}}</a>
+												{{/if}}
+												
+												<a href="#" data-toggle="popover" data-trigger="click" title="{{:displayName}}" data-contentwrapper="#layerconfig{{:id}}"><i class='fa fa-cog fa-fw pull-right'/></a>
+											</div>
 										</li>
 									{{/if}}
                                {{/for}}
@@ -18,31 +26,41 @@
                         </li>
 						
 						<li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Слои карты<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> <b>Слои карты</b><span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
 								{{for layers}}
 									{{if type === 'overlay'}}								
 										<li>
-											<a href="#" data-toggle="popover" data-trigger="click" title="{{:displayName}}" data-contentwrapper="#{{:id}}">{{:displayName}}</a>
+											<div style="padding: 5px" id="{{:id}}">
+												{{if visible === false}}
+													<a href="#" class="text-muted" onclick ="toogleLayerVisible($(this));">{{:displayName}}</a>
+												{{/if}}
+												{{if visible === true}}
+													<a href="#" onclick ="toogleLayerVisible($(this));">{{:displayName}}</a>
+												{{/if}}
+												
+												<a href="#" data-toggle="popover" data-trigger="click" title="{{:displayName}}" data-contentwrapper="#layerconfig{{:id}}"><i class='fa fa-cog fa-fw pull-right'/></a>
+											</div>
 										
-											<div id="{{:id}}" style="display: none;">
+											<div id="layerconfig{{:id}}" style="display: none;">
 											  
-											<label for="ex{{:id}}">Прозрачность:</label>
-											<input id="ex{{:id}}" type="text" data-slider-id='ex{{:id}}Slider' data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>
-																			
-											<label for="displayName">Наименование:</label>
-											<input type="text" class="form-control" id="displayName"/>
-												  
-											<label for="description">Описание:</label>
-											<input type="text" class="form-control" id="description"/>
-											</br>
-											<label >Видимость:</label>
-											<input type="checkbox" name="visible{{:id}}" checked data-size="mini" data-on-text="Да" data-off-text="Нет"/>
-											
-											</br>
-											</br>
-											<label >Идентификация:</label>
-											<input type="checkbox" name="identity{{:id}}" checked data-size="mini" data-on-text="Да" data-off-text="Нет"/>
+												<label for="ex{{:id}}">Прозрачность:</label>
+												<input id="ex{{:id}}" type="text" data-slider-id='ex{{:id}}Slider' data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>
+																				
+												<label for="displayName">Наименование:</label>
+												<input type="text" class="form-control" id="displayName"/>
+													  
+												<label for="description">Описание:</label>
+												<input type="text" class="form-control" id="description"/>
+												
+												<br>
+												<label >Видимость:</label>
+												<input type="checkbox" name="visible{{:id}}" checked data-size="mini" data-on-text="Да" data-off-text="Нет"/>
+												
+												<br>
+												<br>
+												<label >Идентификация:</label>
+												<input type="checkbox" name="identity{{:id}}" checked data-size="mini" data-on-text="Да" data-off-text="Нет"/>
 											
 										   </div>
 										</li>
@@ -73,6 +91,15 @@
                         {{/for}}
 					
 				});
+				
+				function toogleLayerVisible (element) {
+					var layer = MapManager.toogleLayerVisible(element.closest('div').attr('id'));
+					
+					//if (layer.visible){
+						element.toggleClass ("text-muted");
+					//}
+				};
+				
 			</script>
 		
 </script>

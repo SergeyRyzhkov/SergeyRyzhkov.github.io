@@ -122,6 +122,8 @@ MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.ex
 			var model = that._mapManager.getMapModel();
 			var rend = that._template.render(model);
 
+			console.log(model);
+
 			$("#mapSidebarTemplate").html(rend);
 			$('#side-menu').metisMenu();
 			$("#mapSidebarTemplate").trigger("sidebar:open");

@@ -196,7 +196,7 @@ defaultMapModel = {
 			"dataProviderClass": {
 				"constructor": "MapExpress.Service.GeoJSONProvider",
 				"args": [
-					"./Data/geojson-sample.json"
+					"./data/geojson-sample.json"
 				]
 			}
 		}, {
@@ -228,7 +228,7 @@ defaultMapModel = {
 			"dataProviderClass": {
 				"constructor": "MapExpress.Service.GeoJSONProvider",
 				"args": [
-					"./Data/boundary_wgs.json"
+					"./data/boundary_wgs.json"
 				]
 			}
 		}, {

@@ -424,6 +424,7 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 			layer.visible = visible;
 			setTimeout(this._reorderOverlays.bind(this), 1000);
 		}
+		return layer;
 	},
 
 	toogleLayerVisible: function(layerId) {
@@ -431,6 +432,7 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		if (layer) {
 			this.setLayerVisible(layerId, !layer.visible);
 		}
+		return layer;
 	},
 
 	moveOverlay: function(layerId, visibleIndex) {
