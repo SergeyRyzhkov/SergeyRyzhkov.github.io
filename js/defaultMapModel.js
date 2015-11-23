@@ -71,7 +71,7 @@ defaultMapModel = {
 				}
 			}
 		}, {
-			"id": "Росреестр РФ ГКН",
+			"id": "rosreestrGkn",
 			"name": "Росреестр РФ ГКН",
 			"displayName": "Росреестр РФ ГКН",
 			"description": "Росреестр РФ ГКН",
@@ -103,7 +103,7 @@ defaultMapModel = {
 			}
 		}
 		, {
-			"id": "ЗОУИТ ГКН",
+			"id": "zouit",
 			"name": "ЗОУИТ ГКН",
 			"displayName": "ЗОУИТ ГКН",
 			"description": "ЗОУИТ ГКН",
@@ -135,7 +135,7 @@ defaultMapModel = {
 			}
 		}, 
 		{
-			"id": "Границы ГКН",
+			"id": "borderGkn",
 			"name": "Границы ГКН",
 			"displayName": "Границы ГКН",
 			"description": "Границы ГКН",
@@ -168,7 +168,7 @@ defaultMapModel = {
 		}, 
 
 		{
-			"id": "Участки ВСМ",
+			"id": "vsmParsel",
 			"name": "Участки ВСМ",
 			"displayName": "Участки ВСМ",
 			"description": "Участки ВСМ",
@@ -200,7 +200,7 @@ defaultMapModel = {
 				]
 			}
 		}, {
-			"id": "Полоса отвода",
+			"id": "vsmPolosa",
 			"name": "Полоса отвода",
 			"displayName": "Полоса отвода",
 			"description": "Полоса отвода",

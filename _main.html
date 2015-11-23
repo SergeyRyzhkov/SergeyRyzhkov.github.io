@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+<title>ГИС Скоростные магистрали</title>
+
+<link rel="stylesheet" href="css/leaflet.css"/>
+<link rel="stylesheet" href="css/bootstrap.min.css"/>
+<link rel="stylesheet" href="css/highlight.css"/>
+<link rel="stylesheet" href="css/metisMenu.min.css">
+<link rel="stylesheet" href="css/font-awesome.css"/>
+<link rel="stylesheet" href="css/main.css"/>
+<link rel="stylesheet" href="css/bootstrap-switch.min.css"/>
+<link rel="stylesheet" href="css/sb-admin-2.css">
+<link rel="stylesheet" href="css/bootstrap-slider.css">
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.sidebar.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/leaflet.js"></script>
+<script src="js/mapExpress-leaflet.js"></script>
+<script src="js/defaultMapModel.js"></script>
+<script src="js/Leaflet.Editable.js"></script>
+<script src="js/initializeMap.js"></script>
+<script src="js/jsrender.min.js"></script>
+<script src="js/metisMenu.min.js"></script>
+<script src="js/bootstrap-switch.min.js"></script>
+<script src="js/bootstrap-slider.js"></script>
+
+
+<style type="text/css">
+html, body { height: 100% }
+#map { min-height: 100%; }
+
+</style>
+
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="mapSidebarTemplate" class="mapsidebar left"></div>
+
+<div id="layerInfoTemplate"></div>
+
+<script type="text/javascript">
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+$("#mapSidebarTemplate").sidebar({side: "left",close:true});
+
+$(document).on("click", function(e){
+    var div = $("#mapSidebarTemplate"); 
+		if (!div.is(e.target) && div.has(e.target).length === 0) { 
+			$("#mapSidebarTemplate").trigger("sidebar:close")
+		}
+});
+
+InitializeMap (map);
+
+</script>
+
+
+</body></html>

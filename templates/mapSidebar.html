@@ -16,13 +16,35 @@
                                {{/for}}
                             </ul>
                         </li>
+						
 						<li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Слои карты<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
 								{{for layers}}
 									{{if type === 'overlay'}}								
 										<li>
-											<a href="#">{{:displayName}}</a>
+											<a href="#" data-toggle="popover" data-trigger="click" title="{{:displayName}}" data-contentwrapper="#{{:id}}">{{:displayName}}</a>
+										
+											<div id="{{:id}}" style="display: none;">
+											  
+											<label for="ex{{:id}}">Прозрачность:</label>
+											<input id="ex{{:id}}" type="text" data-slider-id='ex{{:id}}Slider' data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100"/>
+																			
+											<label for="displayName">Наименование:</label>
+											<input type="text" class="form-control" id="displayName"/>
+												  
+											<label for="description">Описание:</label>
+											<input type="text" class="form-control" id="description"/>
+											</br>
+											<label >Видимость:</label>
+											<input type="checkbox" name="visible{{:id}}" checked data-size="mini" data-on-text="Да" data-off-text="Нет"/>
+											
+											</br>
+											</br>
+											<label >Идентификация:</label>
+											<input type="checkbox" name="identity{{:id}}" checked data-size="mini" data-on-text="Да" data-off-text="Нет"/>
+											
+										   </div>
 										</li>
 									{{/if}}
                                {{/for}}
@@ -30,9 +52,29 @@
                         </li>
                     </ul>
                 </div>
-                <!-- /.sidebar-collapse -->
             </div>
-            <!-- /.navbar-static-side -->
+			
+			<script>
+				$(document).ready(function(){
+					
+						$('[data-toggle="popover"]').popover({
+							html:'true',
+							content: function() {  
+							return $($(this).data('contentwrapper')).html(); },
+							trigger: 'click'
+						});
+						
+						{{for layers}}
+							{{if type === 'overlay'}}	
+								$("#ex{{:id}}").slider();
+								$("[name='visible{{:id}}']").bootstrapSwitch();
+								$("[name='identity{{:id}}']").bootstrapSwitch();
+							{{/if}}
+                        {{/for}}
+					
+				});
+			</script>
+		
 </script>
 
    
