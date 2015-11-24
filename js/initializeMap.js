@@ -6,9 +6,28 @@ function InitializeMap(mapDiv) {
 
 	var mapManager = new MapExpress.Mapping.MapManager(map);
 	window.MapManager = mapManager;
-
 	mapManager.renderMap(defaultMapModel);
 
+
+	var zuProvider = new MapExpress.Service.GeoJSONProvider("http://vm2012iis/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo&geoColumn=geom&bbox={xMin},{yMin},{xMax},{yMax}");
+
+	zuProvider.getDataUrlByTile = function(tileCoord) {
+		var bounds = this._tileCoordToBounds(tileCoord);
+		var url = this.getDataUrlByBounds(bounds);
+		return url;
+	};
+
+	var zuLayer = new MapExpress.Layers.GeoJSONServiceLayer(zuProvider, {
+		useVectorTile: true,
+		replaceDataOnReset: false
+	});
+
+	zuLayer.id = "VsmParcel";
+	zuLayer.displayName = "Земельные участки ВСМ";
+	zuLayer.visible = true;
+	zuLayer.type = "overlay";
+
+	mapManager.addLayerObject(zuLayer);
 
 	var toolbar = new MapExpress.Tools.MapToolbar(mapManager);
 	var layersCommand = new MapExpress.Tools.ShowLayerControlMapCommand(mapManager);
@@ -43,12 +62,16 @@ function InitializeMap(mapDiv) {
 		imperial: true
 	});
 
-	//mapManager.moveOverlay("Полоса отвода", 0);
 
-	L.control.layers(mapManager._getBaseObj(), mapManager._getOverlayObj()).addTo(map);
+	//L.control.layers(mapManager._getBaseObj(), mapManager._getOverlayObj()).addTo(map);
+	console.log(window.selectedObjectsId);
+	if (window.selectedObjectsId !== undefined && window.selectedObjectsId.length > 0) {
+		MapExpress.Tools.SelectParcelOnMap.selectParcelsByIds("http://vm2012iis/vsm_site/Map/Map/GeoJsonById/?view=vsm.land_geo&geoColumn=geom&idColumn=object_id&id={id}", selectedObjectsId);
+	}
 
 	return map;
 };
+
 
 MapExpress.Tools.BaseMapManagerCommand = MapExpress.Tools.BaseMapCommand.extend({
 
@@ -121,8 +144,6 @@ MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.ex
 
 			var model = that._mapManager.getMapModel();
 			var rend = that._template.render(model);
-
-			console.log(model);
 
 			$("#mapSidebarTemplate").html(rend);
 			$('#side-menu').metisMenu();

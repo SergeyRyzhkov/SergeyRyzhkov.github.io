@@ -5,9 +5,11 @@ defaultMapModel = {
 	"displayName": "Скоростные магистрали",
 	"description": "Скоростные магистрали",
 	"options": {
-		"zoom": 5,
+		"zoom": 4,
 		"center": [56.13, 30],
-		"zoomControl": false
+		"zoomControl": false,
+		"minZoom": 0,
+		"maxZoom": 23
 	},
 
 	"layers": [{
@@ -101,8 +103,7 @@ defaultMapModel = {
 					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer"
 				}
 			}
-		}
-		, {
+		}, {
 			"id": "zouit",
 			"name": "ЗОУИТ ГКН",
 			"displayName": "ЗОУИТ ГКН",
@@ -133,8 +134,7 @@ defaultMapModel = {
 					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/ZOUIT/MapServer"
 				}
 			}
-		}, 
-		{
+		}, {
 			"id": "borderGkn",
 			"name": "Границы ГКН",
 			"displayName": "Границы ГКН",
@@ -165,73 +165,9 @@ defaultMapModel = {
 					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKNSelected/MapServer"
 				}
 			}
-		}, 
+		},
 
 		{
-			"id": "vsmParsel",
-			"name": "Участки ВСМ",
-			"displayName": "Участки ВСМ",
-			"description": "Участки ВСМ",
-			"type": "overlay",
-			"visible": true,
-			"visibleIndex": 3,
-			"minZoom": 0,
-			"maxZoom": 23,
-			"selectable": false,
-			"queryable": true,
-
-			"layerClass": {
-				"constructor": "MapExpress.Layers.GeoJSONServiceLayer",
-				"args": [],
-				"options": {
-					"style": {
-						"color": "blue",
-						"weight": 2,
-						"opacity": 0.5,
-						"fillOpacity": 0.1
-					}
-				}
-			},
-
-			"dataProviderClass": {
-				"constructor": "MapExpress.Service.GeoJSONProvider",
-				"args": [
-					"./Data/geojson-sample.json"
-				]
-			}
-		}, {
-			"id": "vsmPolosa",
-			"name": "Полоса отвода",
-			"displayName": "Полоса отвода",
-			"description": "Полоса отвода",
-			"type": "overlay",
-			"visible": true,
-			"visibleIndex": 4,
-			"minZoom": 0,
-			"maxZoom": 23,
-			"selectable": false,
-			"queryable": true,
-
-			"layerClass": {
-				"constructor": "MapExpress.Layers.GeoJSONServiceLayer",
-				"args": [],
-				"options": {
-					"style": {
-						"color": "green",
-						"weight": 2,
-						"opacity": 0.99,
-						"fillOpacity": 0.99
-					}
-				}
-			},
-
-			"dataProviderClass": {
-				"constructor": "MapExpress.Service.GeoJSONProvider",
-				"args": [
-					"./Data/boundary_wgs.json"
-				]
-			}
-		}, {
 			"id": "Google",
 			"name": "Google",
 			"displayName": "Google",
