@@ -1,0 +1,51 @@
+<script id="parcelFilterId" type="text/x-jsrender">
+	<div style="text-align: center;margin:10px;padding:1px; position: relative;border-bottom: 1px solid red;">
+		<p><b>Фильтр по земельным участкам</b></p>
+	</div>	
+	<div class="float-map-panel-wrapper">
+		<div class = "float-map-panel-content">	
+			  <input type="checkbox" id="land_geo_object_archive_view" onclick ="filterVsmParcels($(this))"> Архивный
+		</div>	
+	</div>
+	
+	<script>		
+		function filterVsmParcels (element) {
+			var allLayersId = [];
+			allLayersId.push('land_geo_object_actual_view');
+			allLayersId.push('land_geo_object_archive_view');
+			allLayersId.push('land_geo_object_less_minimum_view');
+			allLayersId.push('land_geo_object_out_from_list_view');
+			
+			var layerId = element.attr('id');
+			var layerVisibility = element.prop('checked');
+			
+			for (var i = allLayersId.length - 1; i >= 0; i--) {
+				var titerLayer = allLayersId[i];
+				window.MapManager._map.removeLayer(titerLayer);
+				titerLayer.visible = false;
+			};
+			
+			var newLayer = createLayerObj (layerId);
+			if (newLayer) {
+				window.MapManager.addLayerObject(newLayer);
+			}
+			
+			function createLayerObj(layerId) {
+				var providerUrl = VSM_SITE_ROOT + "/Map/Map/GeoJsonData/?view=vsm." + layerId + "&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}";
+				var provider = new MapExpress.Service.GeoJSONProvider(providerUrl);
+				var layerOptions = {
+					useVectorTile: false,
+					replaceDataOnReset: true,
+					maxZoom: 23,
+					minZoom: 6
+				};
+				var layer = new MapExpress.Layers.GeoJSONServiceLayer(provider, layerOptions);
+				layer.id = layerId;
+				layer.displayName = layerId;
+				layer.visible = true;
+				layer.type = 'user';			
+				return layer;
+			}
+		};
+	</script>
+</script>

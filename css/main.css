@@ -15,6 +15,76 @@ body {
   font-family: "Roboto",sans-serif, helvetica,arial;
 }
 
+.map-toolbar {
+	padding: 3px;
+	margin-left: 10px;
+	margin-top: 10px;
+    box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.4);
+	border-radius: 1px;
+	background: #FFF none repeat scroll 0% 0%;
+	opacity:1;
+	z-index:10000;
+}
+
+.map-toolbar:hover {
+	opacity:1;
+}
+
+.float-map-panel {
+  box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.4);
+  border-radius: 1px;
+  background: #FFF none repeat scroll 0% 0%;
+  max-height: 450.5px;
+  max-width: 300.5px; 
+  outline: medium none;
+  overflow: hidden; 
+  opacity:1;
+  z-index:1000;
+}
+
+.float-map-panel.big {
+  max-height: 1024.5px;
+  max-width: 800.5px;
+  z-index:1000;
+}
+
+.float-map-panel:hover {
+	opacity:1;
+}
+
+.float-map-panel-wrapper {
+	margin:10px;
+}
+
+.float-map-panel-header {
+
+}
+
+.float-map-panel-content{
+	font: 11.5px "Roboto",sans-serif, helvetica,arial;
+}
+
+
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.leaflet-popup-content-wrapper
+{
+  box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.4);
+  border-radius: 1px;
+  background: #FFF none repeat scroll 0% 0%;
+  outline: medium none;
+  border-bottom:none;
+}
 
 .leaflet-popup-content
 {
@@ -28,12 +98,18 @@ body {
 	border-top:none;
 }
 
+ /* CSS3 Transition to fade-in highlight style */
+svg.leaflet-zoom-animated > g > path {
+    transition-property: fill, fill-opacity, stroke, stroke-opacity, stroke-width;
+    transition-duration: 0.3s;
+}
+
 .mapsidebar.left {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 270px;
+    width: 320px;
     background-color: #F8F8F8;
 	z-index:10000;
 	box-shadow:0 -1px 24px rgba(0,0,0,0.4);
@@ -47,4 +123,5 @@ body {
     font-size: 2em;
     text-align: center;
 }
+
 

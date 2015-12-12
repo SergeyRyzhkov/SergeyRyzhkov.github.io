@@ -18,7 +18,11 @@
 <link rel="stylesheet" href="css/bootstrap-switch.min.css"/>
 <link rel="stylesheet" href="css/sb-admin-2.css"/>
 <link rel="stylesheet" href="css/bootstrap-slider.css"/>
+<link rel="stylesheet" href="css/leaflet-measure.css">
+<link href="https://select2.github.io/dist/css/select2.min.css" rel="stylesheet" type="text/css"/>
 
+<script>VSM_SITE_ROOT = "http://vm2012iis/vsm_site" </script>
+<script>VSM_MAP_SELECTOR = "#map" </script>
 
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.sidebar.js"></script>
@@ -33,6 +37,20 @@
 <script src="js/metisMenu.min.js"></script>
 <script src="js/bootstrap-switch.min.js"></script>
 <script src="js/bootstrap-slider.js"></script>
+<script src="js/leaflet-measure.js"></script>
+
+<script src="https://select2.github.io/dist/js/select2.full.js"></script>
+<script src="https://select2.github.io/dist/js/i18n/ru.js"></script>
+
+<script src="js/ParcelInteractionTool.js"></script>
+<script src="js/ParcelEditTool.js"></script>
+<script src="js/html2canvas.js"></script>
+<script src="js/ExportMap2Image.js"></script>
+<script src="js/SearchCadaster.js"></script>
+<script src="js/SearchCadastrTool.js"></script>
+<script src="js/SearchAddress.js"></script>
+<script src="js/ParcelFilterTool.js"></script>
+<script src="js/MapWorkspaceManagerTool.js"></script>
 
 
 <style type="text/css">
@@ -43,15 +61,13 @@ html, body { height: 100% }
 
 </head>
 <body>
-<div id="remote">
-  <input class="typeahead" type="text" placeholder="Oscar winners for Best Picture">
-</div>
+
 
 <div id="map"></div>
 
 <div id="mapSidebarTemplate" class="mapsidebar left"></div>
-
 <div id="layerInfoTemplate"></div>
+
 
 <script type="text/javascript">
 

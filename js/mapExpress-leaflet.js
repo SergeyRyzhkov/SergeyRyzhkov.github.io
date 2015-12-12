@@ -19,13 +19,74 @@ MapExpress = {
 
 if (typeof window !== 'undefined' && window.L) {
 	window.MapExpress = MapExpress;
-};MapExpress.Layers.GeoJSONServiceLayer = L.GeoJSON.extend({
+};MapExpress.Controls.FloatMapPanel = L.Control.extend({
+	options: {
+		position: 'topright',
+		className: 'float-map-panel'
+	},
+
+	initialize: function(mapManager, options) {
+		this._mapManager = mapManager;
+		L.setOptions(this, options);
+	},
+
+	onAdd: function() {
+		this._div = L.DomUtil.create('div', this.options.className);
+		this._div.setAttribute('id', 'floatMapPanel');
+		this._visible = true;
+		L.DomEvent
+			.addListener(this._div, 'mousemove', L.DomEvent.stopPropagation)
+			.addListener(this._div, 'click', L.DomEvent.stopPropagation)
+			.addListener(this._div, 'dblclick', L.DomEvent.stopPropagation)
+			.addListener(this._div, 'mousemove', L.DomEvent.preventDefault)
+			.addListener(this._div, 'click', L.DomEvent.preventDefault)
+			.addListener(this._div, 'dblclick', L.DomEvent.preventDefault)
+			.addListener(this._div, 'onwheel', L.DomEvent.stopPropagation)
+			.addListener(this._div, 'onwheel', L.DomEvent.preventDefault)
+			.addListener(this._div, 'wheel', L.DomEvent.stopPropagation)
+			.addListener(this._div, 'wheel', L.DomEvent.preventDefault)
+			.addListener(this._div, 'mousewheel', L.DomEvent.stopPropagation)
+			.addListener(this._div, 'mousewheel', L.DomEvent.preventDefault);
+
+		return this._div;
+	},
+
+	show: function() {
+		if (!this._visible) {
+			this._mapManager._map.addControl(this);
+			this._visible = true;
+		}
+	},
+
+	hide: function() {
+		this.emptyContent();
+		this._mapManager._map.removeControl(this);
+		this._visible = false;
+	},
+
+	setContent: function(content) {
+		this.emptyContent();
+		if (this._div) {
+			$('#floatMapPanel').html(content);
+		}
+	},
+
+	emptyContent: function() {
+		if (this._div) {
+			$('#floatMapPanel').empty();
+		}
+	}
+});
+
+MapExpress.Controls.floatMapPanel = function(mapManager, options) {
+	return new MapExpress.Controls.FloatMapPanel(mapManager, options);
+};;MapExpress.Layers.GeoJSONServiceLayer = L.GeoJSON.extend({
 
 	options: {
 		useVectorTile: false,
 		replaceDataOnReset: false,
-		maxZoom:23,
-		minZoom:0
+		maxZoom: 23,
+		minZoom: 0
 	},
 
 	initialize: function(vectorProvider, options) {
@@ -50,14 +111,22 @@ if (typeof window !== 'undefined' && window.L) {
 		this._prevMapView = {};
 	},
 
-	_updateData: function() {
+	_refreshData: function() {
+		this._updateData(false);
+	},
+
+	_updateData: function(checkPrevbounds) {
 		var that = this;
 		var bb = this._map.getBounds();
 		var zoom = this._map.getZoom();
 
 		if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
-
 			this.clearLayers();
+			return;
+		}
+
+		if ((checkPrevbounds !== "undefined" && checkPrevbounds) && this._prevMapView && this._prevMapView.bounds && this._prevMapView.bounds.equals(bb)) {
+			this._storeMapView();
 			return;
 		}
 
@@ -124,11 +193,12 @@ if (typeof window !== 'undefined' && window.L) {
 		var that = this;
 		this._dataPovider.getDataByTileAsync(tileCoord).then(
 			function(geoJSON) {
-				if (geoJSON) {
+				if (geoJSON !== undefined && geoJSON.features && geoJSON.features.length > 0) {
 					var added = that.addData(geoJSON);
 					for (var i in added._layers) {
 						if (!added._layers[i]._tileCoordKey) {
 							added._layers[i]._tileCoordKey = that._dataPovider._tileCoordsToKey(tileCoord);
+							that._updateStyle(added._layers[i]);
 						}
 					}
 				}
@@ -149,7 +219,19 @@ if (typeof window !== 'undefined' && window.L) {
 		this.clearLayers();
 		if (geoJSON) {
 			this.addData(geoJSON);
+			for (var i in this._layers) {
+				this._updateStyle(this._layers[i]);
+			}
 			this._first = false;
+		}
+	},
+
+	_updateStyle: function(layer) {
+		if (layer && layer.feature && layer.feature.properties && layer.feature.properties.style) {
+			var style = JSON.parse(layer.feature.properties.style);
+			if (style) {
+				layer.setStyle(style);
+			}
 		}
 	},
 
@@ -266,6 +348,7 @@ MapExpress.Layers.imageOverlayLayer = function(wmsProvider, options) {
 					if (iterLayer.visibleIndex === undefined) {
 						iterLayer.visibleIndex = i;
 					}
+					iterLayer.queryable = true;
 					this._layers.push(iterLayer);
 				}
 			}
@@ -304,6 +387,10 @@ MapExpress.Layers.imageOverlayLayer = function(wmsProvider, options) {
 				layerClass.maxZoom = layerModel.maxZoom;
 				layerClass.selectable = layerModel.selectable;
 				layerClass.queryable = layerModel.queryable;
+
+				layerClass.options.minZoom = layerModel.minZoom;
+				layerClass.options.maxZoom = layerModel.maxZoom;
+
 
 				L.setOptions(layerClass, layerModel.layerClass.options);
 			}
@@ -352,20 +439,20 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		this._map = map;
 		L.setOptions(this, options);
 		this._mapLoader = mapLoader ? mapLoader : MapExpress.Mapping.mapLoader(map, options);
+		this.selections = [];
 	},
 
 	renderMap: function(mapmodel) {
 		this._mapLoader.loadMap(mapmodel);
 		this._mapModel = mapmodel;
+
+		this._map.setView(this._mapModel.options.center, this._mapModel.options.zoom);
+
 		this._mapModel.layers = this._mapLoader._layers;
 
-		var baseLayers = this.getBaseLayers();
+		var baseLayers = this._reorderBaseLayersVisibleIndex();
 		this._sortLayersByVisibleIndex(baseLayers);
-		for (var k = baseLayers.length - 1; k >= 0; k--) {
-			var bl = baseLayers[k];
-			bl.visibleIndex = k;
-		}
-		this._sortLayersByVisibleIndex(baseLayers);
+
 		for (var m = baseLayers.length - 1; m >= 0; m--) {
 			var mm = baseLayers[m];
 			if (mm.visible) {
@@ -374,8 +461,7 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 			}
 		}
 
-		this._reorderLayersVisibleIndex();
-		var overlays = this.getOverlayLayers();
+		var overlays = this._reorderLayersVisibleIndex();
 		this._sortLayersByVisibleIndex(overlays);
 		for (var j = overlays.length - 1; j >= 0; j--) {
 			var il = overlays[j];
@@ -400,12 +486,28 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 	},
 
 
+	setActiveBaseMap: function(layerId) {
+		var layer = this.getLayerById(layerId);
+		if (layer) {
+			var baseLayers = this.getBaseLayers();
+			for (var m = baseLayers.length - 1; m >= 0; m--) {
+				var mm = baseLayers[m];
+				mm.visible = false;
+				this._map.removeLayer(mm);
+			}
+			layer.visible = true;
+			layer.addTo(this._map);
+		}
+	},
+
+
 	addLayerObject: function(layerObj) {
 		this._mapModel.layers.push(layerObj);
 		this._reorderLayersVisibleIndex();
 		if (layerObj.visible) {
+			layerObj.on('add', this._reorderOverlays, this);
 			layerObj.addTo(this._map);
-			setTimeout(this._reorderOverlays.bind(this), 1000);
+			//setTimeout(this._reorderOverlays.bind(this), 1000);
 		}
 	},
 
@@ -419,8 +521,9 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 			});
 			this._mapModel.layers.splice(index, 1);
 			this._reorderLayersVisibleIndex();
-			console.log(this._mapModel.layers);
-			setTimeout(this._reorderOverlays.bind(this), 1000);
+			layer.off('add', this._reorderOverlays, this);
+			//console.log(this._mapModel.layers);
+			//setTimeout(this._reorderOverlays.bind(this), 1000);
 		}
 	},
 
@@ -429,12 +532,14 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		if (layer) {
 			if (visible) {
 				this._map.addLayer(layer);
+				layer.on('add', this._reorderOverlays, this);
 			} else {
-
 				this._map.removeLayer(layer);
+				layer.off('add', this._reorderOverlays, this);
 			}
 			layer.visible = visible;
-			setTimeout(this._reorderOverlays.bind(this), 1000);
+
+			//setTimeout(this._reorderOverlays.bind(this), 1000);
 		}
 		return layer;
 	},
@@ -442,7 +547,11 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 	toogleLayerVisible: function(layerId) {
 		var layer = this.getLayerById(layerId);
 		if (layer) {
-			this.setLayerVisible(layerId, !layer.visible);
+			if (layer.type === 'base') {
+				this.setActiveBaseMap(layerId);
+			} else {
+				this.setLayerVisible(layerId, !layer.visible);
+			}
 		}
 		return layer;
 	},
@@ -459,7 +568,8 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 				var l = overlays[i];
 				l.visibleIndex = i;
 			}
-			setTimeout(this._reorderOverlays.bind(this), 1000);
+			this._reorderOverlays();
+			//setTimeout(this._reorderOverlays.bind(this), 1000);
 		}
 	},
 
@@ -479,8 +589,43 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		return filtered;
 	},
 
+	getVisibleLayers: function() {
+		var layers = this.getMapModel().layers;
+		var filtered = layers.filter(function(iter) {
+			return iter.visible;
+		});
+		return filtered;
+	},
+
+
+	getQueryableLayers: function() {
+		var layers = this.getMapModel().layers;
+		var filtered = layers.filter(function(iter) {
+			return iter.queryable;
+		});
+		return filtered;
+	},
+
+
 	getMapModel: function() {
+		var overlays = this._reorderLayersVisibleIndex();
+		var bases = this._reorderBaseLayersVisibleIndex(overlays);
+		this._sortLayersByVisibleIndex(this._mapModel.layers);
+
 		return this._mapModel;
+	},
+
+	getSelection: function(layerId) {
+		var ind = this._findIndex(this.selections, function(iter) {
+			return iter._layerId === layerId;
+		});
+		if (ind > -1) {
+			return this.selections[ind];
+		} else {
+			var newSelection = new MapExpress.Mapping.Selection(layerId);
+			this.selections.push(newSelection);
+			return newSelection;
+		}
 	},
 
 	_reorderOverlays: function() {
@@ -522,12 +667,106 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 			var l = overlays[i];
 			l.visibleIndex = i;
 		}
+		return overlays;
+	},
+
+	_reorderBaseLayersVisibleIndex: function() {
+		var baseLayers = this.getBaseLayers();
+		for (var k = baseLayers.length - 1; k >= 0; k--) {
+			var bl = baseLayers[k];
+			bl.visibleIndex = k;
+		}
+		return baseLayers;
 	},
 
 	_arraymove: function(arr, fromIndex, toIndex) {
 		var element = arr[fromIndex];
 		arr.splice(fromIndex, 1);
 		arr.splice(toIndex, 0, element);
+	},
+
+	// TODO: В утиль
+	_findIndex: function(arr, cond) {
+		var i, x;
+		for (i in arr) {
+			x = arr[i];
+			if (cond(x)) {
+				return parseInt(i);
+			}
+		}
+		return -1;
+	}
+
+});;MapExpress.Mapping.Selection = L.Class.extend({
+
+	options: {
+		selectionStyle: {
+			color: 'Red'
+		}
+	},
+
+	initialize: function(layerId, options) {
+		this._layerId = layerId;
+		this._selection = [];
+		L.setOptions(this, options);
+
+	},
+
+	getSelections: function() {
+		return this._selection;
+	},
+
+	addSelection: function(jsonLayer) {
+		if (jsonLayer) {
+			jsonLayer.setStyle(this.options.selectionStyle);
+			if (!this.isLayerSelected(jsonLayer)) {
+				this._selection.push(jsonLayer);
+			}
+		}
+	},
+
+	invertSelection: function(jsonLayer) {
+		if (jsonLayer) {
+			if (this.isLayerSelected(jsonLayer)) {
+				this.removeSelection(jsonLayer);
+			} else {
+				this.addSelection(jsonLayer);
+			}
+		}
+	},
+
+	removeSelection: function(jsonLayer) {
+		if (jsonLayer) {
+			var index = this._getLayerIndex(jsonLayer);
+			if (index > -1) {
+				this._resetLayerStyle(jsonLayer);
+				this._selection.splice(index, 1);
+			}
+		}
+	},
+
+	replaceSelection: function(jsonLayer) {
+
+	},
+
+	isLayerSelected: function(jsonLayer) {
+		return this._getLayerIndex(jsonLayer) > -1;
+	},
+
+	_getLayerIndex: function(jsonLayer) {
+		var ind = this._findIndex(this._selection, function(iter) {
+			return iter._leaflet_id === jsonLayer._leaflet_id;
+		});
+		return ind;
+	},
+
+	_resetLayerStyle: function(jsonLayer) {
+		if (jsonLayer && jsonLayer.feature && jsonLayer.feature.properties && jsonLayer.feature.properties.style) {
+			var style = JSON.parse(jsonLayer.feature.properties.style);
+			if (style) {
+				jsonLayer.setStyle(style);
+			}
+		}
 	},
 
 	_findIndex: function(arr, cond) {
@@ -538,8 +777,8 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 				return parseInt(i);
 			}
 		}
+		return -1;
 	}
-
 });;/* jshint ignore:start */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.geojsonvt = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
@@ -2209,6 +2448,7 @@ MapExpress.Service.geoJSONProvider = function(dataUrl, options) {
 
 	getDataUrlByBounds: function(mapBounds, mapSize) {
 		// Учесть {s} - subdomains
+		// s: this._getSubdomain(tileCoord)
 		var crs = this.options.crs;
 		var nw = crs.project(mapBounds.getNorthWest());
 		var se = crs.project(mapBounds.getSouthEast());
@@ -2471,14 +2711,20 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 	activate: function() {
 		if (!this._active) {
 			this._mapManager._map.on('click', this.doCommand, this);
+			this._mapManager._map.doubleClickZoom.disable();
+			this._mapManager._map.on('dblclick', L.DomEvent.stop);
 		}
 	},
 
 	deactivate: function() {
 		this._mapManager._map.off('click', this.doCommand, this);
+		this._mapManager._map.doubleClickZoom.enable();
+		this._mapManager._map.off('dblclick', L.DomEvent.stop);
 	},
 
 	doCommand: function(args) {
+		L.DomEvent.stopPropagation(args);
+		
 		var that = this;
 		var identifyedLayers = [];
 		var identifyedResults = [];
@@ -2529,8 +2775,9 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 	},
 
 	_getQueryableLayers: function() {
-		var layers = this._mapManager.getOverlayLayers();
-		return layers;
+		return this._mapManager.getVisibleLayers();
+		//var layers = this._mapManager.getQueryableLayers();
+		//return layers;
 	},
 
 	_getResultObj: function(res) {
@@ -2568,7 +2815,7 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 				if (cont && item.data.properties) {
 					data = item.data.properties;
 				}
-				
+
 				if (data !== null) {
 					var obj = {};
 					obj.properties = data;
@@ -2602,8 +2849,8 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 			$("#layerInfoTemplate").empty();
 
 			L.popup({
-					maxWidth: 600,
-					maxHeight: 600
+					maxWidth: 500,
+					maxHeight: 800
 				})
 				.setLatLng(identifyedResults.latlng)
 				.setContent(rend)
@@ -2632,7 +2879,7 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 };;MapExpress.Tools.MapToolbar = L.Control.extend({
 	options: {
 		position: 'topleft',
-		containerClassName: 'panel panel-default'
+		containerClassName: 'map-toolbar'
 	},
 
 	initialize: function(mapManager, options) {
@@ -2664,6 +2911,21 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 			this._createCommandContent(this._commands[i], panelBody);
 		}
 
+		L.DomEvent
+			.addListener(this._container, 'mousemove', L.DomEvent.stopPropagation)
+			.addListener(this._container, 'click', L.DomEvent.stopPropagation)
+			.addListener(this._container, 'mousemove', L.DomEvent.preventDefault)
+			.addListener(this._container, 'click', L.DomEvent.preventDefault)
+			.addListener(this._container, 'dbclick', L.DomEvent.stopPropagation)
+			.addListener(this._container, 'dbclick', L.DomEvent.preventDefault)
+			.addListener(this._container, 'onwheel', L.DomEvent.stopPropagation)
+			.addListener(this._container, 'onwheel', L.DomEvent.preventDefault)
+			.addListener(this._container, 'wheel', L.DomEvent.stopPropagation)
+			.addListener(this._container, 'wheel', L.DomEvent.preventDefault)
+			.addListener(this._container, 'mousewheel', L.DomEvent.stopPropagation)
+			.addListener(this._container, 'mousewheel', L.DomEvent.preventDefault);
+
+
 		return this._container;
 	},
 
@@ -2676,10 +2938,20 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 		//    .on(commandContent, 'click', L.DomEvent.stop)
 		//    .on(commandContent, 'click', fn, this)
 		//   .on(commandContent, 'click', this._refocusOnMap, this);
-
 		L.DomEvent
+			.addListener(commandContent, 'mousemove', L.DomEvent.stopPropagation)
 			.addListener(commandContent, 'click', L.DomEvent.stopPropagation)
+			.addListener(commandContent, 'mousemove', L.DomEvent.preventDefault)
 			.addListener(commandContent, 'click', L.DomEvent.preventDefault)
+			.addListener(commandContent, 'dbclick', L.DomEvent.stopPropagation)
+			.addListener(commandContent, 'dbclick', L.DomEvent.preventDefault)
+			.addListener(commandContent, 'onwheel', L.DomEvent.stopPropagation)
+			.addListener(commandContent, 'onwheel', L.DomEvent.preventDefault)
+			.addListener(commandContent, 'wheel', L.DomEvent.stopPropagation)
+			.addListener(commandContent, 'wheel', L.DomEvent.preventDefault)
+			.addListener(commandContent, 'mousewheel', L.DomEvent.stopPropagation)
+			.addListener(commandContent, 'mousewheel', L.DomEvent.preventDefault);
+		L.DomEvent
 			.addListener(commandContent, 'click', function() {
 				if (that._activeCommand) {
 					that._activeCommand.deactivate();
@@ -2697,7 +2969,59 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 
 MapExpress.Service.mapToolbar = function(mapManager, options) {
 	return new MapExpress.Tools.MapToolbar(mapManager, options);
-};;/* jshint ignore:start */
+};;MapExpress.Tools.SelectionTool = MapExpress.Tools.BaseMapCommand.extend({
+	options: {
+		buttonClassName: 'btn btn-default btn-sm text-center',
+		selectionLayerId: "vsmParcels",
+		selectionStyle: {
+			color: 'Red'
+		}
+	},
+
+	initialize: function(mapManager, options) {
+		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
+		L.setOptions(this, options);
+	},
+
+	createContent: function(toolBarContainer) {
+		var button = L.DomUtil.create('button', this.options.buttonClassName, toolBarContainer);
+		var li = L.DomUtil.create('i', 'fa fa-check-square fa-lg fa-fw', button);
+		button.setAttribute('data-toggle', 'tooltip');
+		button.setAttribute('data-placement', 'bottom');
+		button.setAttribute('title', 'Выбрать...');
+		return button;
+	},
+
+	activate: function() {
+		this._activateTool(true);
+	},
+
+	deactivate: function() {
+		this._activateTool(false);
+	},
+
+	_activateTool: function(act) {
+		var that = this;
+		var selectionLayer = this._mapManager.getLayerById(this.options.selectionLayerId);
+		if (!selectionLayer) {
+			return;
+		}
+
+		selectionLayer.eachLayer(function(layer) {
+			if (!act) {
+				layer.off('click', that._addSelection, that);
+			} else {
+				layer.on('click', that._addSelection, that);
+			}
+		});
+	},
+
+	_addSelection: function(e) {
+		var selection = this._mapManager.getSelection(this.options.selectionLayerId);
+		selection.invertSelection(e.target);
+	}
+
+});;/* jshint ignore:start */
 (function() {
 
 	"use strict";
@@ -4805,35 +5129,40 @@ return Q;
 });
 /* jshint ignore:end */;(function(Q) {
 	"use strict";
-	MapExpress.Utils.Promise.qAjax = function(url, isGet, dataType) {
+	MapExpress.Utils.Promise.qAjax = function(url) {
 		var deferred = Q.defer();
-		if (!isGet) {
-			$.getJSON(url).done(function(data) {
-					deferred.resolve(data);
-				})
-				.fail(function(xhr, textStatus, errorThrown) {
-					var error = new Error("Ajax request failed" + url);
-					error.textStatus = textStatus;
-					error.errorThrown = errorThrown;
-					deferred.reject(error);
-				});
-		} else {
-			$.ajax({
-					url: url,
-					dataType: "html"
-				}).done(function(data) {
-					deferred.resolve(data);
-				})
-				.fail(function(xhr, textStatus, errorThrown) {
-					var error = new Error("Ajax request failed" + url);
-					error.textStatus = textStatus;
-					error.errorThrown = errorThrown;
-					console.log(error);
-					deferred.reject(error);
-				});
-		}
+		$.getJSON(url).done(function(data) {
+				deferred.resolve(data);
+			})
+			.fail(function(xhr, textStatus, errorThrown) {
+				var error = new Error("getJSON request failed" + url);
+				error.textStatus = textStatus;
+				error.errorThrown = errorThrown;
+				deferred.reject(error);
+			});
 		return deferred.promise;
 	};
+
+
+	//MapExpress.Utils.Promise.qGet = function(url, dataType) {
+	//	var deferred = Q.defer();
+	//	$.ajax({
+	//		type: "GET",
+	//		url: url,
+	//		dataType: dataType,
+	//		success: function(data) {
+	//			console.log(data);
+	//			deferred.resolve(data);
+	//		},
+	//		error: function(errMsg) {
+				//	console.log(errMsg);
+	//			deferred.reject(errMsg);
+	//		}
+	//	});
+	//	return deferred.promise;
+	//};
+
+
 }(Q));;(function(Q) 
 {
 "use strict";
