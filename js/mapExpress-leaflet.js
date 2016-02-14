@@ -80,13 +80,142 @@ if (typeof window !== 'undefined' && window.L) {
 
 MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 	return new MapExpress.Controls.FloatMapPanel(mapManager, options);
-};;MapExpress.Layers.GeoJSONServiceLayer = L.GeoJSON.extend({
+};;MapExpress.Controls.LayerOrderControl = L.Control.extend({
 
 	options: {
-		useVectorTile: false,
-		replaceDataOnReset: false,
-		maxZoom: 23,
-		minZoom: 0
+		position: 'topright',
+		className: 'float-map-panel big',
+		layerItemClassName: "layer-order-item"
+	},
+
+	initialize: function(mapManager, options) {
+		this._mapManager = mapManager;
+		L.setOptions(this, options);
+	},
+
+	onAdd: function() {
+		this._div = L.DomUtil.create('div', this.options.className);
+		this._div.setAttribute('id', 'layer-order-control');
+		return this._div;
+	},
+
+	render: function() {
+		var that = this;
+		
+		var mapModel = this._mapManager.getMapModel();
+		var overlays = mapModel.getOverlayLayers();
+		mapModel.sortLayersByVisibleIndex(overlays);
+
+		var rootControl = document.getElementById('layer-order-control');
+		for (var i = 0; i < overlays.length; i++) {
+			var iterLayer = overlays[i];
+			var item = L.DomUtil.create('div', this.options.layerItemClassName, rootControl);
+			item.setAttribute('id', iterLayer.id);
+			item.textContent = iterLayer.options.displayName;
+		}
+
+		var opt = {
+			// dragging ended
+			onEnd: function(evt) {
+				that._mapManager.moveOverlay(evt.item.id, evt.newIndex);
+			}
+		};
+		/* jshint ignore:start */
+		Sortable.create(rootControl, opt);
+		/* jshint ignore:end */
+	}
+});;MapExpress.Controls.TreeLayerControl = L.Control.extend({
+
+	options: {
+		position: 'topright',
+		className: 'float-map-panel big'
+	},
+
+	initialize: function(mapManager, options) {
+		this._mapManager = mapManager;
+		L.setOptions(this, options);
+	},
+
+	onAdd: function() {
+		this._div = L.DomUtil.create('div', this.options.className);
+		this._div.setAttribute('id', 'treelayercontrol');
+		return this._div;
+	},
+
+	renderTree: function() {
+		var that = this;
+		var mapModel = this._mapManager.getMapModel();
+
+		var node = {};
+		node.id = mapModel.id;
+		node.text = mapModel.options.displayName;
+
+		this._processLayerModel(node, mapModel._layers);
+
+		var treeOptions = {
+			"core": {
+				"data": node.children.reverse()
+			},
+			"plugins": ["checkbox", "wholerow"]
+		};
+
+		$.jstree.defaults.checkbox.keep_selected_style = false;
+		$.jstree.defaults.checkbox.tie_selection = false;
+		$.jstree.defaults.core.themes.responsive = true;
+
+		var tree = $('#treelayercontrol').jstree(treeOptions);
+
+		tree.on('check_node.jstree', function(e, data) {
+			if (data.node) {
+				that._mapManager.setLayerVisible(data.node.id, true);
+			}
+		});
+
+		tree.on('uncheck_node.jstree', function(e, data) {
+			if (data.node) {
+				that._mapManager.setLayerVisible(data.node.id, false);
+			}
+		});
+	},
+
+	_processLayerModel: function(parentNode, layers) {
+		parentNode.children = [];
+		for (var i = layers.length - 1; i >= 0; i--) {
+			var iterLayerModel = layers[i];
+			var node = {};
+
+			if (iterLayerModel.options.type !== "base") {
+				node = this._createNode(iterLayerModel);
+				parentNode.children.push(node);
+			}
+
+			if (iterLayerModel.hasChildren()) {
+				if (!node) {
+					node = parentNode;
+				}
+				this._processLayerModel(node, iterLayerModel._layers);
+			}
+		}
+	},
+
+	_createNode: function(layerModel) {
+		var node = {};
+		node.id = layerModel.id;
+		node.text = layerModel.options.displayName;
+
+		if (layerModel.mapLayer) {
+			node.state = {
+				"checked": layerModel.mapLayer.options.visible
+			};
+
+		}
+		return node;
+	}
+});;MapExpress.Layers.GeoJSONServiceLayer = L.GeoJSON.extend({
+
+	options: {
+		dynamicData: true,
+		useVectorTile: false
 	},
 
 	initialize: function(vectorProvider, options) {
@@ -94,7 +223,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		L.setOptions(this, options);
 		this._dataPovider = vectorProvider;
 		this._prevMapView = {};
-		this._first = true;
+		this._singleDataLoaded = false;
 	},
 
 	onAdd: function(map) {
@@ -107,8 +236,8 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		this.clearLayers();
 		L.GeoJSON.prototype.onRemove.call(this, map);
 		map.off('moveend', this._updateData, this);
-		this._first = true;
 		this._prevMapView = {};
+		this._singleDataLoaded = false;
 	},
 
 	_refreshData: function() {
@@ -130,16 +259,19 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			return;
 		}
 
-		if (this.options.useVectorTile) {
-			this._updateVectorTileData(bb, zoom);
-		} else {
-			if (this.options.replaceDataOnReset) {
+		if (this.options.dynamicData) {
+			if (this.options.useVectorTile) {
+				this._updateVectorTileData(bb, zoom);
+			} else {
 				this._updateVectorDataInBounds(bb, zoom);
 			}
-			if (!this.options.replaceDataOnReset && this._first) {
+		} else {
+			if (!this._singleDataLoaded) {
 				this._addVectorData();
 			}
+
 		}
+
 		this._storeMapView();
 	},
 
@@ -148,6 +280,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		this._dataPovider.getDataAsync().then(
 			function(data) {
 				that._replaceData(data);
+				that._singleDataLoaded = true;
 			},
 			function() {
 				that.clearLayers();
@@ -161,26 +294,20 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			function(data) {
 				that._replaceData(data);
 			},
-			function() {
+			function(error) {
 				that.clearLayers();
 			}
 		);
 	},
 
 	_updateVectorTileData: function(mapBounds, zoom) {
-		var toAddTileRange = [];
-		if (this.options.replaceDataOnReset) {
+		var toAddTileRange = this._dataPovider._getAddedTileCoordRangeByMapBounds(this._prevMapView.bounds, this._prevMapView.zoom, mapBounds, zoom);
+		if (this._map.getZoom() !== this._prevMapView.zoom) {
 			this.clearLayers();
-			toAddTileRange = this._dataPovider._getTileCoordRangeByMapBounds(mapBounds, zoom);
 		} else {
-			toAddTileRange = this._dataPovider._getAddedTileCoordRangeByMapBounds(this._prevMapView.bounds, this._prevMapView.zoom, mapBounds, zoom);
-			if (this._map.getZoom() !== this._prevMapView.zoom) {
-				this.clearLayers();
-			} else {
-				var toRemoveTileRange = this._dataPovider._getRemovedTileCoordRangeByMapBounds(this._prevMapView.bounds, this._prevMapView.zoom, mapBounds, zoom);
-				for (var i = 0; i < toRemoveTileRange.length; i++) {
-					this._removeVectorTile(toRemoveTileRange[i]);
-				}
+			var toRemoveTileRange = this._dataPovider._getRemovedTileCoordRangeByMapBounds(this._prevMapView.bounds, this._prevMapView.zoom, mapBounds, zoom);
+			for (var i = 0; i < toRemoveTileRange.length; i++) {
+				this._removeVectorTile(toRemoveTileRange[i]);
 			}
 		}
 
@@ -195,10 +322,11 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			function(geoJSON) {
 				if (geoJSON !== undefined && geoJSON.features && geoJSON.features.length > 0) {
 					var added = that.addData(geoJSON);
+					var zoomStyle = this._getStyleByZoom();
 					for (var i in added._layers) {
 						if (!added._layers[i]._tileCoordKey) {
 							added._layers[i]._tileCoordKey = that._dataPovider._tileCoordsToKey(tileCoord);
-							that._updateStyle(added._layers[i]);
+							that._updateStyle(added._layers[i], zoomStyle);
 						}
 					}
 				}
@@ -218,19 +346,10 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 	_replaceData: function(geoJSON) {
 		this.clearLayers();
 		if (geoJSON) {
-			this.addData(geoJSON);
+			var added = this.addData(geoJSON);
+			var zoomStyle = this._getStyleByZoom();
 			for (var i in this._layers) {
-				this._updateStyle(this._layers[i]);
-			}
-			this._first = false;
-		}
-	},
-
-	_updateStyle: function(layer) {
-		if (layer && layer.feature && layer.feature.properties && layer.feature.properties.style) {
-			var style = JSON.parse(layer.feature.properties.style);
-			if (style) {
-				layer.setStyle(style);
+				this._updateStyle(this._layers[i], zoomStyle);
 			}
 		}
 	},
@@ -258,6 +377,32 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			d.reject(e);
 		}
 		return d.promise;
+	},
+
+	_updateStyle: function(layer, zoomStyle) {
+		if (!zoomStyle) {
+			if (layer && layer.feature && layer.feature.properties && layer.feature.properties.style) {
+				var style = JSON.parse(layer.feature.properties.style);
+				if (style) {
+					layer.setStyle(style);
+				}
+			}
+		} else {
+			layer.setStyle(zoomStyle);
+
+		}
+	},
+
+	_getStyleByZoom: function() {
+		if (this.styles && this.styles.length > 0) {
+			var zoom = this._map.getZoom();
+			for (var i = 0; i < this.styles.length; i++) {
+				var iterStyle = this.styles[i];
+				if (zoom <= iterStyle.maxZoom && zoom >= iterStyle.minZoom) {
+					return iterStyle;
+				}
+			}
+		}
 	}
 });
 
@@ -265,216 +410,107 @@ MapExpress.Layers.geoJSONServiceLayer = function(vectorProvider, options) {
 	return new MapExpress.Layers.GeoJSONServiceLayer(vectorProvider, options);
 };;MapExpress.Layers.ImageOverlayLayer = L.ImageOverlay.extend({
 
-	options: {
-	},
 
 	initialize: function(dataPovider, options) {
 		this._dataPovider = dataPovider;
 		L.setOptions(this, options);
+
+		if (this._dataPovider !== undefined && this._dataPovider instanceof MapExpress.Service.SingleImageProvider) {
+			var imageUrl = this._dataPovider.getDataUrl();
+			var imageBounds = this._dataPovider.getImageBounds();
+			L.ImageOverlay.prototype.initialize.call(this, imageUrl, imageBounds, this.options);
+		}
 	},
 
 	onAdd: function(map) {
-		map.on('moveend', this._reset, this);
+		if (this._dataPovider !== undefined && !(this._dataPovider instanceof MapExpress.Service.SingleImageProvider)) {
+			map.on('moveend', this._reset, this);
+			this._bounds = this._map.getBounds();
+		}
 		L.ImageOverlay.prototype.onAdd.call(this, map);
 	},
 
 	onRemove: function(map) {
 		L.ImageOverlay.prototype.onRemove.call(this, map);
+		//if (!this.options.singleImage) {
 		map.off('moveend', this._reset, this);
+		//}
 	},
 
 	_reset: function() {
-		this._updateData();
+		if (this._dataPovider !== undefined && !(this._dataPovider instanceof MapExpress.Service.SingleImageProvider)) {
+			this._updateData();
+		}
 		L.ImageOverlay.prototype._reset.call(this);
 	},
 
 	_updateData: function() {
+
+		this.setUrl("");
 		var zoom = this._map.getZoom();
 		if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
-			this._removeData();
+			//this._removeData();
 			return;
 		}
+
 		this._bounds = this._map.getBounds();
 		var newUrl = this._dataPovider.getDataUrlByBounds(this._bounds, this._map.getSize());
-		if (newUrl === this._url) {
-			return;
-		}
-		this._url = newUrl;
-		this._removeData();
-		this._initImage();
-		if (this.options.opacity < 1) {
-			this._updateOpacity();
-		}
-		if (this.options.interactive) {
-			L.DomUtil.addClass(this._image, 'leaflet-interactive');
-			this.addInteractiveTarget(this._image);
-		}
-		this.getPane().appendChild(this._image);
+		//if (newUrl === this._url) {
+		//	return;
+		//}
+
+		this.setUrl(newUrl);
+
+		//this._url = newUrl;
+		//this._removeData();
+		//this._initImage();
+		//if (this.options.opacity < 1) {
+		//	this._updateOpacity();
+		//}
+		//if (this.options.interactive) {
+		//	L.DomUtil.addClass(this._image, 'leaflet-interactive');
+		//	this.addInteractiveTarget(this._image);
+		//}
+		//this.getPane().appendChild(this._image);
 	},
 
-	_removeData: function() {
-		L.DomUtil.remove(this._image);
-		if (this.options.interactive) {
-			this.removeInteractiveTarget(this._image);
-		}
-	}
+	//_removeData: function() {
+	//	L.DomUtil.remove(this._image);
+	//	if (this.options.interactive) {
+	//		this.removeInteractiveTarget(this._image);
+	//	}
+	//}
 
 });
 
-MapExpress.Layers.imageOverlayLayer = function(wmsProvider, options) {
-	return new MapExpress.Layers.ImageOverlayLayer(wmsProvider, options);
-};;MapExpress.Layers.TileServiceLayer = L.TileLayer.extend({	options: {	},	initialize: function(tileProvider, options) {		L.TileLayer.prototype.initialize.call(this, null, options);		L.setOptions(this, options);		this._dataPovider = tileProvider;	},	onAdd: function(map) {		L.TileLayer.prototype.onAdd.call(this, map);	},	onRemove: function(map) {		L.TileLayer.prototype.onRemove.call(this, map);	},	createTile: function(coords, done) {		var tile = document.createElement('img');		L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));		L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));		if (this.options.crossOrigin) {			tile.crossOrigin = '';		}		tile.alt = '';		tile.src = this._dataPovider.getDataUrlByTile(coords);		return tile;	}});MapExpress.Layers.tileServiceLayer = function(tileProvider, options) {	return new MapExpress.Layers.TileServiceLayer(tileProvider, options);};;MapExpress.Mapping.MapLoader = L.Class.extend({
+MapExpress.Layers.imageOverlayLayer = function(dataPovider, options) {
+	return new MapExpress.Layers.ImageOverlayLayer(dataPovider, options);
+};;MapExpress.Layers.TileServiceLayer = L.TileLayer.extend({	initialize: function(tileProvider, options) {		L.TileLayer.prototype.initialize.call(this, null, options);		L.setOptions(this, options);		this._dataPovider = tileProvider;	},	onAdd: function(map) {		L.TileLayer.prototype.onAdd.call(this, map);	},		onRemove: function(map) {		L.TileLayer.prototype.onRemove.call(this, map);	},	createTile: function(coords, done) {		var tile = document.createElement('img');		L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));		L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));		if (this.options.crossOrigin) {			tile.crossOrigin = '';		}		tile.alt = '';		tile.src = this._dataPovider.getDataUrlByTile(coords);		return tile;	}});MapExpress.Layers.tileServiceLayer = function(tileProvider, options) {	return new MapExpress.Layers.TileServiceLayer(tileProvider, options);};;MapExpress.Mapping.LayerModel = L.Class.extend({
 
-	initialize: function(map, options) {
-		this._map = map;
-		L.setOptions(this, options);
-	},
-
-	loadMap: function(jsonMapModel) {
+	initialize: function(id, options) {
+		this.id = id;
 		this._layers = [];
-
-		this._jsonMapModel = jsonMapModel;
-		this._map.id = jsonMapModel.id;
-		this._map.name = jsonMapModel.name;
-		this._map.displayName = jsonMapModel.displayName;
-		this._map.description = jsonMapModel.description;
-
-		L.setOptions(this._map, jsonMapModel.options);
-
-		if (jsonMapModel.layers && jsonMapModel.layers.length > 0) {
-			for (var i = 0; i < jsonMapModel.layers.length; i++) {
-				var iterLayer = this._createLayer(jsonMapModel.layers[i]);
-				if (iterLayer) {
-					if (iterLayer.visibleIndex === undefined) {
-						iterLayer.visibleIndex = i;
-					}
-					iterLayer.queryable = true;
-					this._layers.push(iterLayer);
-				}
-			}
-		}
-		return this._map;
-	},
-
-	_createLayer: function(layerModel) {
-		var layerClass;
-		var providerClass = this._createProvider(layerModel.dataProviderClass.constructor, layerModel.dataProviderClass.args);
-
-		if (providerClass) {
-			L.setOptions(providerClass, layerModel.dataProviderClass.options);
-
-			layerModel.layerClass.args.splice(0, 0, providerClass);
-			switch (layerModel.layerClass.constructor) {
-				case 'MapExpress.Layers.GeoJSONServiceLayer':
-					layerClass = this._applyToConstructor(MapExpress.Layers.GeoJSONServiceLayer, layerModel.layerClass.args);
-					break;
-
-				case 'MapExpress.Layers.ImageOverlayLayer':
-					layerClass = this._applyToConstructor(MapExpress.Layers.ImageOverlayLayer, layerModel.layerClass.args);
-					break;
-
-				case 'MapExpress.Layers.TileServiceLayer':
-					layerClass = this._applyToConstructor(MapExpress.Layers.TileServiceLayer, layerModel.layerClass.args);
-					break;
-			}
-			if (layerClass) {
-				layerClass.id = layerModel.id;
-				layerClass.displayName = layerModel.displayName;
-				layerClass.visible = layerModel.visible;
-				layerClass.visibleIndex = layerModel.visibleIndex;
-				layerClass.type = layerModel.type;
-				layerClass.minZoom = layerModel.minZoom;
-				layerClass.maxZoom = layerModel.maxZoom;
-				layerClass.selectable = layerModel.selectable;
-				layerClass.queryable = layerModel.queryable;
-
-				layerClass.options.minZoom = layerModel.minZoom;
-				layerClass.options.maxZoom = layerModel.maxZoom;
-
-
-				L.setOptions(layerClass, layerModel.layerClass.options);
-			}
-		}
-		return layerClass;
-	},
-
-	_createProvider: function(providerClassName, argArray) {
-		var provider;
-		switch (providerClassName) {
-			case 'MapExpress.Service.TileProvider':
-				provider = this._applyToConstructor(MapExpress.Service.TileProvider, argArray);
-				break;
-
-			case 'MapExpress.Service.GeoJSONProvider':
-				provider = this._applyToConstructor(MapExpress.Service.GeoJSONProvider, argArray);
-				break;
-
-			case 'MapExpress.Service.MapServiceAgsProvider':
-				provider = this._applyToConstructor(MapExpress.Service.MapServiceAgsProvider, argArray);
-				break;
-
-			case 'MapExpress.Service.FeatureServiceAgsProvider':
-				provider = this._applyToConstructor(MapExpress.Service.FeatureServiceAgsProvider, argArray);
-				break;
-
-			case 'MapExpress.Service.WmsProvider':
-				provider = this._applyToConstructor(MapExpress.Service.WmsProvider, argArray);
-				break;
-		}
-		return provider;
-	},
-
-	_applyToConstructor: function(constructor, argArray) {
-		var args = [null].concat(argArray);
-		var FactoryFunction = constructor.bind.apply(constructor, args);
-		return new FactoryFunction();
-	}
-});
-
-MapExpress.Mapping.mapLoader = function(map, options) {
-	return new MapExpress.Mapping.MapLoader(map, options);
-};;MapExpress.Mapping.MapManager = L.Class.extend({
-
-	initialize: function(map, mapLoader, options) {
-		this._map = map;
 		L.setOptions(this, options);
-		this._mapLoader = mapLoader ? mapLoader : MapExpress.Mapping.mapLoader(map, options);
-		this.selections = [];
 	},
 
-	renderMap: function(mapmodel) {
-		this._mapLoader.loadMap(mapmodel);
-		this._mapModel = mapmodel;
+	addLayer: function(layerModel) {
+		this._layers.push(layerModel);
+	},
 
-		this._map.setView(this._mapModel.options.center, this._mapModel.options.zoom);
-
-		this._mapModel.layers = this._mapLoader._layers;
-
-		var baseLayers = this._reorderBaseLayersVisibleIndex();
-		this._sortLayersByVisibleIndex(baseLayers);
-
-		for (var m = baseLayers.length - 1; m >= 0; m--) {
-			var mm = baseLayers[m];
-			if (mm.visible) {
-				mm.addTo(this._map);
-				break;
-			}
-		}
-
-		var overlays = this._reorderLayersVisibleIndex();
-		this._sortLayersByVisibleIndex(overlays);
-		for (var j = overlays.length - 1; j >= 0; j--) {
-			var il = overlays[j];
-			if (il.visible) {
-				il.addTo(this._map);
-			}
+	removeLayerById: function(id) {
+		var layer = this.getLayerById(id);
+		if (layer) {
+			var index = this._findIndex(this._layers, function(iter) {
+				return iter.id === id;
+			});
+			this._layers.splice(index, 1);
 		}
 	},
 
-	getLayerById: function(layerId) {
-		var layers = this._mapModel.layers;
-		if (layers) {
-			var filtered = filterByID(layers, layerId);
+	getLayerById: function(id) {
+		var objects = this.getAllLayers();
+		if (objects) {
+			var filtered = filterByID(objects, id);
 			return filtered.length > 0 ? filtered[0] : null;
 		}
 
@@ -485,200 +521,15 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		}
 	},
 
-
-	setActiveBaseMap: function(layerId) {
-		var layer = this.getLayerById(layerId);
-		if (layer) {
-			var baseLayers = this.getBaseLayers();
-			for (var m = baseLayers.length - 1; m >= 0; m--) {
-				var mm = baseLayers[m];
-				mm.visible = false;
-				this._map.removeLayer(mm);
-			}
-			layer.visible = true;
-			layer.addTo(this._map);
-		}
+	getAllLayers: function() {
+		return this._layers;
 	},
 
-
-	addLayerObject: function(layerObj) {
-		this._mapModel.layers.push(layerObj);
-		this._reorderLayersVisibleIndex();
-		if (layerObj.visible) {
-			layerObj.on('add', this._reorderOverlays, this);
-			layerObj.addTo(this._map);
-			//setTimeout(this._reorderOverlays.bind(this), 1000);
-		}
+	hasChildren: function() {
+		return this._layers.length > 0;
 	},
 
-	removeLayerById: function(layerId) {
-		var layer = this.getLayerById(layerId);
-		if (layer) {
-
-			var overlays = this.getOverlayLayers();
-			var index = this._findIndex(overlays, function(iter) {
-				return iter.id === layerId;
-			});
-			this._mapModel.layers.splice(index, 1);
-			this._reorderLayersVisibleIndex();
-			layer.off('add', this._reorderOverlays, this);
-			//console.log(this._mapModel.layers);
-			//setTimeout(this._reorderOverlays.bind(this), 1000);
-		}
-	},
-
-	setLayerVisible: function(layerId, visible) {
-		var layer = this.getLayerById(layerId);
-		if (layer) {
-			if (visible) {
-				this._map.addLayer(layer);
-				layer.on('add', this._reorderOverlays, this);
-			} else {
-				this._map.removeLayer(layer);
-				layer.off('add', this._reorderOverlays, this);
-			}
-			layer.visible = visible;
-
-			//setTimeout(this._reorderOverlays.bind(this), 1000);
-		}
-		return layer;
-	},
-
-	toogleLayerVisible: function(layerId) {
-		var layer = this.getLayerById(layerId);
-		if (layer) {
-			if (layer.type === 'base') {
-				this.setActiveBaseMap(layerId);
-			} else {
-				this.setLayerVisible(layerId, !layer.visible);
-			}
-		}
-		return layer;
-	},
-
-	moveOverlay: function(layerId, visibleIndex) {
-		var layer = this.getLayerById(layerId);
-		if (layer) {
-			var overlays = this.getOverlayLayers();
-			var ind = this._findIndex(overlays, function(iter) {
-				return iter.id === layerId;
-			});
-			this._arraymove(overlays, ind, visibleIndex);
-			for (var i = overlays.length - 1; i >= 0; i--) {
-				var l = overlays[i];
-				l.visibleIndex = i;
-			}
-			this._reorderOverlays();
-			//setTimeout(this._reorderOverlays.bind(this), 1000);
-		}
-	},
-
-	getBaseLayers: function() {
-		var layers = this._mapModel.layers;
-		return layers.filter(function(iter) {
-			return iter.type === 'base';
-		});
-	},
-
-	getOverlayLayers: function() {
-		var layers = this._mapModel.layers;
-		var filtered = layers.filter(function(iter) {
-			return iter.type === 'overlay';
-		});
-		this._sortLayersByVisibleIndex(filtered);
-		return filtered;
-	},
-
-	getVisibleLayers: function() {
-		var layers = this.getMapModel().layers;
-		var filtered = layers.filter(function(iter) {
-			return iter.visible;
-		});
-		return filtered;
-	},
-
-
-	getQueryableLayers: function() {
-		var layers = this.getMapModel().layers;
-		var filtered = layers.filter(function(iter) {
-			return iter.queryable;
-		});
-		return filtered;
-	},
-
-
-	getMapModel: function() {
-		var overlays = this._reorderLayersVisibleIndex();
-		var bases = this._reorderBaseLayersVisibleIndex(overlays);
-		this._sortLayersByVisibleIndex(this._mapModel.layers);
-
-		return this._mapModel;
-	},
-
-	getSelection: function(layerId) {
-		var ind = this._findIndex(this.selections, function(iter) {
-			return iter._layerId === layerId;
-		});
-		if (ind > -1) {
-			return this.selections[ind];
-		} else {
-			var newSelection = new MapExpress.Mapping.Selection(layerId);
-			this.selections.push(newSelection);
-			return newSelection;
-		}
-	},
-
-	_reorderOverlays: function() {
-		var overlays = this.getOverlayLayers();
-		for (var j = overlays.length - 1; j >= 0; j--) {
-			var lj = overlays[j];
-			lj.bringToFront();
-		}
-	},
-
-	_getBaseObj: function() {
-		var layers = this.getBaseLayers();
-		var baseMaps = {};
-		layers.forEach(function(iterLayer) {
-			baseMaps[iterLayer.displayName] = iterLayer;
-		});
-		return baseMaps;
-	},
-
-	_getOverlayObj: function() {
-		var layers = this.getOverlayLayers();
-		var overMaps = {};
-		layers.forEach(function(iterLayer) {
-			overMaps[iterLayer.displayName + " [" + iterLayer.visibleIndex + "]"] = iterLayer;
-		});
-		return overMaps;
-	},
-
-	_sortLayersByVisibleIndex: function(layers) {
-		function compare(a, b) {
-			return a.visibleIndex > b.visibleIndex ? 1 : -1;
-		}
-		layers.sort(compare);
-	},
-
-	_reorderLayersVisibleIndex: function() {
-		var overlays = this.getOverlayLayers();
-		for (var i = overlays.length - 1; i >= 0; i--) {
-			var l = overlays[i];
-			l.visibleIndex = i;
-		}
-		return overlays;
-	},
-
-	_reorderBaseLayersVisibleIndex: function() {
-		var baseLayers = this.getBaseLayers();
-		for (var k = baseLayers.length - 1; k >= 0; k--) {
-			var bl = baseLayers[k];
-			bl.visibleIndex = k;
-		}
-		return baseLayers;
-	},
-
+	// TODO: В утиль
 	_arraymove: function(arr, fromIndex, toIndex) {
 		var element = arr[fromIndex];
 		arr.splice(fromIndex, 1);
@@ -695,6 +546,359 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 			}
 		}
 		return -1;
+	}
+
+});;MapExpress.Mapping.MapLoader = L.Class.extend({
+
+	initialize: function(map, options) {
+		this._map = map;
+		L.setOptions(this, options);
+	},
+
+	createMapModel: function(jsonMapModel) {
+		var mapModel = new MapExpress.Mapping.MapModel(jsonMapModel.id, jsonMapModel.options);
+		this._jsonMapModel = jsonMapModel;
+		if (jsonMapModel.layers && jsonMapModel.layers.length > 0) {
+			for (var i = 0; i < jsonMapModel.layers.length; i++) {
+				var processedModel = jsonMapModel.layers[i];
+				this._processLayerModel(processedModel, mapModel);
+			}
+		}
+		return mapModel;
+	},
+
+	_processLayerModel: function(jsonLayerModel, parentLayerModel) {
+		var layerModel = new MapExpress.Mapping.LayerModel(jsonLayerModel.id, jsonLayerModel.options);
+		layerModel.mapLayer = this._createLayerClass(jsonLayerModel);
+
+		parentLayerModel.addLayer(layerModel);
+
+		if (jsonLayerModel.layers && jsonLayerModel.layers.length > 0) {
+			for (var i = 0; i < jsonLayerModel.layers.length; i++) {
+				var iterJsonModel = jsonLayerModel.layers[i];
+				this._processLayerModel(iterJsonModel, layerModel);
+			}
+		}
+	},
+
+	_createLayerClass: function(jsonLayerModel) {
+		var layerClass;
+		if (jsonLayerModel.dataProviderClass && jsonLayerModel.layerClass) {
+			var providerClass = this._createProvider(jsonLayerModel.dataProviderClass.constructor, jsonLayerModel.dataProviderClass.args, jsonLayerModel.dataProviderClass.options);
+			if (providerClass) {
+
+				//providerClass.setOptions(jsonLayerModel.dataProviderClass.options);
+				//L.setOptions(providerClass, jsonLayerModel.dataProviderClass.options);
+
+				if (!jsonLayerModel.layerClass.args) {
+					jsonLayerModel.layerClass.args = [];
+				}
+
+				jsonLayerModel.layerClass.args.splice(0, 0, providerClass);
+				switch (jsonLayerModel.layerClass.constructor) {
+					case 'MapExpress.Layers.GeoJSONServiceLayer':
+
+						layerClass = this._applyToConstructor(MapExpress.Layers.GeoJSONServiceLayer, jsonLayerModel.layerClass.args, jsonLayerModel.layerClass.options);
+						break;
+
+					case 'MapExpress.Layers.ImageOverlayLayer':
+						layerClass = this._applyToConstructor(MapExpress.Layers.ImageOverlayLayer, jsonLayerModel.layerClass.args, jsonLayerModel.layerClass.options);
+						break;
+
+					case 'MapExpress.Layers.TileServiceLayer':
+						layerClass = this._applyToConstructor(MapExpress.Layers.TileServiceLayer, jsonLayerModel.layerClass.args, jsonLayerModel.layerClass.options);
+						break;
+				}
+
+				if (layerClass) {
+					layerClass.id = jsonLayerModel.id;
+					layerClass.styles = jsonLayerModel.layerClass.styles;
+					//L.setOptions(layerClass, jsonLayerModel.layerClass.options);
+				}
+			}
+		}
+		return layerClass;
+	},
+
+	_createProvider: function(providerClassName, argArray, options) {
+		var provider;
+		switch (providerClassName) {
+			case 'MapExpress.Service.TileProvider':
+				provider = this._applyToConstructor(MapExpress.Service.TileProvider, argArray, options);
+				break;
+
+			case 'MapExpress.Service.GeoJSONProvider':
+				provider = this._applyToConstructor(MapExpress.Service.GeoJSONProvider, argArray, options);
+				break;
+
+			case 'MapExpress.Service.MapServiceAgsProvider':
+				provider = this._applyToConstructor(MapExpress.Service.MapServiceAgsProvider, argArray, options);
+				break;
+
+			case 'MapExpress.Service.FeatureServiceAgsProvider':
+				provider = this._applyToConstructor(MapExpress.Service.FeatureServiceAgsProvider, argArray, options);
+				break;
+
+			case 'MapExpress.Service.WmsProvider':
+				provider = this._applyToConstructor(MapExpress.Service.WmsProvider, argArray, options);
+				break;
+
+			case 'MapExpress.Service.SingleImageProvider':
+				provider = this._applyToConstructor(MapExpress.Service.SingleImageProvider, argArray, options);
+				break;
+		}
+		return provider;
+	},
+
+	_applyToConstructor: function(constructor, argArray, options) {
+		var args = [null].concat(argArray, options);
+		var FactoryFunction = constructor.bind.apply(constructor, args);
+		return new FactoryFunction();
+	}
+});
+
+MapExpress.Mapping.mapLoader = function(map, options) {
+	return new MapExpress.Mapping.MapLoader(map, options);
+};;MapExpress.Mapping.MapManager = L.Class.extend({
+
+	initialize: function(map, mapLoader, options) {
+		this._map = map;
+		L.setOptions(this, options);
+		this._mapLoader = mapLoader ? mapLoader : MapExpress.Mapping.mapLoader(map, options);
+		this.selections = [];
+	},
+
+
+	renderMap: function(mapModel) {
+		this._mapModel = this._mapLoader.createMapModel(mapModel);
+		L.setOptions(this._map, this._mapModel.options);
+		this._map.setView(this._mapModel.options.center, this._mapModel.options.zoom);
+
+		var baseLayers = this._mapModel.getBaseLayers();
+		this._mapModel.sortLayersByVisibleIndex(baseLayers);
+		this._mapModel._reorderLayersVisibleIndex(baseLayers);
+		for (var m = baseLayers.length - 1; m >= 0; m--) {
+			var mm = baseLayers[m];
+			if (mm.mapLayer.options.visible) {
+				mm.mapLayer.addTo(this._map);
+				break;
+			}
+		}
+
+		var overlays = this._mapModel.getOverlayLayers();
+		this._mapModel.sortLayersByVisibleIndex(overlays);
+		this._mapModel._reorderLayersVisibleIndex(overlays);
+		this._mapModel.sortLayersByVisibleIndex(overlays);
+		for (var j = overlays.length - 1; j >= 0; j--) {
+			var il = overlays[j];
+			if (il.mapLayer.options.visible && il.mapLayer) {
+				il.mapLayer.addTo(this._map);
+			}
+		}
+	},
+
+
+	setActiveBaseMap: function(layerId) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel && layerModel.mapLayer) {
+			var baseLayers = this._mapModel.getBaseLayers();
+			for (var m = baseLayers.length - 1; m >= 0; m--) {
+				var mm = baseLayers[m];
+				if (mm.mapLayer) {
+					mm.mapLayer.options.visible = false;
+					this._map.removeLayer(mm.mapLayer);
+				}
+			}
+			layerModel.mapLayer.options.visible = true;
+			layerModel.mapLayer.addTo(this._map);
+			layerModel.mapLayer.bringToBack();
+		}
+	},
+
+
+	removeLayerById: function(layerId) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel && layerModel.mapLayer) {
+			layerModel.mapLayer.off('add', this._reorderOverlays, this);
+			this._map.removeLayer(layerModel.mapLayer);
+			this._mapModel.removeLayerById(layerId);
+		}
+	},
+
+	setLayerVisible: function(layerId, visible) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel && layerModel.mapLayer) {
+			if (visible) {
+				layerModel.mapLayer.on('add', this._reorderOverlays, this);
+				this._map.addLayer(layerModel.mapLayer);
+			} else {
+				layerModel.mapLayer.off('add', this._reorderOverlays, this);
+				this._map.removeLayer(layerModel.mapLayer);
+			}
+			layerModel.mapLayer.options.visible = visible;
+		}
+		if (layerModel.hasChildren()) {
+			for (var i = layerModel._layers.length - 1; i >= 0; i--) {
+				var iterLayerModel = layerModel._layers[i];
+				this.setLayerVisible(iterLayerModel.id, visible);
+			}
+		}
+	},
+
+	toogleLayerVisible: function(layerId) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel) {
+			if (layerModel.options.type === 'base') {
+				this.setActiveBaseMap(layerId);
+			} else {
+				this.setLayerVisible(layerId, !layerModel.mapLayer.options.visible);
+			}
+		}
+	},
+
+	moveOverlay: function(layerId, visibleIndex) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel && layerModel.mapLayer) {
+			this._mapModel.setLayerVisibleIndex(layerId, visibleIndex);
+			this._reorderOverlays();
+		}
+	},
+
+	_reorderOverlays: function() {
+		var overlays = this._mapModel.getOverlayLayers();
+		this._mapModel.sortLayersByVisibleIndex(overlays);
+		for (var j = overlays.length - 1; j >= 0; j--) {
+			var lj = overlays[j];
+			lj.mapLayer.bringToFront();
+		}
+	},
+
+
+	getMapModel: function() {
+			//var overlays = this._reorderLayersVisibleIndex();
+			//var bases = this._reorderBaseLayersVisibleIndex(overlays);
+			//this._sortLayersByVisibleIndex(this._mapModel.layers);
+			// TODO: А сортировать не надо?
+			return this._mapModel;
+		}
+		//,
+
+
+	//getSelection: function(layerId) {
+	//	var ind = this._findIndex(this.selections, function(iter) {
+	//		return iter._layerId === layerId;
+	//	});
+	//	if (ind > -1) {
+	//		return this.selections[ind];
+	//	} else {
+	//		var newSelection = new MapExpress.Mapping.Selection(layerId);
+	//		this.selections.push(newSelection);
+	//		return newSelection;
+	//	}
+	//}
+
+
+
+});;MapExpress.Mapping.MapModel = MapExpress.Mapping.LayerModel.extend({
+
+
+	initialize: function(id, options) {
+		this.id = id;
+		this._layers = [];
+		L.setOptions(this, options);
+	},
+
+	getAllLayers: function() {
+		var result = [];
+		this._fillAllLayers(this, result);
+		//this.sortLayersByVisibleIndex(result);
+		return result;
+	},
+
+	getBaseLayers: function() {
+		return this.getLayersByType('base');
+	},
+
+	getOverlayLayers: function() {
+		return this.getLayersByType('overlay');
+	},
+
+	getLayersByType: function(layerType) {
+		return this.getLayersByOptionValue("type", layerType);
+	},
+
+	getVisibleLayers: function() {
+		return this.getLayersByOptionValue("mapLayer.options.visible", true);
+	},
+
+
+	getQueryableLayers: function() {
+		return this.getLayersByOptionValue("mapLayer.options.queryable", true);
+	},
+
+	getSelectableLayers: function() {
+		return this.getLayersByOptionValue("mapLayer.options.selectable", true);
+	},
+
+	getLayersByOptionValue: function(optionName, optionValue) {
+		var layers = this.getAllLayers();
+		var filtered = layers.filter(function(iter) {
+			if (iter.options.hasOwnProperty(optionName)) {
+				return iter.options[optionName] === optionValue;
+			}
+		});
+		return filtered;
+	},
+
+	_fillAllLayers: function(layerGroupModel, resultArray) {
+		for (var i = layerGroupModel._layers.length - 1; i >= 0; i--) {
+			var iterLayer = layerGroupModel._layers[i];
+			resultArray.push(iterLayer);
+			if (iterLayer.hasChildren()) {
+				this._fillAllLayers(iterLayer, resultArray);
+			}
+		}
+	},
+
+	setLayerVisibleIndex: function(id, newVisibleIndex) {
+		var layerModel = this.getLayerById(id);
+		if (layerModel) {
+			layerModel.mapLayer.options.visibleIndex = newVisibleIndex;
+			var layers = this.getOverlayLayers();
+			this.sortLayersByVisibleIndex(layers);
+			var ind = this._findIndex(layers, function(iter) {
+				return iter.id === id;
+			});
+			this._arraymove(layers, ind, newVisibleIndex);
+			this.sortLayersByVisibleIndex(layers);
+			this._reorderLayersVisibleIndex(layers);
+		}
+	},
+
+	sortLayersByVisibleIndex: function(layers) {
+		layers.sort(compare);
+
+		function compare(a, b) {
+			try {
+				if (a.mapLayer && b.mapLayer) {
+					return a.mapLayer.options.visibleIndex - b.mapLayer.options.visibleIndex;
+				}
+				return -1;
+			} catch (exc) {
+				console.log(a);
+				console.log(b);
+			}
+		}
+	},
+
+	_reorderLayersVisibleIndex: function(layers) {
+		for (var i = layers.length - 1; i >= 0; i--) {
+			var l = layers[i];
+			if (l.mapLayer) {
+				l.mapLayer.options.visibleIndex = i;
+			}
+		}
+		return layers;
 	}
 
 });;MapExpress.Mapping.Selection = L.Class.extend({
@@ -1999,6 +2203,10 @@ function shiftCoords(points, offset) {
 		}
 	},
 
+	setOptions: function(options) {
+		L.setOptions(this, options);
+	},
+
 	getDataAsync: function() {
 
 	},
@@ -2010,12 +2218,12 @@ function shiftCoords(points, offset) {
 
 	getDataInBoundsAsync: function(mapBounds, mapSize) {
 		var url = this.getDataUrlByBounds(mapBounds, mapSize);
-		var promise = new MapExpress.Utils.Promise.QImage(url);
-		return promise;
+		var prom  = MapExpress.Utils.Promise.qImage(url);
+		return prom;
 	},
 
 	getDataUrlByBounds: function(mapBounds, mapSize) {
-		if (this._dataUrl) {
+		if (this._dataUrl && mapBounds) {
 			var nw = mapBounds.getNorthWest();
 			var se = mapBounds.getSouthEast();
 
@@ -2031,7 +2239,7 @@ function shiftCoords(points, offset) {
 
 
 	getDataByTileAsync: function(tileCoord) {
-
+	
 	},
 
 	getDataUrlByTile: function(tileCoord) {
@@ -2350,14 +2558,15 @@ MapExpress.Service.featureServiceAgsProvider = function(url, options) {
 
 	options: {
 		useTileIndex: false,
-		identifyFormat:'json'
+		preloadData: false,
+		identifyFormat: 'json'
 	},
 
 	initialize: function(dataUrl, options) {
 		MapExpress.Service.BaseDataProvider.prototype.initialize.call(this, options);
 		L.setOptions(this, options);
 		this._dataUrl = dataUrl;
-		if (this._dataUrl) {
+		if (this.options.preloadData) {
 			this._loadDataAsync();
 		}
 	},
@@ -2385,6 +2594,7 @@ MapExpress.Service.featureServiceAgsProvider = function(url, options) {
 
 	},
 
+	// TODO:  Доработать для индекса. 
 	_loadDataAsync: function() {
 		var that = this;
 		this.getDataAsync().then(
@@ -2409,9 +2619,9 @@ MapExpress.Service.featureServiceAgsProvider = function(url, options) {
 		return d.promise;
 
 		//	Q.async(function* (oneP, twoP) {
-    	//var one = yield oneP;
-    	//var two = yield twoP;
-    	//return one + two;
+		//var one = yield oneP;
+		//var two = yield twoP;
+		//return one + two;
 		//});
 	}
 
@@ -2423,13 +2633,15 @@ MapExpress.Service.geoJSONProvider = function(dataUrl, options) {
 };;MapExpress.Service.MapServiceAgsProvider = MapExpress.Service.EsriBaseProvider.extend({
 
 	defaultParams: {
-		size: '256,256',
 		bboxSR: 3857,
 		imageSR: 3857,
 		dpi: 96,
 		f: 'image',
 		format: 'png32',
-		transparent: true,
+		transparent: true
+	},
+
+	options: {
 		layersId: ''
 	},
 
@@ -2454,7 +2666,10 @@ MapExpress.Service.geoJSONProvider = function(dataUrl, options) {
 		var se = crs.project(mapBounds.getSouthEast());
 		var params = {};
 		params.bbox = [nw.x, se.y, se.x, nw.y].join(',');
-		params.layers = 'visible:' + this.options.layersId;
+		params.size = [mapSize.x, mapSize.y].join(',');
+		if (this.options.layersId) {
+			params.layers = 'show:' + this.options.layersId;
+		}
 		L.extend(this.mapServiceParams, params);
 		var uppercase = this.options.uppercase || false;
 		var pstr = L.Util.getParamString(this.mapServiceParams, this._url, uppercase);
@@ -2465,8 +2680,30 @@ MapExpress.Service.geoJSONProvider = function(dataUrl, options) {
 
 MapExpress.Service.mapServiceAgsProvider = function(url, options) {
 	return new MapExpress.Service.MapServiceAgsProvider(url, options);
-};;MapExpress.Service.TileProvider = MapExpress.Service.BaseDataProvider.extend({
+};;MapExpress.Service.SingleImageProvider = MapExpress.Service.BaseDataProvider.extend({
+
 	
+	initialize: function(dataUrl, options) {
+		MapExpress.Service.BaseDataProvider.prototype.initialize.call(this, options);
+		L.setOptions(this, options);
+		this._dataUrl = dataUrl;
+	},
+
+	// TODO: Может в базовом классе сделать первым параметром урл и этот метод?
+	getDataUrl: function() {
+		return this._dataUrl;
+	},
+
+	getImageBounds: function() {
+		return this.options.imageBounds;
+	}
+
+});
+
+MapExpress.Service.singleImageProvider = function(url, options) {
+	return new MapExpress.Service.SingleImageProvider(url, options);
+};;MapExpress.Service.TileProvider = MapExpress.Service.BaseDataProvider.extend({
+
 	initialize: function(url, options) {
 		MapExpress.Service.BaseDataProvider.prototype.initialize.call(this, options);
 		L.setOptions(this, options);
@@ -2476,7 +2713,7 @@ MapExpress.Service.mapServiceAgsProvider = function(url, options) {
 
 	getDataByTileAsync: function(tileCoord) {
 		var url = this.getDataUrlByTile(tileCoord);
-		var promise = new MapExpress.Utils.Promise.QImage(url);
+		var promise = new MapExpress.Utils.Promise.qImage(url);
 		return promise;
 	},
 
@@ -2517,12 +2754,7 @@ MapExpress.Service.tileProvider = function(url, options) {
 		this.wmsParams = wmsParams;
 	},
 
-	getDataInBoundsAsync: function(mapBounds, mapSize) {
-		var url = this.getDataUrlByBounds(mapBounds, mapSize);
-		var promise = new MapExpress.Utils.Promise.QImage(url);
-		return promise;
-	},
-
+	
 	getDataByTileAsync: function(tileCoord) {
 		var bounds = this._tileCoordToBounds(tileCoord);
 		var mapSize = new L.Point(this.options.tileSize, this.options.tileSize);
@@ -2534,6 +2766,7 @@ MapExpress.Service.tileProvider = function(url, options) {
 		var wmsVersion = parseFloat(this.wmsParams.version);
 		var crs = this.options.crs;
 		var projectionKey = wmsVersion >= 1.3 ? 'crs' : 'srs';
+		
 		var nw = crs.project(mapBounds.getNorthWest());
 		var se = crs.project(mapBounds.getSouthEast());
 		var params = {
@@ -2682,9 +2915,6 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 };;MapExpress.Tools.IdentifyMapCommand = MapExpress.Tools.BaseMapCommand.extend({
 	options: {
 		buttonClassName: 'btn btn-default btn-sm text-center'
-			//buttonClassName: 'btn btn-primary btn-sm btn-fab-mini btn-fab btn-raised icon icon-material-favorite'
-			//data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Информация"'
-			//buttonClassName: '<a href="#" class="btn btn-primary"><span class="glyphicon glyphicon-info-sign"></span>Информация</a>'
 	},
 
 	initialize: function(mapManager, options) {
@@ -2693,11 +2923,6 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 	},
 
 	createContent: function(toolBarContainer) {
-		//var a = L.DomUtil.create('a', 'btn btn-primary', toolBarContainer);
-		//var span = L.DomUtil.create('span', 'glyphicon glyphicon-info-sign', a);
-		//return a;
-		//
-
 		var button = L.DomUtil.create('button', this.options.buttonClassName, toolBarContainer);
 		var li = L.DomUtil.create('i', 'fa fa-info fa-lg fa-fw', button);
 
@@ -2724,16 +2949,17 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 
 	doCommand: function(args) {
 		L.DomEvent.stopPropagation(args);
-		
+
 		var that = this;
 		var identifyedLayers = [];
 		var identifyedResults = [];
 
 		var layers = this._getQueryableLayers();
+
 		var map = this._mapManager._map;
 
 		var latlng = args.latlng;
-		var layerPoint = args.layerPoint;
+		var layerPoint = args.containerPoint;
 		var mapZoom = map.getZoom();
 		var mapBounds = map.getBounds();
 		var mapSize = map.getSize();
@@ -2743,17 +2969,16 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 		var identifyPromises = [];
 		for (var i = 0; i < layers.length; i++) {
 			var iterLayer = layers[i];
-			var dataProvider = iterLayer._dataPovider;
+			var dataProvider = iterLayer.mapLayer._dataPovider;
 			if (dataProvider) {
 				var func = dataProvider.getFeatureInfoAsync(latlng, layerPoint, mapBounds, mapSize, mapZoom);
 
-				if (!func && iterLayer instanceof MapExpress.Layers.GeoJSONServiceLayer) {
-					func = iterLayer._getFeaturesAtPoint(latlng, layerPoint, mapBounds, mapSize, mapZoom);
+				if (!func && iterLayer.mapLayer instanceof MapExpress.Layers.GeoJSONServiceLayer) {
+					func = iterLayer.mapLayer._getFeaturesAtPoint(latlng, args.layerPoint, mapBounds, mapSize, mapZoom);
 				}
-
 				if (func) {
 					identifyPromises.push(func);
-					identifyedLayers.push(iterLayer);
+					identifyedLayers.push(iterLayer.mapLayer);
 				}
 			}
 		}
@@ -2775,7 +3000,8 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 	},
 
 	_getQueryableLayers: function() {
-		return this._mapManager.getVisibleLayers();
+		return this._mapManager.getMapModel().getOverlayLayers();
+		//return this._mapManager.getVisibleLayers();
 		//var layers = this._mapManager.getQueryableLayers();
 		//return layers;
 	},
@@ -5142,30 +5368,8 @@ return Q;
 			});
 		return deferred.promise;
 	};
-
-
-	//MapExpress.Utils.Promise.qGet = function(url, dataType) {
-	//	var deferred = Q.defer();
-	//	$.ajax({
-	//		type: "GET",
-	//		url: url,
-	//		dataType: dataType,
-	//		success: function(data) {
-	//			console.log(data);
-	//			deferred.resolve(data);
-	//		},
-	//		error: function(errMsg) {
-				//	console.log(errMsg);
-	//			deferred.reject(errMsg);
-	//		}
-	//	});
-	//	return deferred.promise;
-	//};
-
-
-}(Q));;(function(Q) 
-{
-"use strict";
+}(Q));;(function(Q) {
+  "use strict";
   MapExpress.Utils.Promise.qImage = function(url, options) {
     options = options || {};
     var img = new Image();

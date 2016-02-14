@@ -24,14 +24,13 @@ MapExpress.Tools.ExportMapImage = MapExpress.Tools.BaseMapCommand.extend({
 		$(this.options.mapSelector).crossOrigin = 'anonymous';
 
 		html2canvas($(this.options.mapSelector), {
-			allowTaint: true,
+			allowTaint: false,
 			logging: false,
 			taintTest: false,
 			useCORS: true,
 			onrendered: function(canvas) {
-				canvas.crossOrigin = 'anonymous';
 				var myImage = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-				myImage.crossOrigin = 'anonymous';
+				//myImage.crossOrigin = 'anonymous';
 				var link = document.createElement('a');
 				if (link.download !== undefined) {
 					link.download = "map.png";

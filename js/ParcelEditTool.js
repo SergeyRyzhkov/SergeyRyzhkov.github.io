@@ -8,7 +8,7 @@ MapExpress.Tools.ParcelEditTool = MapExpress.Tools.BaseMapCommand.extend({
 		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
 		L.setOptions(this, options);
 
-		this._parcelsLayer = mapManager.getLayerById("vsmParcels");
+		this._parcelsLayer = mapManager.getMapModel().getLayerById("vsmParcels");
 	},
 
 	createContent: function(toolBarContainer) {
@@ -122,7 +122,7 @@ MapExpress.Tools.ParcelCreateTool = MapExpress.Tools.BaseMapCommand.extend({
 		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
 		L.setOptions(this, options);
 
-		this._parcelsLayer = mapManager.getLayerById("vsmParcels");
+		this._parcelsLayer = mapManager.getMapModel().getLayerById("vsmParcels");
 	},
 
 	createContent: function(toolBarContainer) {
@@ -209,7 +209,7 @@ MapExpress.Tools.ParcelDeleteTool = MapExpress.Tools.BaseMapCommand.extend({
 
 	activate: function() {
 		var that = this;
-		var parcelsLayer = this._mapManager.getLayerById("vsmParcels");
+		var parcelsLayer = this._mapManager.getMapModel().getLayerById("vsmParcels");
 		var selection = this._mapManager.getSelection("vsmParcels");
 		var selected = selection.getSelections();
 
@@ -220,7 +220,7 @@ MapExpress.Tools.ParcelDeleteTool = MapExpress.Tools.BaseMapCommand.extend({
 			var data = {
 				id: selected[j].feature.properties.id
 			};
-			
+
 			$.ajax({
 				type: "POST",
 				url: deleteUrl,

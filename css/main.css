@@ -19,7 +19,8 @@ body {
 	padding: 3px;
 	margin-left: 10px;
 	margin-top: 10px;
-    box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+	transition: all 0.2s ease-in-out;
 	border-radius: 1px;
 	background: #FFF none repeat scroll 0% 0%;
 	opacity:1;
@@ -28,14 +29,16 @@ body {
 
 .map-toolbar:hover {
 	opacity:1;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
+
 .float-map-panel {
-  box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.4);
   border-radius: 1px;
   background: #FFF none repeat scroll 0% 0%;
-  max-height: 450.5px;
-  max-width: 300.5px; 
+  max-height: 850.5px;
+  max-width: 400.5px; 
   outline: medium none;
   overflow: hidden; 
   opacity:1;
@@ -79,7 +82,7 @@ body {
 
 .leaflet-popup-content-wrapper
 {
-  box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.4);
   border-radius: 1px;
   background: #FFF none repeat scroll 0% 0%;
   outline: medium none;

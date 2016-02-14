@@ -1,16 +1,26 @@
 <script id="parcelFilterId" type="text/x-jsrender">
-	<div style="text-align: center;margin:10px;padding:1px; position: relative;border-bottom: 1px solid red;">
+	<div style="text-align: center;margin:10px;padding:1px; position: relative;border-bottom: 1px solid #CD202C;font-family:Verdana;">
 		<p><b>Фильтр по земельным участкам</b></p>
 	</div>	
 	<div class="float-map-panel-wrapper">
 		<div class = "float-map-panel-content">	
+			  <input type="checkbox" id="land_geo_object_actual_view" onclick ="filterVsmParcels($(this))"> Актуальный
+			  <br>
+			  <input type="checkbox" id="land_geo_object_ufo_view" onclick ="filterVsmParcels($(this))"> Не определено
+			  <br>
+			  <input type="checkbox" id="land_geo_object_less_minimum_view" onclick ="filterVsmParcels($(this))"> Меньше минимального размера
+			  <br>
+			  <input type="checkbox" id="land_geo_object_out_from_list_view" onclick ="filterVsmParcels($(this))"> Выведен из перечня
+			  <br>
 			  <input type="checkbox" id="land_geo_object_archive_view" onclick ="filterVsmParcels($(this))"> Архивный
+			  <br>
 		</div>	
 	</div>
 	
 	<script>		
 		function filterVsmParcels (element) {
 			var allLayersId = [];
+			allLayersId.push('land_geo_object_ufo_view');
 			allLayersId.push('land_geo_object_actual_view');
 			allLayersId.push('land_geo_object_archive_view');
 			allLayersId.push('land_geo_object_less_minimum_view');
@@ -19,10 +29,10 @@
 			var layerId = element.attr('id');
 			var layerVisibility = element.prop('checked');
 			
+			
 			for (var i = allLayersId.length - 1; i >= 0; i--) {
-				var titerLayer = allLayersId[i];
-				window.MapManager._map.removeLayer(titerLayer);
-				titerLayer.visible = false;
+				var titerLayerId = allLayersId[i];
+				var lay = window.MapManager.removeLayerById(titerLayerId);
 			};
 			
 			var newLayer = createLayerObj (layerId);

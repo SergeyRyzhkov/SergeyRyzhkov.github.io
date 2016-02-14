@@ -17,7 +17,7 @@ MapExpress.Tools.ParcelInteractionTool = MapExpress.Tools.BaseMapCommand.extend(
 		this._floatMapPanel = new MapExpress.Controls.FloatMapPanel(mapManager, {
 			className: "float-map-panel"
 		});
-		this._parcelsLayer = mapManager.getLayerById("vsmParcels");
+		this._parcelsLayer = mapManager.getMapModel().getLayerById("vsmParcels");
 	},
 
 	createContent: function(toolBarContainer) {
@@ -40,7 +40,7 @@ MapExpress.Tools.ParcelInteractionTool = MapExpress.Tools.BaseMapCommand.extend(
 
 	_parcelInteract: function(act) {
 		var that = this;
-		this._parcelsLayer.eachLayer(function(layer) {
+		this._parcelsLayer.mapLayer.eachLayer(function(layer) {
 			if (!act) {
 				layer.off('mouseover', that._in, that);
 				layer.off('mouseout', that._out, that);
