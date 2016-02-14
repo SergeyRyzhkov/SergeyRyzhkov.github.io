@@ -2424,7 +2424,8 @@ MapExpress.Service.baseDataProvider = function(options) {
 		crs: L.CRS.EPSG3857,
 		identifyUrl: '',
 		identifyFormat: 'json',
-		identifyTolerance: 1
+		identifyTolerance: 1,
+		layersId: ''
 	},
 
 	initialize: function(url, options) {
@@ -2448,7 +2449,17 @@ MapExpress.Service.baseDataProvider = function(options) {
 
 
 	getFeatureInfoUrl: function(latlng, layerPoint, mapBounds, mapSize, zoom) {
-		var identLyr = this.options.identifyLayersId ? 'visible:' + this.options.identifyLayersId : 'top';
+		var identLyr = null;
+		if (this.options.identifyLayersId) {
+			identLyr = 'visible:' + this.options.identifyLayersId;
+		}
+		if (this.options.layersId) {
+			identLyr = 'visible:' + this.options.layersId;
+		}
+		if (!identLyr) {
+			identLyr = 'top';
+		}
+
 		var params = {
 			geometryType: 'esriGeometryPoint',
 			sr: '4326',
@@ -2639,10 +2650,6 @@ MapExpress.Service.geoJSONProvider = function(dataUrl, options) {
 		f: 'image',
 		format: 'png32',
 		transparent: true
-	},
-
-	options: {
-		layersId: ''
 	},
 
 	initialize: function(url, options) {

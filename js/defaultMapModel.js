@@ -43,7 +43,7 @@ defaultMapModel =
                             "useVectorTile" : false,
                             "pane"          : "overlayPane",
                             "visible"       : false,
-                            "visibleIndex"  : 0,
+                            "visibleIndex"  : 1,
                             "minZoom"       : 8,
                             "maxZoom"       : 23,
                             "selectable"    : true,
@@ -137,7 +137,7 @@ defaultMapModel =
                         "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                         "options"     : {
                             "visible" : false,
-                            "visibleIndex" : 2,
+                            "visibleIndex" : 3,
                             "minZoom"      : 6,
                             "maxZoom"      : 23,
                             "selectable"   : false,
@@ -183,7 +183,7 @@ defaultMapModel =
                         "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                         "options"     : {
                             "visible" : false,
-                            "visibleIndex" : 1,
+                            "visibleIndex" : 2,
                             "minZoom"      : 8,
                             "maxZoom"      : 23,
                             "selectable"   : false,
@@ -267,7 +267,9 @@ defaultMapModel =
                                 }
                             }
                         }
-                    ]
+                    ],
+                    "layerClass" : null,
+                    "dataProviderClass" : null
                 }
             ],
             "layerClass" : null,
@@ -626,7 +628,7 @@ defaultMapModel =
                             "reuseTiles"           : false,
                             "crossOrigin"          : false,
                             "visible"              : false,
-                            "visibleIndex"         : 12,
+                            "visibleIndex"         : 13,
                             "minZoom"              : 9,
                             "maxZoom"              : 23,
                             "selectable"           : false,
@@ -683,7 +685,7 @@ defaultMapModel =
                             "reuseTiles"           : false,
                             "crossOrigin"          : false,
                             "visible"              : false,
-                            "visibleIndex"         : 13,
+                            "visibleIndex"         : 14,
                             "minZoom"              : 9,
                             "maxZoom"              : 23,
                             "selectable"           : false,
@@ -736,7 +738,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 5,
+                                    "visibleIndex" : 6,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -753,7 +755,7 @@ defaultMapModel =
                                 ],
                                 "options"     : {
                                     "identifyFormat" : "json",
-                                    "identifyUrl"    : "",
+                                    "identifyUrl"    : "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer",
                                     "identifyTolerance" : 1,
                                     "dpi"               : 96,
                                     "format"            : "png32",
@@ -762,7 +764,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : ""
+                                    "identifyLayersId"  : "1,2,3,4,5,6,7"
                                 }
                             }
                         },
@@ -771,6 +773,50 @@ defaultMapModel =
                             "options" : {
                                 "name" : "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u0440\u0430\u0439\u043E\u043D\u044B",
                                 "displayName" : "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u0440\u0430\u0439\u043E\u043D\u044B",
+                                "description" : null,
+                                "type"        : "overlay"
+                            },
+                            "layers"  : [
+                            ],
+                            "layerClass" : {
+                                "constructor" : "MapExpress.Layers.ImageOverlayLayer",
+                                "options"     : {
+                                    "visible" : false,
+                                    "visibleIndex" : 8,
+                                    "minZoom"      : 9,
+                                    "maxZoom"      : 23,
+                                    "selectable"   : false,
+                                    "queryable"    : false,
+                                    "attribution"  : ""
+                                },
+                                "styles"      : [
+                                ]
+                            },
+                            "dataProviderClass" : {
+                                "constructor" : "MapExpress.Service.MapServiceAgsProvider",
+                                "args"        : [
+                                    "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"
+                                ],
+                                "options"     : {
+                                    "identifyFormat" : "json",
+                                    "identifyUrl"    : "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer",
+                                    "identifyTolerance" : 1,
+                                    "dpi"               : 96,
+                                    "format"            : "png32",
+                                    "transparent"       : true,
+                                    "layersId"          : "9,10,11,12,13,14,15,16",
+                                    "tileSize"          : 256,
+                                    "subdomains"        : "abc",
+                                    "uppercase"         : false,
+                                    "identifyLayersId"  : "9,10,11,12,13,14,15,16"
+                                }
+                            }
+                        },
+                        {
+                            "id" : "fe85230d-a204-4fd2-b051-a718576b6c90",
+                            "options" : {
+                                "name" : "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B",
+                                "displayName" : "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B",
                                 "description" : null,
                                 "type"        : "overlay"
                             },
@@ -797,51 +843,7 @@ defaultMapModel =
                                 ],
                                 "options"     : {
                                     "identifyFormat" : "json",
-                                    "identifyUrl"    : "",
-                                    "identifyTolerance" : 1,
-                                    "dpi"               : 96,
-                                    "format"            : "png32",
-                                    "transparent"       : true,
-                                    "layersId"          : "9,10,11,12,13,14,15,16",
-                                    "tileSize"          : 256,
-                                    "subdomains"        : "abc",
-                                    "uppercase"         : false,
-                                    "identifyLayersId"  : ""
-                                }
-                            }
-                        },
-                        {
-                            "id" : "fe85230d-a204-4fd2-b051-a718576b6c90",
-                            "options" : {
-                                "name" : "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B",
-                                "displayName" : "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B",
-                                "description" : null,
-                                "type"        : "overlay"
-                            },
-                            "layers"  : [
-                            ],
-                            "layerClass" : {
-                                "constructor" : "MapExpress.Layers.ImageOverlayLayer",
-                                "options"     : {
-                                    "visible" : false,
-                                    "visibleIndex" : 6,
-                                    "minZoom"      : 9,
-                                    "maxZoom"      : 23,
-                                    "selectable"   : false,
-                                    "queryable"    : false,
-                                    "attribution"  : ""
-                                },
-                                "styles"      : [
-                                ]
-                            },
-                            "dataProviderClass" : {
-                                "constructor" : "MapExpress.Service.MapServiceAgsProvider",
-                                "args"        : [
-                                    "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"
-                                ],
-                                "options"     : {
-                                    "identifyFormat" : "json",
-                                    "identifyUrl"    : "",
+                                    "identifyUrl"    : "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer",
                                     "identifyTolerance" : 1,
                                     "dpi"               : 96,
                                     "format"            : "png32",
@@ -850,7 +852,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : ""
+                                    "identifyLayersId"  : "18,19,20"
                                 }
                             }
                         },
@@ -859,50 +861,6 @@ defaultMapModel =
                             "options" : {
                                 "name" : "\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043D\u0435\u0434\u0432\u0438\u0436\u0438\u043C\u043E\u0441\u0442\u0438",
                                 "displayName" : "\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043D\u0435\u0434\u0432\u0438\u0436\u0438\u043C\u043E\u0441\u0442\u0438",
-                                "description" : null,
-                                "type"        : "overlay"
-                            },
-                            "layers"  : [
-                            ],
-                            "layerClass" : {
-                                "constructor" : "MapExpress.Layers.ImageOverlayLayer",
-                                "options"     : {
-                                    "visible" : false,
-                                    "visibleIndex" : 3,
-                                    "minZoom"      : 9,
-                                    "maxZoom"      : 23,
-                                    "selectable"   : false,
-                                    "queryable"    : false,
-                                    "attribution"  : ""
-                                },
-                                "styles"      : [
-                                ]
-                            },
-                            "dataProviderClass" : {
-                                "constructor" : "MapExpress.Service.MapServiceAgsProvider",
-                                "args"        : [
-                                    "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"
-                                ],
-                                "options"     : {
-                                    "identifyFormat" : "json",
-                                    "identifyUrl"    : "",
-                                    "identifyTolerance" : 1,
-                                    "dpi"               : 96,
-                                    "format"            : "png32",
-                                    "transparent"       : true,
-                                    "layersId"          : "22",
-                                    "tileSize"          : 256,
-                                    "subdomains"        : "abc",
-                                    "uppercase"         : false,
-                                    "identifyLayersId"  : ""
-                                }
-                            }
-                        },
-                        {
-                            "id" : "3523aac1-7115-4102-b875-7dbbc6682a36",
-                            "options" : {
-                                "name" : "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
-                                "displayName" : "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
                                 "description" : null,
                                 "type"        : "overlay"
                             },
@@ -929,7 +887,51 @@ defaultMapModel =
                                 ],
                                 "options"     : {
                                     "identifyFormat" : "json",
-                                    "identifyUrl"    : "",
+                                    "identifyUrl"    : "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer",
+                                    "identifyTolerance" : 1,
+                                    "dpi"               : 96,
+                                    "format"            : "png32",
+                                    "transparent"       : true,
+                                    "layersId"          : "22",
+                                    "tileSize"          : 256,
+                                    "subdomains"        : "abc",
+                                    "uppercase"         : false,
+                                    "identifyLayersId"  : "22"
+                                }
+                            }
+                        },
+                        {
+                            "id" : "3523aac1-7115-4102-b875-7dbbc6682a36",
+                            "options" : {
+                                "name" : "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
+                                "displayName" : "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
+                                "description" : null,
+                                "type"        : "overlay"
+                            },
+                            "layers"  : [
+                            ],
+                            "layerClass" : {
+                                "constructor" : "MapExpress.Layers.ImageOverlayLayer",
+                                "options"     : {
+                                    "visible" : false,
+                                    "visibleIndex" : 5,
+                                    "minZoom"      : 9,
+                                    "maxZoom"      : 23,
+                                    "selectable"   : false,
+                                    "queryable"    : false,
+                                    "attribution"  : ""
+                                },
+                                "styles"      : [
+                                ]
+                            },
+                            "dataProviderClass" : {
+                                "constructor" : "MapExpress.Service.MapServiceAgsProvider",
+                                "args"        : [
+                                    "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"
+                                ],
+                                "options"     : {
+                                    "identifyFormat" : "json",
+                                    "identifyUrl"    : "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer",
                                     "identifyTolerance" : 1,
                                     "dpi"               : 96,
                                     "format"            : "png32",
@@ -938,7 +940,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : ""
+                                    "identifyLayersId"  : "23,24"
                                 }
                             }
                         }
@@ -969,7 +971,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 11,
+                                    "visibleIndex" : 12,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -1013,7 +1015,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 10,
+                                    "visibleIndex" : 11,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -1057,7 +1059,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 9,
+                                    "visibleIndex" : 10,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -1101,7 +1103,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 8,
+                                    "visibleIndex" : 9,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
