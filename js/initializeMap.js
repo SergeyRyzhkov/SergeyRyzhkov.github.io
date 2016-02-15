@@ -33,8 +33,7 @@ function onWorkspaceLoaded() {
 		selectionLayerId: "vsmParcels"
 	}));
 
-	toolbar.addCommand(new MapExpress.Tools.ParcelFilterTool(mapManager));
-
+	
 	toolbar.addCommand(new MapExpress.Tools.ExportMapImage(mapManager, {
 		mapSelector: VSM_MAP_SELECTOR
 	}));

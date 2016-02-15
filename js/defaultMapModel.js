@@ -1,5 +1,6 @@
 defaultMapModel = 
 
+
 {
     "id" : "vsm_map",
     "options" : {
@@ -42,7 +43,7 @@ defaultMapModel =
                             "useVectorTile" : false,
                             "pane"          : "overlayPane",
                             "visible"       : false,
-                            "visibleIndex"  : 1,
+                            "visibleIndex"  : 3,
                             "minZoom"       : 8,
                             "maxZoom"       : 23,
                             "selectable"    : true,
@@ -123,93 +124,216 @@ defaultMapModel =
                     }
                 },
                 {
-                    "id" : "a4197d61-45b7-464d-bc48-012f09820a97",
+                    "id" : "7a14397b-84dd-4011-9dc0-c1dfd6717883",
                     "options" : {
-                        "name" : "\u0413\u0438\u0434\u0440\u043E\u0422\u0435\u043F\u043B\u043E\u042D\u043B\u0435\u043A\u0442\u0440\u043E\u0421\u0442\u0430\u0446\u0438\u0438",
-                        "displayName" : "\u0413\u0438\u0434\u0440\u043E\u0422\u0435\u043F\u043B\u043E\u042D\u043B\u0435\u043A\u0442\u0440\u043E\u0421\u0442\u0430\u0446\u0438\u0438",
+                        "name" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u041D\u0435 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043E]",
+                        "displayName" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u041D\u0435 \u043E\u043F\u0440\u0435\u0434\u0435\u043B\u0435\u043D\u043E]",
                         "description" : null,
                         "type"        : "overlay"
                     },
                     "layers"  : [
                     ],
                     "layerClass" : {
-                        "constructor" : "MapExpress.Layers.ImageOverlayLayer",
+                        "constructor" : "MapExpress.Layers.GeoJSONServiceLayer",
                         "options"     : {
-                            "visible" : false,
-                            "visibleIndex" : 3,
-                            "minZoom"      : 6,
-                            "maxZoom"      : 23,
-                            "selectable"   : false,
-                            "queryable"    : false,
-                            "attribution"  : ""
+                            "dynamicData" : true,
+                            "useVectorTile" : false,
+                            "pane"          : "overlayPane",
+                            "visible"       : false,
+                            "visibleIndex"  : 4,
+                            "minZoom"       : 3,
+                            "maxZoom"       : 23,
+                            "selectable"    : false,
+                            "queryable"     : false,
+                            "attribution"   : ""
                         },
                         "styles"      : [
                         ]
                     },
                     "dataProviderClass" : {
-                        "constructor" : "MapExpress.Service.WmsProvider",
+                        "constructor" : "MapExpress.Service.GeoJSONProvider",
                         "args"        : [
-                            "http://gisserver.info/GISWebServiceSE/service.php"
+                            "http://188.43.2.57/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo_object_ufo_view&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
                         ],
                         "options"     : {
-                            "service" : "WMS",
-                            "request" : "GetMap",
-                            "version" : "1.3.0",
-                            "layers"  : "hydroelectric_power,thermoelectric_power,substation,boiler",
-                            "styles"  : "",
-                            "format"  : "image/png",
-                            "dpi"     : 96,
-                            "transparent" : true,
-                            "tileSize"    : 256,
-                            "subdomains"  : "abc",
-                            "uppercase"   : false,
-                            "identifyFormat" : "text/html",
+                            "useTileIndex" : false,
+                            "preloadData"  : false,
+                            "identifyFormat" : "json",
+                            "tileSize"       : 256,
+                            "subdomains"     : "abc",
+                            "uppercase"      : false,
                             "identifyLayersId" : ""
                         }
                     }
                 },
                 {
-                    "id" : "ab904491-4f64-4313-89cd-c0f5737b9099",
+                    "id" : "6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8",
                     "options" : {
-                        "name" : "\u0421\u0442\u0430\u043D\u0446\u0438\u0438 \u0420\u0416\u0414",
-                        "displayName" : "\u0421\u0442\u0430\u043D\u0446\u0438\u0438 \u0420\u0416\u0414",
+                        "name" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u0410\u043A\u0442\u0443\u0430\u043B\u044C\u043D\u044B\u0439]",
+                        "displayName" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u0410\u043A\u0442\u0443\u0430\u043B\u044C\u043D\u044B\u0439]",
                         "description" : null,
                         "type"        : "overlay"
                     },
                     "layers"  : [
                     ],
                     "layerClass" : {
-                        "constructor" : "MapExpress.Layers.ImageOverlayLayer",
+                        "constructor" : "MapExpress.Layers.GeoJSONServiceLayer",
                         "options"     : {
-                            "visible" : false,
-                            "visibleIndex" : 2,
-                            "minZoom"      : 8,
-                            "maxZoom"      : 23,
-                            "selectable"   : false,
-                            "queryable"    : false,
-                            "attribution"  : ""
+                            "dynamicData" : true,
+                            "useVectorTile" : false,
+                            "pane"          : "overlayPane",
+                            "visible"       : false,
+                            "visibleIndex"  : 5,
+                            "minZoom"       : 3,
+                            "maxZoom"       : 23,
+                            "selectable"    : false,
+                            "queryable"     : false,
+                            "attribution"   : ""
                         },
                         "styles"      : [
                         ]
                     },
                     "dataProviderClass" : {
-                        "constructor" : "MapExpress.Service.WmsProvider",
+                        "constructor" : "MapExpress.Service.GeoJSONProvider",
                         "args"        : [
-                            "http://gisserver.info/GISWebServiceSE/service.php"
+                            "http://188.43.2.57/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo_object_actual_view&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
                         ],
                         "options"     : {
-                            "service" : "WMS",
-                            "request" : "GetMap",
-                            "version" : "1.3.0",
-                            "layers"  : "rzd",
-                            "styles"  : "",
-                            "format"  : "image/png",
-                            "dpi"     : 96,
-                            "transparent" : true,
-                            "tileSize"    : 256,
-                            "subdomains"  : "abc",
-                            "uppercase"   : false,
-                            "identifyFormat" : "text/html",
+                            "useTileIndex" : false,
+                            "preloadData"  : false,
+                            "identifyFormat" : "json",
+                            "tileSize"       : 256,
+                            "subdomains"     : "abc",
+                            "uppercase"      : false,
+                            "identifyLayersId" : ""
+                        }
+                    }
+                },
+                {
+                    "id" : "d550bf5c-b172-4b69-b53c-2191f8c494d2",
+                    "options" : {
+                        "name" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u041C\u0435\u043D\u044C\u0448\u0435 \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0433\u043E \u0440\u0430\u0437\u043C\u0435\u0440\u0430]",
+                        "displayName" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u041C\u0435\u043D\u044C\u0448\u0435 \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0433\u043E \u0440\u0430\u0437\u043C\u0435\u0440\u0430]",
+                        "description" : null,
+                        "type"        : "overlay"
+                    },
+                    "layers"  : [
+                    ],
+                    "layerClass" : {
+                        "constructor" : "MapExpress.Layers.GeoJSONServiceLayer",
+                        "options"     : {
+                            "dynamicData" : true,
+                            "useVectorTile" : false,
+                            "pane"          : "overlayPane",
+                            "visible"       : false,
+                            "visibleIndex"  : 0,
+                            "minZoom"       : 3,
+                            "maxZoom"       : 23,
+                            "selectable"    : false,
+                            "queryable"     : false,
+                            "attribution"   : ""
+                        },
+                        "styles"      : [
+                        ]
+                    },
+                    "dataProviderClass" : {
+                        "constructor" : "MapExpress.Service.GeoJSONProvider",
+                        "args"        : [
+                            "http://188.43.2.57/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo_object_less_minimum_view&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
+                        ],
+                        "options"     : {
+                            "useTileIndex" : false,
+                            "preloadData"  : false,
+                            "identifyFormat" : "json",
+                            "tileSize"       : 256,
+                            "subdomains"     : "abc",
+                            "uppercase"      : false,
+                            "identifyLayersId" : ""
+                        }
+                    }
+                },
+                {
+                    "id" : "7c509be1-e089-4939-964a-282713dda0f7",
+                    "options" : {
+                        "name" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u0412\u044B\u0432\u0435\u0434\u0435\u043D \u0438\u0437 \u043F\u0435\u0440\u0435\u0447\u043D\u044F]",
+                        "displayName" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u0412\u044B\u0432\u0435\u0434\u0435\u043D \u0438\u0437 \u043F\u0435\u0440\u0435\u0447\u043D\u044F]",
+                        "description" : null,
+                        "type"        : "overlay"
+                    },
+                    "layers"  : [
+                    ],
+                    "layerClass" : {
+                        "constructor" : "MapExpress.Layers.GeoJSONServiceLayer",
+                        "options"     : {
+                            "dynamicData" : true,
+                            "useVectorTile" : false,
+                            "pane"          : "overlayPane",
+                            "visible"       : false,
+                            "visibleIndex"  : 1,
+                            "minZoom"       : 3,
+                            "maxZoom"       : 23,
+                            "selectable"    : false,
+                            "queryable"     : false,
+                            "attribution"   : ""
+                        },
+                        "styles"      : [
+                        ]
+                    },
+                    "dataProviderClass" : {
+                        "constructor" : "MapExpress.Service.GeoJSONProvider",
+                        "args"        : [
+                            "http://188.43.2.57/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo_object_out_from_list_view&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
+                        ],
+                        "options"     : {
+                            "useTileIndex" : false,
+                            "preloadData"  : false,
+                            "identifyFormat" : "json",
+                            "tileSize"       : 256,
+                            "subdomains"     : "abc",
+                            "uppercase"      : false,
+                            "identifyLayersId" : ""
+                        }
+                    }
+                },
+                {
+                    "id" : "9f007d09-de78-48d1-a675-f85cb967fc2a",
+                    "options" : {
+                        "name" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u0410\u0440\u0445\u0438\u0432\u043D\u044B\u0439]",
+                        "displayName" : "\u0423\u0447\u0430\u0441\u0442\u043A\u0438 [\u0410\u0440\u0445\u0438\u0432\u043D\u044B\u0439]",
+                        "description" : null,
+                        "type"        : "overlay"
+                    },
+                    "layers"  : [
+                    ],
+                    "layerClass" : {
+                        "constructor" : "MapExpress.Layers.GeoJSONServiceLayer",
+                        "options"     : {
+                            "dynamicData" : true,
+                            "useVectorTile" : false,
+                            "pane"          : "overlayPane",
+                            "visible"       : false,
+                            "visibleIndex"  : 2,
+                            "minZoom"       : 3,
+                            "maxZoom"       : 23,
+                            "selectable"    : false,
+                            "queryable"     : false,
+                            "attribution"   : ""
+                        },
+                        "styles"      : [
+                        ]
+                    },
+                    "dataProviderClass" : {
+                        "constructor" : "MapExpress.Service.GeoJSONProvider",
+                        "args"        : [
+                            "http://188.43.2.57/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo_object_archive_view&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
+                        ],
+                        "options"     : {
+                            "useTileIndex" : false,
+                            "preloadData"  : false,
+                            "identifyFormat" : "json",
+                            "tileSize"       : 256,
+                            "subdomains"     : "abc",
+                            "uppercase"      : false,
                             "identifyLayersId" : ""
                         }
                     }
@@ -571,7 +695,7 @@ defaultMapModel =
                             "reuseTiles"           : false,
                             "crossOrigin"          : false,
                             "visible"              : false,
-                            "visibleIndex"         : 13,
+                            "visibleIndex"         : 17,
                             "minZoom"              : 9,
                             "maxZoom"              : 23,
                             "selectable"           : false,
@@ -628,7 +752,7 @@ defaultMapModel =
                             "reuseTiles"           : false,
                             "crossOrigin"          : false,
                             "visible"              : false,
-                            "visibleIndex"         : 14,
+                            "visibleIndex"         : 18,
                             "minZoom"              : 9,
                             "maxZoom"              : 23,
                             "selectable"           : false,
@@ -681,7 +805,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 6,
+                                    "visibleIndex" : 10,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -725,7 +849,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 8,
+                                    "visibleIndex" : 12,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -769,7 +893,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 7,
+                                    "visibleIndex" : 11,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -813,7 +937,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 4,
+                                    "visibleIndex" : 8,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -857,7 +981,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 5,
+                                    "visibleIndex" : 9,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -914,7 +1038,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 12,
+                                    "visibleIndex" : 16,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -958,7 +1082,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 11,
+                                    "visibleIndex" : 15,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -1002,7 +1126,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 10,
+                                    "visibleIndex" : 14,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -1046,7 +1170,7 @@ defaultMapModel =
                                 "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                                 "options"     : {
                                     "visible" : false,
-                                    "visibleIndex" : 9,
+                                    "visibleIndex" : 13,
                                     "minZoom"      : 9,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
@@ -1395,6 +1519,109 @@ defaultMapModel =
                     "identifyLayersId" : ""
                 }
             }
+        },
+        {
+            "id" : "98299a08-4d74-4a11-9614-d286cd31144f",
+            "options" : {
+                "name" : "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+                "displayName" : "\u041F\u0440\u043E\u0447\u0435\u0435",
+                "description" : null,
+                "type"        : "group"
+            },
+            "layers"  : [
+                {
+                    "id" : "1d2ac124-223e-4e66-8081-faaad8a072e5",
+                    "options" : {
+                        "name" : "\u0432",
+                        "displayName" : "\u0413\u0438\u0434\u0440\u043E\u0422\u0435\u043F\u043B\u043E\u042D\u043B\u0435\u043A\u0442\u0440\u043E\u0421\u0442\u0430\u0446\u0438\u0438",
+                        "description" : null,
+                        "type"        : "overlay"
+                    },
+                    "layers"  : [
+                    ],
+                    "layerClass" : {
+                        "constructor" : "MapExpress.Layers.ImageOverlayLayer",
+                        "options"     : {
+                            "visible" : false,
+                            "visibleIndex" : 0,
+                            "minZoom"      : 3,
+                            "maxZoom"      : 23,
+                            "selectable"   : false,
+                            "queryable"    : false,
+                            "attribution"  : ""
+                        },
+                        "styles"      : [
+                        ]
+                    },
+                    "dataProviderClass" : {
+                        "constructor" : "MapExpress.Service.WmsProvider",
+                        "args"        : [
+                            "http://gisserver.info/GISWebServiceSE/service.php"
+                        ],
+                        "options"     : {
+                            "service" : "WMS",
+                            "request" : "GetMap",
+                            "version" : "1.1.1",
+                            "layers"  : "hydroelectric_power,thermoelectric_power,substation,boiler",
+                            "styles"  : "",
+                            "format"  : "image/png",
+                            "dpi"     : 96,
+                            "transparent" : true,
+                            "tileSize"    : 256,
+                            "subdomains"  : "abc",
+                            "uppercase"   : false,
+                            "identifyFormat" : "text/html",
+                            "identifyLayersId" : ""
+                        }
+                    }
+                },
+                {
+                    "id" : "ea43fb3c-0e9b-46c1-8238-65c05cddffe2",
+                    "options" : {
+                        "name" : "\u0421\u0442\u0430\u043D\u0446\u0438\u0438 \u0420\u0416\u0414",
+                        "displayName" : "\u0421\u0442\u0430\u043D\u0446\u0438\u0438 \u0420\u0416\u0414",
+                        "description" : null,
+                        "type"        : "overlay"
+                    },
+                    "layers"  : [
+                    ],
+                    "layerClass" : {
+                        "constructor" : "MapExpress.Layers.ImageOverlayLayer",
+                        "options"     : {
+                            "visible" : false,
+                            "visibleIndex" : 0,
+                            "minZoom"      : 3,
+                            "maxZoom"      : 23,
+                            "selectable"   : false,
+                            "queryable"    : false,
+                            "attribution"  : ""
+                        },
+                        "styles"      : [
+                        ]
+                    },
+                    "dataProviderClass" : {
+                        "constructor" : "MapExpress.Service.WmsProvider",
+                        "args"        : [
+                            "http://gisserver.info/GISWebServiceSE/service.php"
+                        ],
+                        "options"     : {
+                            "service" : "WMS",
+                            "request" : "GetMap",
+                            "version" : "1.1.1",
+                            "layers"  : "rzd",
+                            "styles"  : "",
+                            "format"  : "image/png",
+                            "dpi"     : 96,
+                            "transparent" : true,
+                            "tileSize"    : 256,
+                            "subdomains"  : "abc",
+                            "uppercase"   : false,
+                            "identifyFormat" : "text/html",
+                            "identifyLayersId" : ""
+                        }
+                    }
+                }
+            ]
         }
     ]
 }

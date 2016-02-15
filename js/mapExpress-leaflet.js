@@ -769,7 +769,6 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		this._mapModel.sortLayersByVisibleIndex(overlays);
 		this._mapModel._reorderLayersVisibleIndex(overlays);
 		this._mapModel.sortLayersByVisibleIndex(overlays);
-		console.log(overlays);
 		for (var j = overlays.length - 1; j >= 0; j--) {
 			var lj = overlays[j];
 			lj.mapLayer.bringToFront();
