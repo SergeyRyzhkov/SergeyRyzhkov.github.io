@@ -1,6 +1,5 @@
 defaultMapModel = 
 
-
 {
     "id" : "vsm_map",
     "options" : {
@@ -110,7 +109,7 @@ defaultMapModel =
                     "dataProviderClass" : {
                         "constructor" : "MapExpress.Service.GeoJSONProvider",
                         "args"        : [
-                            "http://vm2012iis/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo_object_view_1&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
+                            "http://188.43.2.57/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_geo_object_view_1&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
                         ],
                         "options"     : {
                             "useTileIndex" : false,
@@ -214,62 +213,6 @@ defaultMapModel =
                             "identifyLayersId" : ""
                         }
                     }
-                },
-                {
-                    "id" : "c683cc01-d425-4faa-a5fa-c20691e0210c",
-                    "options" : {
-                        "name" : "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
-                        "displayName" : "\u0422\u0435\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u043A\u0430\u0440\u0442\u044B",
-                        "description" : null,
-                        "type"        : "group"
-                    },
-                    "layers"  : [
-                        {
-                            "id" : "a98b8d55-f9cd-4a37-b7aa-f119848c9f87",
-                            "options" : {
-                                "name" : "\u0421\u0442\u0430\u0442\u0443\u0441 \u0430\u043A\u0442\u0443\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438 \u0421\u0423\u041F\u0420",
-                                "displayName" : "\u0421\u0442\u0430\u0442\u0443\u0441 \u0430\u043A\u0442\u0443\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438 \u0421\u0423\u041F\u0420",
-                                "description" : null,
-                                "type"        : "overlay"
-                            },
-                            "layers"  : [
-                            ],
-                            "layerClass" : {
-                                "constructor" : "MapExpress.Layers.GeoJSONServiceLayer",
-                                "options"     : {
-                                    "dynamicData" : true,
-                                    "useVectorTile" : false,
-                                    "pane"          : "overlayPane",
-                                    "visible"       : false,
-                                    "visibleIndex"  : 0,
-                                    "minZoom"       : 3,
-                                    "maxZoom"       : 23,
-                                    "selectable"    : false,
-                                    "queryable"     : false,
-                                    "attribution"   : ""
-                                },
-                                "styles"      : [
-                                ]
-                            },
-                            "dataProviderClass" : {
-                                "constructor" : "MapExpress.Service.GeoJSONProvider",
-                                "args"        : [
-                                    "http://vm2012iis/vsm_site/Map/Map/GeoJsonData/?view=vsm.land_thematic_status_view&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}"
-                                ],
-                                "options"     : {
-                                    "useTileIndex" : false,
-                                    "preloadData"  : false,
-                                    "identifyFormat" : "json",
-                                    "tileSize"       : 256,
-                                    "subdomains"     : "abc",
-                                    "uppercase"      : false,
-                                    "identifyLayersId" : ""
-                                }
-                            }
-                        }
-                    ],
-                    "layerClass" : null,
-                    "dataProviderClass" : null
                 }
             ],
             "layerClass" : null,

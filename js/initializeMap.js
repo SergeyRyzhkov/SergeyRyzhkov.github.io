@@ -80,8 +80,8 @@ function addUserLayers() {
 	var url = VSM_SITE_ROOT + "/Map/Map/UserLayers";
 	MapExpress.Utils.Promise.qAjax(url).then(
 		function(data) {
-			var layerGroupModel = new MapExpress.Mapping.LayerModel("Пользовательсие слои", {
-				displayName: "Пользовательсие слои"
+			var layerGroupModel = new MapExpress.Mapping.LayerModel("Пользовательские слои", {
+				displayName: "Пользовательские слои"
 			});
 			for (var i = 0; i < data.length; i++) {
 				var iterLayerName = data[i];
@@ -303,88 +303,3 @@ function MapWorkspaceManager() {
 
 	return this;
 };
-
-
-function MapExpressToolsShowLegend() {
-
-	var _floatMapPanel = new MapExpress.Controls.FloatMapPanel(MapManager, {
-		className: "float-map-panel big"
-	});
-
-	var layers = getThematicLayers();
-
-	for (var m = layers.length - 1; m >= 0; m--) {
-		var iterLayer = layers[m];
-		iterLayer.visibleIndex = 0;
-		iterLayer.on('add', layeradded, this);
-		iterLayer.on('remove', function() {
-			_floatMapPanel.hide();
-		}, this);
-	}
-
-
-	function layeradded(e) {
-		_floatMapPanel.hide();
-		var tLayers = getThematicLayers();
-		for (var i = tLayers.length - 1; i >= 0; i--) {
-			var titerLayer = tLayers[i];
-			window.MapManager._map.removeLayer(titerLayer);
-			titerLayer.visible = false;
-		}
-
-		var layer = e.target;
-		layer.off('add', layeradded, this);
-		layer.visible = true;
-		layer.addTo(window.MapManager._map);
-		layer.bringToFront();
-		layer.on('add', layeradded, this);
-
-		switch (layer.id) {
-			case 'land_thematic_day_control_view':
-				activateLegend("#land-thematic-day-control-view");
-				break;
-
-			case 'land_thematic_base_plan_view':
-				activateLegend("#land-thematic-base-plan-view");
-				break;
-
-			case 'land_thematic_status_view':
-				activateLegend("#land-thematic-status-view");
-				break;
-
-			case 'land_thematic_work_type_view':
-				activateLegend("#land-thematic-work-type-view");
-				break;
-
-			case 'land_thematic_event_type_view':
-				activateLegend("#land-thematic-event-type-view");
-				break;
-
-			case 'land_thematic_event_kind_view':
-				activateLegend("#land-thematic-event-kind-view");
-				break;
-		}
-	};
-
-	function activateLegend(legendId) {
-		_floatMapPanel.hide();
-
-		var that = this;
-		$("#layerInfoTemplate").empty();
-
-		$("#layerInfoTemplate").load("./templates/mapLegend.html", function() {
-			var template = $.templates(legendId);
-			var content = template.render();
-			$("#layerInfoTemplate").empty();
-			if (legendId !== content) {
-				_floatMapPanel.show();
-				_floatMapPanel.setContent(content);
-			}
-		});
-	}
-
-	function getThematicLayers() {
-		var layers = window.MapManager.getMapModel().getLayersByOptionValue("type", "thematic");
-		return layers;
-	};
-}
