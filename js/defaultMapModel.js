@@ -1,6 +1,5 @@
 defaultMapModel = 
 
-
 {
     "id" : "vsm_map",
     "options" : {
@@ -43,7 +42,7 @@ defaultMapModel =
                             "useVectorTile" : false,
                             "pane"          : "overlayPane",
                             "visible"       : false,
-                            "visibleIndex"  : 3,
+                            "visibleIndex"  : 5,
                             "minZoom"       : 8,
                             "maxZoom"       : 23,
                             "selectable"    : true,
@@ -140,7 +139,7 @@ defaultMapModel =
                             "useVectorTile" : false,
                             "pane"          : "overlayPane",
                             "visible"       : false,
-                            "visibleIndex"  : 4,
+                            "visibleIndex"  : 6,
                             "minZoom"       : 3,
                             "maxZoom"       : 23,
                             "selectable"    : false,
@@ -183,7 +182,7 @@ defaultMapModel =
                             "useVectorTile" : false,
                             "pane"          : "overlayPane",
                             "visible"       : false,
-                            "visibleIndex"  : 5,
+                            "visibleIndex"  : 7,
                             "minZoom"       : 3,
                             "maxZoom"       : 23,
                             "selectable"    : false,
@@ -269,7 +268,7 @@ defaultMapModel =
                             "useVectorTile" : false,
                             "pane"          : "overlayPane",
                             "visible"       : false,
-                            "visibleIndex"  : 1,
+                            "visibleIndex"  : 3,
                             "minZoom"       : 3,
                             "maxZoom"       : 23,
                             "selectable"    : false,
@@ -312,7 +311,7 @@ defaultMapModel =
                             "useVectorTile" : false,
                             "pane"          : "overlayPane",
                             "visible"       : false,
-                            "visibleIndex"  : 2,
+                            "visibleIndex"  : 4,
                             "minZoom"       : 3,
                             "maxZoom"       : 23,
                             "selectable"    : false,
@@ -1543,7 +1542,7 @@ defaultMapModel =
                         "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                         "options"     : {
                             "visible" : false,
-                            "visibleIndex" : 0,
+                            "visibleIndex" : 1,
                             "minZoom"      : 3,
                             "maxZoom"      : 23,
                             "selectable"   : false,
@@ -1561,7 +1560,7 @@ defaultMapModel =
                         "options"     : {
                             "service" : "WMS",
                             "request" : "GetMap",
-                            "version" : "1.1.1",
+                            "version" : "1.3.0",
                             "layers"  : "hydroelectric_power,thermoelectric_power,substation,boiler",
                             "styles"  : "",
                             "format"  : "image/png",
@@ -1589,7 +1588,7 @@ defaultMapModel =
                         "constructor" : "MapExpress.Layers.ImageOverlayLayer",
                         "options"     : {
                             "visible" : false,
-                            "visibleIndex" : 0,
+                            "visibleIndex" : 2,
                             "minZoom"      : 3,
                             "maxZoom"      : 23,
                             "selectable"   : false,
@@ -1607,7 +1606,7 @@ defaultMapModel =
                         "options"     : {
                             "service" : "WMS",
                             "request" : "GetMap",
-                            "version" : "1.1.1",
+                            "version" : "1.3.0",
                             "layers"  : "rzd",
                             "styles"  : "",
                             "format"  : "image/png",
@@ -1621,7 +1620,9 @@ defaultMapModel =
                         }
                     }
                 }
-            ]
+            ],
+            "layerClass" : null,
+            "dataProviderClass" : null
         }
     ]
 }
