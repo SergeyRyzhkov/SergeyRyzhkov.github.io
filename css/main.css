@@ -11,8 +11,8 @@
 }
 
 body {
-  font: 11px;
-  font-family: "Roboto",sans-serif, helvetica,arial;
+  font: 12px/1.5 "Roboto", Arial, Helvetica, sans-serif;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;  
 }
 
 .map-toolbar {
@@ -60,7 +60,13 @@ body {
 }
 
 .float-map-panel-header {
-
+	font-size: 16px;
+	line-height: 17px;
+	color: #01557f;
+	font-weight: 500;
+	margin: 10px 0;
+	padding: 0 !important;
+	text-align: center;
 }
 
 .float-map-panel-content{
@@ -113,7 +119,7 @@ svg.leaflet-zoom-animated > g > path {
     left: 0;
     bottom: 0;
     width: 320px;
-    background-color: white;
+    background-color: #f2f2f2;
 	z-index:10000;
 	box-shadow:0 -1px 24px rgba(0,0,0,0.4);
 	font-family: "Roboto";
