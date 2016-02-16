@@ -20,7 +20,7 @@ function onWorkspaceLoaded() {
 	var toolbar = new MapExpress.Tools.MapToolbar(mapManager);
 
 	toolbar.addCommand(new MapExpress.Tools.ShowLayerControlMapCommand(mapManager));
-	toolbar.addCommand(new MapExpress.Tools.MapWorkspaceManagerTool(mapManager));
+	
 
 	toolbar.addCommand(new MapExpress.Tools.SearchCadastrTool(mapManager));
 	toolbar.addCommand(new MapExpress.Tools.BoxZoom(mapManager));
@@ -33,7 +33,7 @@ function onWorkspaceLoaded() {
 		selectionLayerId: "vsmParcels"
 	}));
 
-	
+
 	toolbar.addCommand(new MapExpress.Tools.ExportMapImage(mapManager, {
 		mapSelector: VSM_MAP_SELECTOR
 	}));
@@ -246,6 +246,7 @@ MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.ex
 
 			var layerOrderControl = new MapExpress.Controls.LayerOrderControl(MapManager);
 			layerOrderControl.render();
+
 		});
 
 	}

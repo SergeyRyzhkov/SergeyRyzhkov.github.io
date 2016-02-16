@@ -1,20 +1,44 @@
 <script id="mapSidebarTemplateId" type="text/x-jsrender">
-            <div style="margin:0px;padding:10px; position: relative;border-bottom: 3px solid red; background:white;">
+   
+			<div style="margin:0px;padding:8px;position: relative;border-bottom: 3px solid red; background:white;">
 					<img src="images/vsmrail.jpg"/><span style="font-size: 14px;font-weight: 500;">"ОАО Скоростные магистрали"</span>
 			</div>
+	
+			<div id="mapToc" class="tabs" style="margin-top:10px;display:block;height:100%;overflow:hidden;">
+				
+				<ul class="tabs__caption">
+					<li class="active">Содержание карты</li>
+					<li>Порядок следования слоев</li>
+				</ul>	
+				<div class="tabs__content  active" style="height:100%">
+					<div class="float-map-panel big" style="margin:1px;display:block;height:87%;overflow-y:auto;overflow-x:hidden;">
+						<div id="treelayercontrol" style="font-size:11.5px;"></div>
+					</div>    
+				</div>
+				<div class="tabs__content">
+					<div class="float-map-panel big" style="margin:1px;display:block;height:86%;overflow-y:auto;overflow-x:hidden;">	
+						<div id="layer-order-control" style="font-size:12px;margin:8px;"></div>
+					</div>		
+				</div>					
 			
-			<div style="margin-top:12px; width: 318px;">
-                <div class="float-map-panel big" style="margin:8px">
-                    <div class="float-map-panel-header">Содержание карты</div>
-                    <div id="treelayercontrol" style="font-size:11.5px;margin-top:4px;margin-left:1px;margin-bottom:10px;"></div>
-                </div>     
-							
-				<div class="float-map-panel big" style="margin:8px;margin-top:12px;">	
-					<div class="float-map-panel-header">Порядок следования слоев</div>
-                    <div id="layer-order-control" style="font-size:12px;margin:8px;"></div>
-                        
-                </div>
-            </div>
+			</div>
+			
+	
+
+<script>
+			(function($) {
+$(function() {
+
+	$('ul.tabs__caption').on('click', 'li:not(.active)', function() {
+		$(this)
+			.addClass('active').siblings().removeClass('active')
+			.closest('div.tabs').find('div.tabs__content').removeClass('active').eq($(this).index()).addClass('active');
+	});
+
+});
+})(jQuery);
+</script>
+
 </script>
 
    

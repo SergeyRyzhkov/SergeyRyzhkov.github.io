@@ -188,7 +188,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 				node = this._createNode(iterLayerModel);
 				parentNode.children.push(node);
 			}
-
+			
 			if (iterLayerModel.hasChildren()) {
 				if (!node) {
 					node = parentNode;
