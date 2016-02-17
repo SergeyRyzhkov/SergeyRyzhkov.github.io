@@ -3041,7 +3041,6 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 
 		for (var i = layers.length - 1; i >= 0; i--) {
 			if (this._mapManager.layerEnabled(layers[i].id)) {
-				console.log("dfdsf");
 				result.push(layers[i]);
 			}
 		}
