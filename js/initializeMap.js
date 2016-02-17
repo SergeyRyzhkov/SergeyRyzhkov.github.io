@@ -164,7 +164,7 @@ function addRasters() {
 				var layerClassOptions = {
 					maxZoom: 23,
 					minZoom: 0,
-					queryable: true,
+					queryable: false,
 					visible: false
 				};
 				var layerClass = new MapExpress.Layers.ImageOverlayLayer(provider, layerClassOptions);

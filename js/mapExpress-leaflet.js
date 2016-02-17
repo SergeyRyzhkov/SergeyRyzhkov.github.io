@@ -764,6 +764,17 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		}
 	},
 
+	layerEnabled: function(layerId) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel && layerModel.mapLayer && layerModel.mapLayer.options) {
+			var zoom = this._map.getZoom();
+			if (layerModel.mapLayer.options.visible && zoom < layerModel.mapLayer.options.maxZoom && zoom > layerModel.mapLayer.options.minZoom) {
+				return true;
+			}
+		}
+		return false;
+	},
+
 	_reorderOverlays: function() {
 		var overlays = this._mapModel.getOverlayLayers();
 		this._mapModel.sortLayersByVisibleIndex(overlays);
@@ -830,16 +841,16 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 	},
 
 	getVisibleLayers: function() {
-		return this.getLayersByOptionValue("mapLayer.options.visible", true);
+		return this.getMapLayersByOptionValue("visible", true);
 	},
 
 
 	getQueryableLayers: function() {
-		return this.getLayersByOptionValue("mapLayer.options.queryable", true);
+		return this.getMapLayersByOptionValue("queryable", true);
 	},
 
 	getSelectableLayers: function() {
-		return this.getLayersByOptionValue("mapLayer.options.selectable", true);
+		return this.getMapLayersByOptionValue("selectable", true);
 	},
 
 	getLayersByOptionValue: function(optionName, optionValue) {
@@ -852,6 +863,20 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		return filtered;
 	},
 
+	getMapLayersByOptionValue: function(optionName, optionValue) {
+		var layers = this.getAllLayers();
+		var filtered = layers.filter(function(iter) {
+			if (iter.mapLayer && iter.mapLayer.options && iter.mapLayer.options.hasOwnProperty(optionName)) {
+				if (iter.mapLayer.options[optionName] !== "undefined" && iter.mapLayer.options[optionName] === true) {
+					return true;
+				}
+				return false;
+			}
+		});
+		return filtered;
+	},
+
+	
 	_fillAllLayers: function(layerGroupModel, resultArray) {
 		for (var i = layerGroupModel._layers.length - 1; i >= 0; i--) {
 			var iterLayer = layerGroupModel._layers[i];
@@ -2455,8 +2480,10 @@ MapExpress.Service.baseDataProvider = function(options) {
 		if (this.options.identifyLayersId) {
 			identLyr = 'visible:' + this.options.identifyLayersId;
 		}
-		if (this.options.layersId) {
-			identLyr = 'visible:' + this.options.layersId;
+		if (!identLyr) {
+			if (this.options.layersId) {
+				identLyr = 'visible:' + this.options.layersId;
+			}
 		}
 		if (!identLyr) {
 			identLyr = 'top';
@@ -2987,7 +3014,7 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 				}
 				if (func) {
 					identifyPromises.push(func);
-					identifyedLayers.push(iterLayer.mapLayer);
+					identifyedLayers.push(iterLayer);
 				}
 			}
 		}
@@ -2999,7 +3026,7 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 					if (result.state === "fulfilled") {
 						var identRes = {};
 						identRes.latlng = identifyedResults.latlng;
-						identRes.layer = identifyedLayers[i];
+						identRes.layerName = identifyedLayers[i].options.displayName;
 						identRes.data = result.value;
 						identifyedResults.push(identRes);
 					}
@@ -3009,20 +3036,29 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 	},
 
 	_getQueryableLayers: function() {
-		return this._mapManager.getMapModel().getOverlayLayers();
-		//return this._mapManager.getVisibleLayers();
-		//var layers = this._mapManager.getQueryableLayers();
-		//return layers;
+		var result = [];
+		var layers = this._mapManager.getMapModel().getQueryableLayers();
+
+		for (var i = layers.length - 1; i >= 0; i--) {
+			if (this._mapManager.layerEnabled(layers[i].id)) {
+				console.log("dfdsf");
+				result.push(layers[i]);
+			}
+		}
+
+		return result;
 	},
 
 	_getResultObj: function(res) {
 		var identResultsObj = {};
+		var numberInList = 0;
 		identResultsObj.latlng = res.latlng;
 		identResultsObj.identifiedResults = [];
 
 		for (var i = 0; i < res.length; i++) {
 			var item = res[i];
-			if (item.data) {
+			if (item.data && item.layerName !== "undefined") {
+
 				var cont = true;
 				var data = null;
 
@@ -3054,8 +3090,10 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 				if (data !== null) {
 					var obj = {};
 					obj.properties = data;
-					obj.layer = item.layer;
+					obj.layerName = item.layerName;
+					obj.numberInList = numberInList;
 					identResultsObj.identifiedResults.push(obj);
+					numberInList++;
 				}
 			}
 		}
@@ -3083,15 +3121,32 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 
 			$("#layerInfoTemplate").empty();
 
+
 			L.popup({
-					maxWidth: 500,
-					maxHeight: 800
+					maxWidth: 700
 				})
 				.setLatLng(identifyedResults.latlng)
 				.setContent(rend)
 				.openOn(that._mapManager._map);
 
-			$('#layerInfoMenu').metisMenu();
+
+			/* jshint ignore:start */
+
+			$('ul.tabs__caption').on('click', 'li:not(.active)', function() {
+				$(this)
+					.addClass('active').siblings().removeClass('active')
+					.closest('div.tabs').find('div.tabs__content').removeClass('active').eq($(this).index()).addClass('active');
+			});
+			//var lyrDiv = document.getElementById("layerInfoMenu");
+
+			//var ak1 = Accordion(
+			//	lyrDiv, {
+			//		openIdx: 2,
+			//		speed: 10,
+			//	}
+			//);
+			/* jshint ignore:end */
+
 		});
 
 

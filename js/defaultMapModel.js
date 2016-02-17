@@ -1,5 +1,4 @@
-defaultMapModel = 
-
+defaultMapModel=
 {
     "id" : "vsm_map",
     "options" : {
@@ -698,7 +697,7 @@ defaultMapModel =
                             "minZoom"              : 6,
                             "maxZoom"              : 23,
                             "selectable"           : false,
-                            "queryable"            : false,
+                            "queryable"            : true,
                             "attribution"          : ""
                         },
                         "styles"      : [
@@ -755,7 +754,7 @@ defaultMapModel =
                             "minZoom"              : 6,
                             "maxZoom"              : 23,
                             "selectable"           : false,
-                            "queryable"            : false,
+                            "queryable"            : true,
                             "attribution"          : ""
                         },
                         "styles"      : [
@@ -830,7 +829,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : "1,2,3,4,5,6,7"
+                                    "identifyLayersId"  : "4"
                                 }
                             }
                         },
@@ -874,7 +873,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : "9,10,11,12,13,14,15,16"
+                                    "identifyLayersId"  : "3"
                                 }
                             }
                         },
@@ -918,7 +917,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : "18,19,20"
+                                    "identifyLayersId"  : "2"
                                 }
                             }
                         },
@@ -937,10 +936,10 @@ defaultMapModel =
                                 "options"     : {
                                     "visible" : false,
                                     "visibleIndex" : 8,
-                                    "minZoom"      : 6,
+                                    "minZoom"      : 12,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
-                                    "queryable"    : false,
+                                    "queryable"    : true,
                                     "attribution"  : ""
                                 },
                                 "styles"      : [
@@ -962,7 +961,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : "22"
+                                    "identifyLayersId"  : "0"
                                 }
                             }
                         },
@@ -984,7 +983,7 @@ defaultMapModel =
                                     "minZoom"      : 6,
                                     "maxZoom"      : 23,
                                     "selectable"   : false,
-                                    "queryable"    : false,
+                                    "queryable"    : true,
                                     "attribution"  : ""
                                 },
                                 "styles"      : [
@@ -1006,7 +1005,7 @@ defaultMapModel =
                                     "tileSize"          : 256,
                                     "subdomains"        : "abc",
                                     "uppercase"         : false,
-                                    "identifyLayersId"  : "23,24"
+                                    "identifyLayersId"  : "1"
                                 }
                             }
                         }
@@ -1623,6 +1622,58 @@ defaultMapModel =
             ],
             "layerClass" : null,
             "dataProviderClass" : null
+        },
+        {
+            "id" : "70933b0a-301f-424e-a372-0981eef38b63",
+            "options" : {
+                "name" : "\u0414\u043E\u0440\u043E\u0436\u043D\u0430\u044F \u043A\u0430\u0440\u0442\u0430 (OSM)",
+                "displayName" : "\u0414\u043E\u0440\u043E\u0436\u043D\u0430\u044F \u043A\u0430\u0440\u0442\u0430 (OSM)",
+                "description" : null,
+                "type"        : "base"
+            },
+            "layers"  : [
+            ],
+            "layerClass" : {
+                "constructor" : "MapExpress.Layers.TileServiceLayer",
+                "options"     : {
+                    "maxNativeZoom" : null,
+                    "tileSize"      : 256,
+                    "errorTileUrl"  : "",
+                    "continuousWorld" : false,
+                    "noWrap"          : false,
+                    "zoomOffset"      : 0,
+                    "zoomReverse"     : false,
+                    "opacity"         : 1.0,
+                    "updateInterval"  : 100,
+                    "unloadInvisibleTiles" : true,
+                    "updateWhenIdle"       : false,
+                    "reuseTiles"           : false,
+                    "crossOrigin"          : false,
+                    "visible"              : false,
+                    "visibleIndex"         : 0,
+                    "minZoom"              : 3,
+                    "maxZoom"              : 23,
+                    "selectable"           : false,
+                    "queryable"            : false,
+                    "attribution"          : ""
+                },
+                "styles"      : [
+                ]
+            },
+            "dataProviderClass" : {
+                "constructor" : "MapExpress.Service.TileProvider",
+                "args"        : [
+                    "http://b.tile{s}.opencyclemap.org/transport/{z}/{x}/{y}.png"
+                ],
+                "options"     : {
+                    "useQuadkey" : false,
+                    "tileSize"   : 256,
+                    "subdomains" : "123",
+                    "uppercase"  : false,
+                    "identifyFormat" : "text/html",
+                    "identifyLayersId" : ""
+                }
+            }
         }
     ]
 }
