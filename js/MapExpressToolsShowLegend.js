@@ -13,32 +13,34 @@ function MapExpressToolsShowLegend() {
 	var t2 = createLayerModel("Дней до завершения по БП", "land_thematic_base_plan_view");
 	var t3 = createLayerModel("Дней до завершения", "land_thematic_event_day_control_view");
 	var t4 = createLayerModel("Наличие мероприятий", "land_thematic_event_kind_view");
-	var t5 = createLayerModel("Минимальный активный Тип мероприятия", "land_thematic_event_type_view");
-	var t6 = createLayerModel("Тип кадастровых работ", "land_thematic_work_type_view");
+	//var t5 = createLayerModel("Минимальный активный Тип мероприятия", "land_thematic_event_type_view");
+	//var t6 = createLayerModel("Тип кадастровых работ", "land_thematic_work_type_view");
 
 	layerGroupModel.addLayer(t1);
 	layerGroupModel.addLayer(t2);
 	layerGroupModel.addLayer(t3);
 	layerGroupModel.addLayer(t4);
-	layerGroupModel.addLayer(t5);
-	layerGroupModel.addLayer(t6);
+	//layerGroupModel.addLayer(t5);
+	//layerGroupModel.addLayer(t6);
 
 
 	function layeradded(e) {
 		_floatMapPanel.hide();
+
+		var layer = e.target;
 		var tLayers = layerGroupModel._layers;
 		for (var i = tLayers.length - 1; i >= 0; i--) {
 			var titerLayer = tLayers[i];
-			window.MapManager.setLayerVisible(titerLayer.id, false);
+			if (layer.options.id !== titerLayer.id) {
+				window.MapManager.setLayerVisible(titerLayer.id, false);
+			}
 		}
 
-		var layer = e.target;
-		layer.off('add', layeradded, this);
+		//layer.off('add', layeradded, this);
 		//window.MapManager.setLayerVisible(layer.options.id, true);
 		layer.bringToFront();
-		layer.on('add', layeradded, this);
+		//layer.on('add', layeradded, this);
 
-		console.log("2");
 
 		switch (layer.options.id) {
 			case 'Дней до завершения':
