@@ -15,6 +15,10 @@ body {
   font-family: "Roboto", Arial, Helvetica, sans-serif;  
 }
 
+.leaflet-container {
+	font: 12px/1.5 "Roboto", Arial, Helvetica, sans-serif
+}
+
 .map-toolbar {
 	padding: 3px;
 	margin-left: 10px;

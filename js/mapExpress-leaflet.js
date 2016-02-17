@@ -101,12 +101,28 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 	render: function() {
 		var that = this;
-		
+
 		var mapModel = this._mapManager.getMapModel();
 		var overlays = mapModel.getOverlayLayers();
 		mapModel.sortLayersByVisibleIndex(overlays);
 
 		var rootControl = document.getElementById('layer-order-control');
+
+		// TODO: В утиль или базовый класс
+		L.DomEvent
+			.addListener(rootControl, 'mousemove', L.DomEvent.stopPropagation)
+			.addListener(rootControl, 'click', L.DomEvent.stopPropagation)
+			.addListener(rootControl, 'dblclick', L.DomEvent.stopPropagation)
+			.addListener(rootControl, 'mousemove', L.DomEvent.preventDefault)
+			.addListener(rootControl, 'click', L.DomEvent.preventDefault)
+			.addListener(rootControl, 'dblclick', L.DomEvent.preventDefault)
+			.addListener(rootControl, 'onwheel', L.DomEvent.stopPropagation)
+			.addListener(rootControl, 'onwheel', L.DomEvent.preventDefault)
+			.addListener(rootControl, 'wheel', L.DomEvent.stopPropagation)
+			.addListener(rootControl, 'wheel', L.DomEvent.preventDefault)
+			.addListener(rootControl, 'mousewheel', L.DomEvent.stopPropagation)
+			.addListener(rootControl, 'mousewheel', L.DomEvent.preventDefault);
+
 		for (var i = 0; i < overlays.length; i++) {
 			var iterLayer = overlays[i];
 			var item = L.DomUtil.create('div', this.options.layerItemClassName, rootControl);
@@ -161,7 +177,23 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 		$.jstree.defaults.checkbox.keep_selected_style = false;
 		$.jstree.defaults.checkbox.tie_selection = false;
-		$.jstree.defaults.core.themes.responsive = true;
+		//$.jstree.defaults.core.themes.responsive = true;
+
+		var treeControl = document.getElementById('treelayercontrol');
+
+		L.DomEvent
+			.addListener(treeControl, 'mousemove', L.DomEvent.stopPropagation)
+			.addListener(treeControl, 'click', L.DomEvent.stopPropagation)
+			.addListener(treeControl, 'dblclick', L.DomEvent.stopPropagation)
+			.addListener(treeControl, 'mousemove', L.DomEvent.preventDefault)
+			.addListener(treeControl, 'click', L.DomEvent.preventDefault)
+			.addListener(treeControl, 'dblclick', L.DomEvent.preventDefault)
+			.addListener(treeControl, 'onwheel', L.DomEvent.stopPropagation)
+			.addListener(treeControl, 'onwheel', L.DomEvent.preventDefault)
+			.addListener(treeControl, 'wheel', L.DomEvent.stopPropagation)
+			.addListener(treeControl, 'wheel', L.DomEvent.preventDefault)
+			.addListener(treeControl, 'mousewheel', L.DomEvent.stopPropagation)
+			.addListener(treeControl, 'mousewheel', L.DomEvent.preventDefault);
 
 		var tree = $('#treelayercontrol').jstree(treeOptions);
 
@@ -188,7 +220,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 				node = this._createNode(iterLayerModel);
 				parentNode.children.push(node);
 			}
-			
+
 			if (iterLayerModel.hasChildren()) {
 				if (!node) {
 					node = parentNode;

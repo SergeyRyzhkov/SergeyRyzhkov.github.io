@@ -34,12 +34,11 @@ function MapExpressToolsShowLegend() {
 
 		var layer = e.target;
 		layer.off('add', layeradded, this);
-		//layer.options.visible = true;
-		//layer.addTo(window.MapManager._map);
-		
-		window.MapManager.setLayerVisible(layer.options.id, true);
+		//window.MapManager.setLayerVisible(layer.options.id, true);
 		layer.bringToFront();
 		layer.on('add', layeradded, this);
+
+		console.log("2");
 
 		switch (layer.options.id) {
 			case 'Дней до завершения':
