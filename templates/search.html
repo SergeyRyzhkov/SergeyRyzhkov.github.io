@@ -1,0 +1,20 @@
+﻿<script id="searchCadastreId" type="text/x-jsrender">
+	
+				<div id="searchContainer"></div>
+   
+		<script>
+				
+				//var p1 = new OsmSearchProvider("OpenStreetMap", window.MapManager._map);
+				var p2 = new YandexSearchProvider("Яндекс.Карты",window.MapManager._map);
+				var p3 = new GoogleSearchProvider("Google.Карты", window.MapManager._map);
+				var p4 = new CadastrSearchProvider("ПКК Росреестр", window.MapManager._map);
+				
+				var options = {
+					providers:[p2,p3,p4],
+					startProvider:p4
+				};
+				
+				$("#searchContainer").GeoJsonAutocomplete(options);
+		</script>
+ 
+</script>
