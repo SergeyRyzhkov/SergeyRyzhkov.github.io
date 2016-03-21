@@ -17,7 +17,7 @@ MapExpress.Tools.ParcelInteractionTool = MapExpress.Tools.BaseMapCommand.extend(
 		this._floatMapPanel = new MapExpress.Controls.FloatMapPanel(mapManager, {
 			className: "float-map-panel"
 		});
-		this._parcelsLayer = mapManager.getMapModel().getLayerById("vsmParcels");
+		this._parcelsLayer = mapManager.getMapModel().getLayerById("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8");
 	},
 
 	createContent: function(toolBarContainer) {
@@ -48,7 +48,6 @@ MapExpress.Tools.ParcelInteractionTool = MapExpress.Tools.BaseMapCommand.extend(
 					that._floatMapPanel.hide();
 				}
 			} else {
-
 				layer.on('mouseover', that._in, that);
 				layer.on('mouseout', that._out, that);
 			}
@@ -59,16 +58,16 @@ MapExpress.Tools.ParcelInteractionTool = MapExpress.Tools.BaseMapCommand.extend(
 	_in: function(e) {
 		var layer = e.target;
 		if (!layer || layer === "undefined") {
+			if (this._floatMapPanel) {
+				this._floatMapPanel.hide();
+			}
 			return;
 		}
-
-		layer.setStyle(this.options.selectStyle);
 
 		var that = this;
 
 		$("#layerInfoTemplate").empty();
 
-		
 		$("#layerInfoTemplate").load("./templates/popupLayerInfo.html", function() {
 
 			if (!that._template) {
@@ -77,21 +76,24 @@ MapExpress.Tools.ParcelInteractionTool = MapExpress.Tools.BaseMapCommand.extend(
 			var content = that._template.render(layer.feature);
 			$("#popupLayerInfoId").empty();
 
+			layer.setStyle(that.options.selectStyle);
+
 			that._floatMapPanel.show();
 			that._floatMapPanel.setContent(content);
+
 		});
 	},
 
 	_out: function(e) {
+		var that = this;
 		var layer = e.target;
-		if (layer && layer.feature && layer.feature.properties && layer.feature.properties.style) {
-			var style = JSON.parse(layer.feature.properties.style);
-			if (style) {
-				layer.setStyle(style);
+		this._parcelsLayer.mapLayer.updateStyle();
+		hidePanel();
+
+		function hidePanel() {
+			if (that._floatMapPanel && that._floatMapPanel._visible) {
+				that._floatMapPanel.hide();
 			}
-		}
-		if (this._floatMapPanel) {
-			this._floatMapPanel.emptyContent();
 		}
 	}
 

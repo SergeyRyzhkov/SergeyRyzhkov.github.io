@@ -8,7 +8,7 @@ MapExpress.Tools.ParcelEditTool = MapExpress.Tools.BaseMapCommand.extend({
 		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
 		L.setOptions(this, options);
 
-		this._parcelsLayer = mapManager.getMapModel().getLayerById("vsmParcels");
+		this._parcelsLayer = mapManager.getMapModel().getLayerById("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8");
 	},
 
 	createContent: function(toolBarContainer) {
@@ -38,7 +38,7 @@ MapExpress.Tools.ParcelEditTool = MapExpress.Tools.BaseMapCommand.extend({
 		}
 
 		if (!isactive) {
-			this._parcelsLayer.eachLayer(function(layer) {
+			this._parcelsLayer.mapLayer.eachLayer(function(layer) {
 				layer.off({
 					click: _startEdit,
 					dblclick: _save
@@ -49,7 +49,7 @@ MapExpress.Tools.ParcelEditTool = MapExpress.Tools.BaseMapCommand.extend({
 
 
 		if (isactive) {
-			this._parcelsLayer.eachLayer(function(layer) {
+			this._parcelsLayer.mapLayer.eachLayer(function(layer) {
 				layer.on({
 					click: _startEdit,
 					dblclick: _save
@@ -78,11 +78,6 @@ MapExpress.Tools.ParcelEditTool = MapExpress.Tools.BaseMapCommand.extend({
 				editor.newHole(e.latlng);
 				editor.alreadyStartHole = true;
 			}
-
-
-			//var deleteShape = function(e) {
-			//	if ((e.originalEvent.ctrlKey || e.originalEvent.metaKey) && this.editEnabled()) this.editor.deleteShapeAt(e.latlng);
-			//};
 		}
 
 		function _save(e) {
@@ -95,15 +90,14 @@ MapExpress.Tools.ParcelEditTool = MapExpress.Tools.BaseMapCommand.extend({
 			$.ajax({
 				type: "POST",
 				url: updateUrl,
-				data: data
-			});
-
-			if (e.target && e.target.feature && e.target.feature.properties && e.target.feature.properties.style) {
-				var style = JSON.parse(e.target.feature.properties.style);
-				if (style) {
-					e.target.setStyle(style);
+				data: data,
+				complete: function(data) {
+					if (that._mapManager.layerEnabled("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8")) {
+					//	console.log(that._parcelsLayer.mapLayer)
+						that._parcelsLayer.mapLayer.updateStyle();
+					}
 				}
-			}
+			});
 			that._mapManager._map.dragging.enable();
 		}
 	}
@@ -122,7 +116,7 @@ MapExpress.Tools.ParcelCreateTool = MapExpress.Tools.BaseMapCommand.extend({
 		MapExpress.Tools.BaseMapCommand.prototype.initialize.call(this, mapManager, options);
 		L.setOptions(this, options);
 
-		this._parcelsLayer = mapManager.getMapModel().getLayerById("vsmParcels");
+		this._parcelsLayer = mapManager.getMapModel().getLayerById("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8");
 	},
 
 	createContent: function(toolBarContainer) {
@@ -174,7 +168,9 @@ MapExpress.Tools.ParcelCreateTool = MapExpress.Tools.BaseMapCommand.extend({
 			url: insertUrl,
 			data: data,
 			complete: function(data) {
-				that._parcelsLayer._refreshData();
+				if (that._mapManager.layerEnabled("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8")) {
+					that._parcelsLayer.mapLayer._refreshData();
+				}
 			}
 		});
 
@@ -209,11 +205,9 @@ MapExpress.Tools.ParcelDeleteTool = MapExpress.Tools.BaseMapCommand.extend({
 
 	activate: function() {
 		var that = this;
-		var parcelsLayer = this._mapManager.getMapModel().getLayerById("vsmParcels");
-		var selection = this._mapManager.getSelection("vsmParcels");
+		var parcelsLayer = this._mapManager.getMapModel().getLayerById("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8");
+		var selection = this._mapManager.getSelection("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8");
 		var selected = selection.getSelections();
-
-		console.log(selected.length);
 
 		var deleteUrl = VSM_SITE_ROOT + "/Map/Map/DeleteLandGeo";
 		for (var j = 0; j < selected.length; j++) {
@@ -226,7 +220,9 @@ MapExpress.Tools.ParcelDeleteTool = MapExpress.Tools.BaseMapCommand.extend({
 				url: deleteUrl,
 				data: data,
 				complete: function(data) {
-					parcelsLayer._refreshData();
+					if (that._mapManager.layerEnabled("6002f5ff-0c9e-4e68-8ab9-2629f4bff5f8")) {
+						parcelsLayer.mapLayer._refreshData();
+					}
 				}
 			});
 		}

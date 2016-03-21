@@ -1,7 +1,7 @@
-<script id="layerInfoTemplateId" type="text/x-jsrender">
+﻿<script id="layerInfoTemplateId" type="text/x-jsrender">
                
                    
-					<div id="layerInfoMenu" class="tabs" style="margin:0px;margin-top:10px;height:100%;overflow:hidden;">
+					<div id="layerInfoMenu" class="tabs" style="margin:0px;margin-top:10px;height:100%;overflow:hidden;  min-width: 500.5px; ">
 					  	  <ul class="tabs__caption">
 							{{for identifiedResults}}
 								{{if numberInList === 0}}
@@ -14,15 +14,15 @@
 							
 						  {{for identifiedResults}}
 								{{if numberInList === 0}}
-									<div class="tabs__content active" style="padding:8px;max-width:600px;">
+									<div class="tabs__content active" style="padding:8px">
 								{{else}}
 									<div class="tabs__content" style="padding:8px;">
 								{{/if}}
-										<div class="float-map-panel big props" style="overflow-y:auto;overflow-x:auto;margin-bottom:2px;">
+										<div class="float-map-panel big props" style="margin-bottom:2px;margin-top:-8px;max-height:500px;overflow-y:auto;overflow-x:auto;">
 											<ul class="nav" style="font-size:11.5px;margin:10px;">
 											{{props properties}}
-												{{if key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='G_AREA' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}}
-													<li style="line-height: 1.8em; border-bottom: 1px solid #DDD;"><b>{{:key}}:</b>{{:prop}}</li>
+												{{if key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}}
+													<li style="line-height: 1.8em; border-bottom: 1px solid #DDD;"><span style="font-family:RobotoBold">{{:key}}:</span>&nbsp&nbsp&nbsp{{:prop}}</li>
 												{{/if}}
 											{{/props}}
 											</ul>

@@ -16,17 +16,17 @@ MapExpress.Tools.SelectParcelOnMap = {
 		this._dataUrl = getGeoJsonUrlTemplate;
 		var ajaxPromises = [];
 
-		MapManager.removeLayerById(this._parecelSelectionLayerId);
+		if (this._layer) {
+			MapManager._map.removeLayer(this._layer);
+		}
 
-		var layer = new L.GeoJSON();
-
-		layer.id = this._parecelSelectionLayerId;
-		layer.displayName = this._parecelSelectionLayerId;
-		layer.visible = true;
-		layer.type = "overlay";
---
-		MapManager.addLayerObject(layer);
-
+		this._layer = new L.GeoJSON();
+		this._layer.id = this._parecelSelectionLayerId;
+		this._layer.displayName = this._parecelSelectionLayerId;
+		this._layer.visible = true;
+		this._layer.type = "overlay";
+		this._layer.addTo(MapManager._map);
+		
 		for (var i = 0; i < selObjectsId.length; i++) {
 			ajaxPromises.push(this._getParcelGeoJsonAsync(selObjectsId[i]));
 		}
@@ -37,12 +37,13 @@ MapExpress.Tools.SelectParcelOnMap = {
 					var result = results[j];
 					if (result.state === "fulfilled") {
 						if (result.value !== undefined && result.value.features && result.value.features.length > 0) {
-							layer.addData(result.value);
+							that._layer.addData(result.value);
 						}
 					}
 				}
-				var bounds = layer.getBounds().pad(1);
-				layer.setStyle(that._selectedStyle);
+				var bounds = that._layer.getBounds().pad(1);
+				that._layer.setStyle(that._selectedStyle);
+				that._layer.bringToFront();
 				MapManager.moveOverlay(that._parecelSelectionLayerId, 0);
 				MapManager._map.fitBounds(bounds);
 			});

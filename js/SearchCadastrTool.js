@@ -21,21 +21,15 @@ MapExpress.Tools.SearchCadastrTool = MapExpress.Tools.BaseMapCommand.extend({
 
 	activate: function() {
 		var that = this;
-		
 		$("#layerInfoTemplate").empty();
-		
-		$("#layerInfoTemplate").load("./templates/searchCadastre.html", function() {
-
+		$("#layerInfoTemplate").load("./templates/search.html", function() {
 			if (!that._template) {
 				that._template = $.templates("#searchCadastreId");
 			}
 			var content = that._template.render();
 			$("#layerInfoTemplate").empty();
-
 			that._floatMapPanel.show();
 			that._floatMapPanel.setContent(content);
-			activateSearchCadastre();
-			activateSearchAddress();
 		});
 
 

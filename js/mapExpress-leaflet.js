@@ -14,7 +14,9 @@ MapExpress = {
 
 	Mapping: {},
 
-	Tools: {}
+	Tools: {},
+	
+	Styles: {}
 };
 
 if (typeof window !== 'undefined' && window.L) {
@@ -31,24 +33,7 @@ if (typeof window !== 'undefined' && window.L) {
 	},
 
 	onAdd: function() {
-		this._div = L.DomUtil.create('div', this.options.className);
-		this._div.setAttribute('id', 'floatMapPanel');
-		this._visible = true;
-		L.DomEvent
-			.addListener(this._div, 'mousemove', L.DomEvent.stopPropagation)
-			.addListener(this._div, 'click', L.DomEvent.stopPropagation)
-			.addListener(this._div, 'dblclick', L.DomEvent.stopPropagation)
-			.addListener(this._div, 'mousemove', L.DomEvent.preventDefault)
-			.addListener(this._div, 'click', L.DomEvent.preventDefault)
-			.addListener(this._div, 'dblclick', L.DomEvent.preventDefault)
-			.addListener(this._div, 'onwheel', L.DomEvent.stopPropagation)
-			.addListener(this._div, 'onwheel', L.DomEvent.preventDefault)
-			.addListener(this._div, 'wheel', L.DomEvent.stopPropagation)
-			.addListener(this._div, 'wheel', L.DomEvent.preventDefault)
-			.addListener(this._div, 'mousewheel', L.DomEvent.stopPropagation)
-			.addListener(this._div, 'mousewheel', L.DomEvent.preventDefault);
-
-		return this._div;
+		return this._createPanel();
 	},
 
 	show: function() {
@@ -56,6 +41,13 @@ if (typeof window !== 'undefined' && window.L) {
 			this._mapManager._map.addControl(this);
 			this._visible = true;
 		}
+	},
+
+	showAt: function(containerPoint) {
+		var mapEl = this._mapManager._map._controlContainer;
+		var panelEl = this._createPanel();
+		mapEl.appendChild(panelEl);
+		L.DomUtil.setPosition(panelEl, containerPoint);
 	},
 
 	hide: function() {
@@ -75,6 +67,32 @@ if (typeof window !== 'undefined' && window.L) {
 		if (this._div) {
 			$('#floatMapPanel').empty();
 		}
+	},
+
+	_createPanel: function() {
+		if (!this._div) {
+			this._div = L.DomUtil.create('div', this.options.className);
+			this._div.setAttribute('id', 'floatMapPanel');
+			this._visible = true;
+			L.DomEvent
+				.addListener(this._div, 'mousemove', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'click', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'dblclick', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'mousemove', L.DomEvent.preventDefault)
+				.addListener(this._div, 'click', L.DomEvent.preventDefault)
+				.addListener(this._div, 'dblclick', L.DomEvent.preventDefault)
+				.addListener(this._div, 'onwheel', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'onwheel', L.DomEvent.preventDefault)
+				.addListener(this._div, 'wheel', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'wheel', L.DomEvent.preventDefault)
+				.addListener(this._div, 'mousewheel', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'mousewheel', L.DomEvent.preventDefault)
+				.addListener(this._div, 'mouseover', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'mouseover', L.DomEvent.preventDefault)
+				.addListener(this._div, 'mouseout', L.DomEvent.stopPropagation)
+				.addListener(this._div, 'mouseout', L.DomEvent.preventDefault);
+		}
+		return this._div;
 	}
 });
 
@@ -92,7 +110,8 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		this._mapManager = mapManager;
 		L.setOptions(this, options);
 	},
-
+	
+	// TODO: Надо посмотреть как будет использоваться если прсото добавить на карту.
 	onAdd: function() {
 		this._div = L.DomUtil.create('div', this.options.className);
 		this._div.setAttribute('id', 'layer-order-control');
@@ -105,6 +124,8 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		var mapModel = this._mapManager.getMapModel();
 		var overlays = mapModel.getOverlayLayers();
 		mapModel.sortLayersByVisibleIndex(overlays);
+
+		$("#layer-order-control").empty();
 
 		var rootControl = document.getElementById('layer-order-control');
 
@@ -125,16 +146,66 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 		for (var i = 0; i < overlays.length; i++) {
 			var iterLayer = overlays[i];
+
 			var item = L.DomUtil.create('div', this.options.layerItemClassName, rootControl);
 			item.setAttribute('id', iterLayer.id);
-			item.textContent = iterLayer.options.displayName;
+
+			if (this._mapManager.layerLabelingEnabledInZoom(iterLayer.id)) {
+				var img2 = L.DomUtil.create('img', '', item);
+				img2.setAttribute('id', iterLayer.id);
+				setLabelImgSrc(img2);
+				img2.onclick = setLayerLabeling;
+			}
+
+			var layerVisibleEnableInZoom = this._mapManager.layerVisibleEnableInZoom(iterLayer.id);
+			if (layerVisibleEnableInZoom) {
+				var img1 = L.DomUtil.create('img', '', item);
+				img1.setAttribute('id', iterLayer.id);
+				setVisibleImgSrc(img1);
+				img1.onclick = setLayerVisible;
+			}
+
+
+			var layerNameStyle = layerVisibleEnableInZoom ? "layer-order-item-text" : "layer-order-item-text disabled";
+			var layerName = L.DomUtil.create('span', layerNameStyle, item);
+			layerName.textContent = iterLayer.options.displayName;
 		}
 
+		function setVisibleImgSrc(img) {
+			var visibleImgSrc = "images/visibility_y.png";
+			if (!that._mapManager.layerEnabled(img.getAttribute("id"))) {
+				visibleImgSrc = "images/visibility_n.png";
+			}
+			img.setAttribute('src', visibleImgSrc);
+		}
+
+		
+		function setLabelImgSrc(img) {
+			var labelImgSrc = "images/label_n.gif";
+			var layerModel = that._mapManager._mapModel.getLayerById(img.getAttribute("id"));
+			if (layerModel && layerModel.mapLayer && layerModel.mapLayer.options && layerModel.mapLayer.options.labelEnabled) {
+				labelImgSrc = "images/label_y.gif";
+			}
+			img.setAttribute('src', labelImgSrc);
+		}
+
+		function setLayerVisible(evnt) {
+			that._mapManager.toogleLayerVisible(evnt.target.getAttribute("id"));
+			setVisibleImgSrc(evnt.target);
+		}
+
+		function setLayerLabeling(evnt) {
+			that._mapManager.toogleLabelLayer(evnt.target.getAttribute("id"));
+			setLabelImgSrc(evnt.target);
+		}
+
+		
 		var opt = {
 			// dragging ended
 			onEnd: function(evt) {
 				that._mapManager.moveOverlay(evt.item.id, evt.newIndex);
-			}
+			},
+			animation: 200
 		};
 		/* jshint ignore:start */
 		Sortable.create(rootControl, opt);
@@ -170,15 +241,15 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 		var treeOptions = {
 			"core": {
-				"data": node.children.reverse()
+				"data": node.children
 			},
 			"plugins": ["checkbox", "wholerow"]
 		};
 
 		$.jstree.defaults.checkbox.keep_selected_style = false;
 		$.jstree.defaults.checkbox.tie_selection = false;
-		//$.jstree.defaults.core.themes.responsive = true;
 
+		
 		var treeControl = document.getElementById('treelayercontrol');
 
 		L.DomEvent
@@ -195,10 +266,14 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			.addListener(treeControl, 'mousewheel', L.DomEvent.stopPropagation)
 			.addListener(treeControl, 'mousewheel', L.DomEvent.preventDefault);
 
+		$("#treelayercontrol").empty();
+		$.jstree.destroy();
 		var tree = $('#treelayercontrol').jstree(treeOptions);
-
+		
 		tree.on('check_node.jstree', function(e, data) {
-			if (data.node) {
+			if (data.node.parent && data.node.parent === "Базовые карты") {
+				that._mapManager.setActiveBaseMap(data.node.id);
+			} else {
 				that._mapManager.setLayerVisible(data.node.id, true);
 			}
 		});
@@ -212,11 +287,11 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 	_processLayerModel: function(parentNode, layers) {
 		parentNode.children = [];
-		for (var i = layers.length - 1; i >= 0; i--) {
+		for (var i = 0; i < layers.length; i++) {
 			var iterLayerModel = layers[i];
 			var node = {};
 
-			if (iterLayerModel.options.type !== "base") {
+			if (iterLayerModel.options.type !== "base" || parentNode.text === "Базовые карты") {
 				node = this._createNode(iterLayerModel);
 				parentNode.children.push(node);
 			}
@@ -230,6 +305,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		}
 	},
 
+	// TODO: Определять видими ли? Через манагер из энаблед
 	_createNode: function(layerModel) {
 		var node = {};
 		node.id = layerModel.id;
@@ -252,6 +328,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 	initialize: function(vectorProvider, options) {
 		L.GeoJSON.prototype.initialize.call(this, null, options);
+		options.pointToLayer = this._pointToLayer;
 		L.setOptions(this, options);
 		this._dataPovider = vectorProvider;
 		this._prevMapView = {};
@@ -270,6 +347,21 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		map.off('moveend', this._updateData, this);
 		this._prevMapView = {};
 		this._singleDataLoaded = false;
+	},
+
+
+	_pointToLayer: function(feature, latlng) {
+		//var opt = {
+		//	id: feature.properties.id,
+		//	divStyle: MapExpress.Styles.StyleDivIcon.CIRCLE
+		//};
+		//var marker = new MapExpress.Styles.StyleMarker(latlng, opt);
+		//return marker;
+		//
+
+		return L.circleMarker(latlng, {
+			radius: 8
+		});
 	},
 
 	_refreshData: function() {
@@ -355,21 +447,24 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 				if (geoJSON !== undefined && geoJSON.features && geoJSON.features.length > 0) {
 					var added = that.addData(geoJSON);
 					var zoomStyle = this._getStyleByZoom();
+					var tileKey = that._dataPovider._tileCoordsToKey(tileCoord);
 					for (var i in added._layers) {
 						if (!added._layers[i]._tileCoordKey) {
-							added._layers[i]._tileCoordKey = that._dataPovider._tileCoordsToKey(tileCoord);
+							added._layers[i]._tileCoordKey = tileKey;
 							that._updateStyle(added._layers[i], zoomStyle);
 						}
 					}
+					this._labelLayer();
 				}
 			}
 		);
 	},
 
 	_removeVectorTile: function(tileCoord) {
+		var tileKey = this._dataPovider._tileCoordsToKey(tileCoord);
 		for (var i in this._layers) {
 			var iterLayer = this._layers[i];
-			if (iterLayer._tileCoordKey && iterLayer._tileCoordKey === this._dataPovider._tileCoordsToKey(tileCoord)) {
+			if (iterLayer._tileCoordKey && iterLayer._tileCoordKey === tileKey) {
 				this.removeLayer(iterLayer);
 			}
 		}
@@ -378,11 +473,9 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 	_replaceData: function(geoJSON) {
 		this.clearLayers();
 		if (geoJSON) {
-			var added = this.addData(geoJSON);
-			var zoomStyle = this._getStyleByZoom();
-			for (var i in this._layers) {
-				this._updateStyle(this._layers[i], zoomStyle);
-			}
+			this.addData(geoJSON);
+			this.updateStyle();
+			this._labelLayer();
 		}
 	},
 
@@ -411,17 +504,31 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		return d.promise;
 	},
 
+	updateStyle: function() {
+		var zoomStyle = this._getStyleByZoom();
+		for (var i in this._layers) {
+			var iterLayer = this._layers[i];
+			if ('setStyle' in iterLayer) {
+				this._updateStyle(iterLayer, zoomStyle);
+			}
+		}
+	},
+
 	_updateStyle: function(layer, zoomStyle) {
 		if (!zoomStyle) {
 			if (layer && layer.feature && layer.feature.properties && layer.feature.properties.style) {
-				var style = JSON.parse(layer.feature.properties.style);
+				var style = null;
+				if (typeof(layer.feature.properties.style) === "string") {
+					style = JSON.parse(layer.feature.properties.style);
+				} else {
+					style = layer.feature.properties.style;
+				}
 				if (style) {
 					layer.setStyle(style);
 				}
 			}
 		} else {
 			layer.setStyle(zoomStyle);
-
 		}
 	},
 
@@ -432,6 +539,43 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 				var iterStyle = this.styles[i];
 				if (zoom <= iterStyle.maxZoom && zoom >= iterStyle.minZoom) {
 					return iterStyle;
+				}
+			}
+		}
+	},
+
+
+	_labelLayer: function() {
+		if (this._map && this.options.labelEnabled) {
+			var labelOptions = this._getLabelLayerOptionsByZoom();
+			if (labelOptions) {
+				if (!this.labelOverlay) {
+					this.labelOverlay = new L.LabelOverlay(this, labelOptions, false);
+				}
+				L.Util.setOptions(this.labelOverlay, labelOptions);
+				this.labelOverlay._resetLabels();
+			} else {
+				this._removeLabels();
+			}
+		} else {
+			this._removeLabels();
+		}
+	},
+
+	_removeLabels: function() {
+		if (this.labelOverlay) {
+			var nameForGroups = this._leaflet_id;
+			this.labelOverlay._removeLabels(nameForGroups);
+		}
+	},
+
+	_getLabelLayerOptionsByZoom: function() {
+		if (this.labels && this.labels.length > 0 && this._map) {
+			var zoom = this._map.getZoom();
+			for (var i = 0; i < this.labels.length; i++) {
+				var iterLabel = this.labels[i];
+				if (zoom <= iterLabel.maxZoom && zoom >= iterLabel.minZoom) {
+					return iterLabel;
 				}
 			}
 		}
@@ -477,7 +621,6 @@ MapExpress.Layers.geoJSONServiceLayer = function(vectorProvider, options) {
 	},
 
 	_updateData: function() {
-
 		this.setUrl("");
 		var zoom = this._map.getZoom();
 		if (zoom > this.options.maxZoom || zoom < this.options.minZoom) {
@@ -517,7 +660,929 @@ MapExpress.Layers.geoJSONServiceLayer = function(vectorProvider, options) {
 
 MapExpress.Layers.imageOverlayLayer = function(dataPovider, options) {
 	return new MapExpress.Layers.ImageOverlayLayer(dataPovider, options);
-};;MapExpress.Layers.TileServiceLayer = L.TileLayer.extend({	initialize: function(tileProvider, options) {		L.TileLayer.prototype.initialize.call(this, null, options);		L.setOptions(this, options);		this._dataPovider = tileProvider;	},	onAdd: function(map) {		L.TileLayer.prototype.onAdd.call(this, map);	},		onRemove: function(map) {		L.TileLayer.prototype.onRemove.call(this, map);	},	createTile: function(coords, done) {		var tile = document.createElement('img');		L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));		L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));		if (this.options.crossOrigin) {			tile.crossOrigin = '';		}		tile.alt = '';		tile.src = this._dataPovider.getDataUrlByTile(coords);		return tile;	}});MapExpress.Layers.tileServiceLayer = function(tileProvider, options) {	return new MapExpress.Layers.TileServiceLayer(tileProvider, options);};;MapExpress.Mapping.LayerModel = L.Class.extend({
+};;/* jshint ignore:start */
+L.LabelOverlay = L.Class.extend({
+	options: {
+		minZoom: 14,
+		maxZoom: 23,
+
+		fieldToLabel: "layer.feature.properties.id",
+		textAnchor: "middle",
+		fontSize: "11px",
+		textColor: "#800000",
+		fontFamily: "sans-serif",
+		opacity: 1,
+
+		halo: false,
+		haloWidth: "2px",
+		haloColor: "white",
+		haloOpacity: 0.8,
+
+		typeOfLabel: "pointedAlong", //simpleAlong, pointedAlong, pointedAlongGorisontal
+		repeat: true,
+		repeatOffset: 500,
+		simpleAlongPointPosition: "50%",
+
+		rectangle: false,
+		ellipse: false,
+		circle: false,
+		
+		autorecWidthHeight: true,
+
+		recWidth: 5,
+		recHeight: 0,
+		recFill: "#ccc",
+		recFillOpacity: 0.8,
+		recStroke: "#666",
+		recStrokeWidth: "1px",
+		recStrokeOpacity: 0.7
+	},
+
+	initialize: function(labelingLayer, options, subscribeJsonLayerAddEvent) {
+		this.labelingLayer = labelingLayer;
+		L.Util.setOptions(this, options);
+		if (!this.options.maxZoom) {
+			this.options.maxZoom = this.labelingLayer.options.maxZoom;
+		}
+		if (!this.options.minZoom) {
+			this.options.minZoom = this.labelingLayer.options.minZoom;
+		}
+		if (subscribeJsonLayerAddEvent !== undefined && subscribeJsonLayerAddEvent === true) {
+			this.labelingLayer.on("add", this._onParentLayerAddToMap, this);
+		}
+		this.labelingLayer.on("remove", this._onParentLayerRemoveFromMap, this);
+
+		this._correctOptions();
+	},
+
+	_correctOptions: function() {
+		if (this.options.repeatOffset === null) {
+			this.options.repeatOffset = 500;
+		}
+		if (this.options.repeatOffset < 0) {
+			this.options.repeatOffset * (-1);
+		}
+		if (this.options.repeatOffset < 20) {
+			console.log("Возможно, выставлено слишком маленькое значение и сильно нагружает систему, т.к. значенеия выставлены в пикселах");
+		}
+		if (this.options.simpleAlongPointPosition === null) {
+			this.options.simpleAlongPointPosition = "50%";
+		}
+	},
+
+	_onParentLayerAddToMap: function() {
+		this.labelingLayer._mapToAdd.on('moveend', this._resetLabels, this);
+		this._resetLabels();
+	},
+
+	_onParentLayerRemoveFromMap: function() {
+		this.labelingLayer._mapToAdd.off('moveend', this._resetLabels, this);
+		var nameForGroups = this.labelingLayer._leaflet_id;
+		this._removeLabels(nameForGroups);
+	},
+
+	_resetLabels: function() {
+		var nameForGroups = this.labelingLayer._leaflet_id;
+		this._removeLabels(nameForGroups);
+		var mapZoom = this.labelingLayer._map.getZoom();
+		if ((mapZoom < this.options.minZoom) || (mapZoom > this.options.maxZoom)) {
+			return;
+		}
+
+		this.labelingLayer.eachLayer(function(layer) {
+			if (layer.feature.geometry.type === "Point") {
+
+				this._PointLabel(layer, nameForGroups);
+
+			} else if (layer.feature.geometry.type === "LineString") {
+
+				this._LineLabel(layer, nameForGroups);
+
+			} else if (layer.feature.geometry.type === "Polygon") {
+
+				this._PolygonLabel(layer, nameForGroups);
+
+			} else if (layer.feature.geometry.type === "MultiPoint") {
+				var addEachlayerProperties = layer.feature;
+				layer.eachLayer(function(multiLayer) {
+					multiLayer.feature = addEachlayerProperties;
+					this._PointLabel(multiLayer, nameForGroups);
+				}, this);
+			} else if (layer.feature.geometry.type === "MultiLineString") {
+				this._LineLabel(layer, nameForGroups);
+			} else if (layer.feature.geometry.type === "MultiPolygon") {
+				this._PolygonLabel(layer, nameForGroups);
+			} else {
+				alert("Некорректные входящие данные!");
+			}
+		}, this);
+	},
+
+	_LineLabel: function(layer, nameForGroups) {
+		this._correctOptions();
+		var opt = this.options;
+		var options = this.options;
+		layer._path.id = "layer" + layer._leaflet_id;
+		var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'lineLabels');
+		d3.selectAll("#layer" + layer._leaflet_id)
+			.each(function(d, i) {
+				if (options.repeat === true) {
+					if (options.typeOfLabel === "pointedAlong") {
+						for (var i = 100; i < d3.selectAll("#layer" + layer._leaflet_id)[0][0].getTotalLength() - 50; i = i + options.repeatOffset) {
+							var all = layer._parts;
+							var arrayOfPointOfParts = [];
+							all.forEach(function(items, i, all) {
+								items.forEach(function(item, i, items) {
+									arrayOfPointOfParts.push(item);
+								});
+							});
+							var ax = arrayOfPointOfParts[d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPathSegAtLength(i)].x;
+							var ay = arrayOfPointOfParts[d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPathSegAtLength(i)].y;
+							var bx = arrayOfPointOfParts[d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPathSegAtLength(i) - 1].x;
+							var by = arrayOfPointOfParts[d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPathSegAtLength(i) - 1].y;
+							var BC = ax - bx;
+							var AC = ay - by;
+							var angle;
+							if (ax < bx && ay > by) {
+								angle = 270 - Math.atan(BC / AC) * 180 / Math.PI;
+							} else if (ax < bx && ay < by) {
+								angle = 90 - Math.atan(BC / AC) * 180 / Math.PI;
+							} else if (ax > bx && ay < by) {
+								angle = 270 - Math.atan(BC / AC) * 180 / Math.PI;
+							} else if (ax > bx && ay > by) {
+								angle = 90 - Math.atan(BC / AC) * 180 / Math.PI;
+							} else {
+								angle = 0;
+							}
+
+							if (options.circle === true) {
+								var circle = group.append("circle");
+							}
+							if (options.ellipse === true) {
+								var ellipse = group.append("ellipse");
+							}
+							if (options.rectangle === true) {
+								var rectangle = group.append("rect");
+							}
+							var halo = group.append('text').attr("class", "halo")
+								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
+								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
+								.attr("dy", "-0.55em")
+								.attr("transform", "rotate(" + angle + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y + ")")
+								.attr("opacity", options.haloOpacity)
+								.style("text-anchor", options.textAnchor)
+								.style("font-size", options.fontSize)
+								.style("stroke-width", options.haloWidth)
+								.style("stroke", options.haloColor)
+								.style("font-family", options.fontFamily)
+								.text(eval(opt.fieldToLabel));
+
+							var text = group.append('text').attr("class", "textpath")
+								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
+								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
+								.attr("dy", "-0.55em")
+								.attr("transform", "rotate(" + angle + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y + ")")
+								.attr("fill-opacity", options.opacity)
+								.style("text-anchor", options.textAnchor)
+								.style("font-size", options.fontSize)
+								.style("fill", options.textColor)
+								.style("font-family", options.fontFamily)
+								.text(eval(opt.fieldToLabel));
+
+							var bbox = text.node().getBBox();
+							var centerX = d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x;
+							var centerY = d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y;
+
+							if (options.rectangle === true) {
+								var rectangleWidth;
+								var rectangleHeight;
+								if (options.autorecWidthHeight === true) {
+									rectangleWidth = bbox.width;
+									rectangleHeight = bbox.height;
+								} else {
+									rectangleWidth = 0;
+									rectangleHeight = 0;
+								}
+								rectangle
+									.attr("x", bbox.x - 2).attr("y", bbox.y)
+									.attr("width", rectangleWidth + (options.recWidth))
+									.attr("height", rectangleHeight + (options.recHeight))
+									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")")
+									.style("fill", options.recFill)
+									.style("fill-opacity", options.recFillOpacity)
+									.style("stroke", options.recStroke)
+									.style("stroke-width", options.recStrokeWidth)
+									.style("stroke-opacity", options.recStrokeOpacity);
+							}
+							if (options.circle === true) {
+								var circleRad;
+								if (options.autorecWidthHeight === true) {
+									circleRad = bbox.width;
+								} else {
+									circleRad = 0;
+								}
+								circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+									.attr("r", circleRad / 2 + (options.recWidth))
+									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")")
+									.style("fill", options.recFill)
+									.style("fill-opacity", options.recFillOpacity)
+									.style("stroke", options.recStroke)
+									.style("stroke-width", options.recStrokeWidth)
+									.style("stroke-opacity", options.recStrokeOpacity);
+							}
+							if (options.ellipse === true) {
+								var ellipceWidth;
+								var ellipceHeight;
+								if (options.autorecWidthHeight === true) {
+									ellipceWidth = bbox.width;
+									ellipceHeight = bbox.height;
+								} else {
+									ellipceWidth = 0;
+									ellipceHeight = 0;
+								}
+								ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+									.attr("rx", ellipceWidth + (options.recWidth))
+									.attr("ry", ellipceHeight + (options.recHeight))
+									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")")
+									.style("fill", options.recFill)
+									.style("fill-opacity", options.recFillOpacity)
+									.style("stroke", options.recStroke)
+									.style("stroke-width", options.recStrokeWidth)
+									.style("stroke-opacity", options.recStrokeOpacity);
+							}
+
+						}
+					} else if (options.typeOfLabel === "pointedAlongGorisontal") {
+						for (var i = 100; i < d3.selectAll("#layer" + layer._leaflet_id)[0][0].getTotalLength() - 50; i = i + options.repeatOffset) {
+
+							if (options.circle === true) {
+								var circle = group.append("circle")
+							}
+							if (options.ellipse === true) {
+								var ellipse = group.append("ellipse")
+							}
+							if (options.rectangle === true) {
+								var rectangle = group.append("rect")
+							}
+
+							var halo = group.append('text').attr("class", "halo")
+								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
+								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
+								.attr("dy", "-0.55em")
+								.attr("opacity", opt.opacity)
+								.attr("opacity", options.haloOpacity)
+								.style("text-anchor", options.textAnchor)
+								.style("font-size", options.fontSize)
+								.style("stroke-width", options.haloWidth)
+								.style("stroke", options.haloColor)
+								.style("font-family", opt.fontFamily)
+								.text(eval(opt.fieldToLabel));
+
+							var text = group.append('text').attr("class", "textpath")
+								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
+								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
+								.attr("dy", "-0.55em")
+								.attr("fill-opacity", options.opacity)
+								.style("text-anchor", options.textAnchor)
+								.style("font-size", options.fontSize)
+								.style("fill", options.textColor)
+								.style("font-family", options.fontFamily)
+								.text(eval(opt.fieldToLabel));
+
+							var bbox = text.node().getBBox();
+
+							if (options.rectangle === true) {
+								var rectangleWidth;
+								var rectangleHeight;
+								if (options.autorecWidthHeight === true) {
+									rectangleWidth = bbox.width;
+									rectangleHeight = bbox.height;
+								} else {
+									rectangleWidth = 0;
+									rectangleHeight = 0;
+								}
+								rectangle.attr("x", bbox.x - 2).attr("y", bbox.y)
+									.attr("width", rectangleWidth + (options.recWidth))
+									.attr("height", rectangleHeight + (options.recHeight))
+									.style("fill", options.recFill)
+									.style("fill-opacity", options.recFillOpacity)
+									.style("stroke", options.recStroke)
+									.style("stroke-width", options.recStrokeWidth)
+									.style("stroke-opacity", options.recStrokeOpacity);
+							}
+							if (options.circle === true) {
+								var circleRad;
+								if (options.autorecWidthHeight === true) {
+									circleRad = bbox.width;
+								} else {
+									circleRad = 0;
+								}
+								circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+									.attr("r", circleRad / 2 + (options.recWidth))
+									.style("fill", options.recFill)
+									.style("fill-opacity", options.recFillOpacity)
+									.style("stroke", options.recStroke)
+									.style("stroke-width", options.recStrokeWidth)
+									.style("stroke-opacity", options.recStrokeOpacity);
+							}
+							if (options.ellipse === true) {
+								var ellipceWidth;
+								var ellipceHeight;
+								if (options.autorecWidthHeight === true) {
+									ellipceWidth = bbox.width;
+									ellipceHeight = bbox.height
+								} else {
+									ellipceWidth = 0
+									ellipceHeight = 0
+								};
+								ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+									.attr("rx", ellipceWidth + (options.recWidth))
+									.attr("ry", ellipceHeight + (options.recHeight))
+									.style("fill", options.recFill)
+									.style("fill-opacity", options.recFillOpacity)
+									.style("stroke", options.recStroke)
+									.style("stroke-width", options.recStrokeWidth)
+									.style("stroke-opacity", options.recStrokeOpacity);
+							}
+						}
+					};
+				} else if (options.repeat !== true) {
+					if (options.typeOfLabel === "simpleAlong") {
+						if (options.halo === true) {
+							var halo = group.append('text').attr("class", "halo")
+								.attr("dy", "-0.55em")
+								.append("textPath")
+								.attr("xlink:href", "#layer" + layer._leaflet_id)
+								.attr("startOffset", options.simpleAlongPointPosition)
+								.attr("opacity", options.haloOpacity)
+								.style("text-anchor", options.textAnchor)
+								.style("font-size", options.fontSize)
+								.style("stroke", options.haloColor)
+								.style("stroke-width", options.haloWidth)
+								.style("font-family", options.fontFamily)
+								.text(eval(opt.fieldToLabel));
+						}
+
+						var text = group.append('text').attr("class", "textpath")
+							.attr("dy", "-0.55em")
+							.append("textPath")
+							.attr("xlink:href", "#layer" + layer._leaflet_id)
+							.attr("startOffset", options.simpleAlongPointPosition)
+							.attr("fill-opacity", options.opacity)
+							.style("text-anchor", options.textAnchor)
+							.style("font-size", options.fontSize)
+							.style("fill", options.textColor)
+							.style("font-family", options.fontFamily)
+							.text(eval(opt.fieldToLabel));
+
+					} else if (options.typeOfLabel === "pointedAlongGorisontal") {
+						var allParts = layer._parts;
+						allParts.forEach(function(items, i, allParts) {
+							if (items.length > 2) {
+								var cx = (items[1].x + items[2].x) / 2;
+								var cy = (items[1].y + items[2].y) / 2;
+								if (options.circle === true) {
+									var circle = group.append("circle");
+								}
+								if (options.ellipse === true) {
+									var ellipse = group.append("ellipse");
+								}
+								if (options.rectangle === true) {
+									var rectangle = group.append("rect");
+								}
+
+								Halo();
+
+								var text = group.append('text').attr("class", "textpath")
+									.attr("x", cx)
+									.attr("y", cy)
+									.attr("dy", "-0.55em")
+									.attr("fill-opacity", options.opacity)
+									.style("text-anchor", options.textAnchor)
+									.style("font-size", options.fontSize)
+									.style("fill", options.textColor)
+									.style("font-family", options.fontFamily)
+									.text(eval(opt.fieldToLabel));
+
+								var bbox = text.node().getBBox();
+								completeGeometries();
+							} else {
+								var cx = (items[0].x + items[1].x) / 2;
+								var cy = (items[0].y + items[1].y) / 2;
+								if (options.circle === true) {
+									var circle = group.append("circle");
+								}
+								if (options.ellipse === true) {
+									var ellipse = group.append("ellipse");
+								}
+								if (options.rectangle === true) {
+									var rectangle = group.append("rect");
+								}
+
+								Halo();
+
+								var text = group.append('text').attr("class", "textpath")
+									.attr("x", cx).attr("y", cy)
+									.attr("dy", "-0.55em")
+									.attr("fill-opacity", options.opacity)
+									.style("text-anchor", options.textAnchor)
+									.style("font-size", options.fontSize)
+									.style("fill", options.textColor)
+									.style("font-family", options.fontFamily)
+									.text(eval(opt.fieldToLabel));
+
+								var bbox = text.node().getBBox();
+								completeGeometries();
+							};
+
+							function Halo() {
+								if (options.halo === true) {
+									var halo = group.append('text').attr("class", "halo")
+										.attr("x", cx)
+										.attr("y", cy)
+										.attr("dy", "-0.55em")
+										.attr("opacity", options.haloOpacity)
+										.style("text-anchor", options.textAnchor)
+										.style("font-size", options.fontSize)
+										.style("stroke", options.haloColor)
+										.style("stroke-width", options.haloWidth)
+										.style("font-family", options.fontFamily)
+										.text(eval(opt.fieldToLabel));
+								}
+							};
+
+							function completeGeometries() {
+								if (options.rectangle === true) {
+									var rectangleWidth;
+									var rectangleHeight;
+									if (options.autorecWidthHeight === true) {
+										rectangleWidth = bbox.width;
+										rectangleHeight = bbox.height;
+									} else {
+										rectangleWidth = 0;
+										rectangleHeight = 0;
+									}
+									rectangle.attr("x", bbox.x - 2).attr("y", bbox.y)
+										.attr("width", rectangleWidth + (options.recWidth))
+										.attr("height", rectangleHeight + (options.recHeight))
+										.style("fill", options.recFill)
+										.style("fill-opacity", options.recFillOpacity)
+										.style("stroke", options.recStroke)
+										.style("stroke-width", options.recStrokeWidth)
+										.style("stroke-opacity", options.recStrokeOpacity);
+								}
+								if (options.circle === true) {
+									var circleRad;
+									if (options.autorecWidthHeight === true) {
+										circleRad = bbox.width;
+									} else {
+										circleRad = 0;
+									}
+									circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+										.attr("r", circleRad / 2 + (options.recWidth))
+										.style("fill", options.recFill)
+										.style("fill-opacity", options.recFillOpacity)
+										.style("stroke", options.recStroke)
+										.style("stroke-width", options.recStrokeWidth)
+										.style("stroke-opacity", options.recStrokeOpacity);
+								}
+								if (options.ellipse === true) {
+									var ellipceWidth;
+									var ellipceHeight;
+									if (options.autorecWidthHeight === true) {
+										ellipceWidth = bbox.width;
+										ellipceHeight = bbox.height;
+									} else {
+										ellipceWidth = 0;
+										ellipceHeight = 0;
+									}
+									ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+										.attr("rx", ellipceWidth + (options.recWidth))
+										.attr("ry", ellipceHeight + (options.recHeight))
+										.style("fill", options.recFill)
+										.style("fill-opacity", options.recFillOpacity)
+										.style("stroke", options.recStroke)
+										.style("stroke-width", options.recStrokeWidth)
+										.style("stroke-opacity", options.recStrokeOpacity);
+								}
+							};
+						});
+					} else if (options.typeOfLabel === "pointedAlong") {
+						var allParts = layer._parts;
+
+						allParts.forEach(function(items, i, allParts) {
+							if (items.length > 2) {
+								var cx = (items[1].x + items[2].x) / 2;
+								var cy = (items[1].y + items[2].y) / 2;
+
+								var BC = items[1].x - items[2].x;
+								var AC = items[1].y - items[2].y;
+								var angle;
+								if (items[1].x < items[2].x && items[1].y > items[2].y) {
+									angle = 270 - Math.atan(BC / AC) * 180 / Math.PI
+								} else if (items[1].x < items[2].x && items[1].y < items[2].y) {
+									angle = 90 - Math.atan(BC / AC) * 180 / Math.PI
+								} else if (items[1].x > items[2].x && items[1].y < items[2].y) {
+									angle = 270 - Math.atan(BC / AC) * 180 / Math.PI
+								} else if (items[1].x > items[2].x && items[1].y > items[2].y) {
+									angle = 90 - Math.atan(BC / AC) * 180 / Math.PI
+								} else {
+									angle = 0
+								}
+
+
+								if (options.circle === true) {
+									var circle = group.append("circle");
+								}
+								if (options.ellipse === true) {
+									var ellipse = group.append("ellipse");
+								}
+								if (options.rectangle === true) {
+									var rectangle = group.append("rect");
+								}
+
+								Halo();
+
+								var text = group.append('text').attr("class", "textpath")
+									.attr("x", cx).attr("y", cy)
+									.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+									.attr("dy", "-0.55em")
+									.attr("fill-opacity", options.opacity)
+									.style("text-anchor", options.textAnchor)
+									.style("font-size", options.fontSize)
+									.style("fill", options.textColor)
+									.style("font-family", options.fontFamily)
+									.text(eval(opt.fieldToLabel));
+								var bbox = text.node().getBBox();
+								CompleteGeometry();
+
+
+							} else {
+								var cx = (items[0].x + items[1].x) / 2;
+								var cy = (items[0].y + items[1].y) / 2;
+								var BC = items[0].x - items[1].x;
+								var AC = items[0].y - items[1].y;
+								var angle;
+								if (items[0].x < items[1].x && items[0].y > items[1].y) {
+									angle = 270 - Math.atan(BC / AC) * 180 / Math.PI
+								} else if (items[0].x < items[1].x && items[0].y < items[1].y) {
+									angle = 90 - Math.atan(BC / AC) * 180 / Math.PI
+								} else if (items[0].x > items[1].x && items[0].y < items[1].y) {
+									angle = 270 - Math.atan(BC / AC) * 180 / Math.PI
+								} else if (items[0].x > items[1].x && items[0].y > items[1].y) {
+									angle = 90 - Math.atan(BC / AC) * 180 / Math.PI
+								} else {
+									angle = 0
+								}
+
+
+								if (options.circle === true) {
+									var circle = group.append("circle");
+								}
+								if (options.ellipse === true) {
+									var ellipse = group.append("ellipse");
+								}
+								if (options.rectangle === true) {
+									var rectangle = group.append("rect");
+								}
+
+
+								Halo();
+
+								var text = group.append('text').attr("class", "textpath")
+									.attr("x", cx).attr("y", cy)
+									.attr("dy", "-0.55em")
+									.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+									.attr("fill-opacity", options.opacity)
+									.style("text-anchor", options.textAnchor)
+									.style("font-size", options.fontSize)
+									.style("fill", options.textColor)
+									.style("font-family", options.fontFamily)
+									.text(eval(opt.fieldToLabel));
+
+								var bbox = text.node().getBBox();
+								CompleteGeometry();
+							}
+
+							function Halo() {
+								if (options.halo === true) {
+									var halo = group.append('text').attr("class", "halo")
+										.attr("x", cx).attr("y", cy)
+										.attr("dy", "-0.55em")
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+										.attr("opacity", options.haloOpacity)
+										.style("text-anchor", options.textAnchor)
+										.style("font-size", options.fontSize)
+										.style("stroke", options.haloColor)
+										.style("stroke-width", options.haloWidth)
+										.style("font-family", options.fontFamily)
+										.text(eval(opt.fieldToLabel));
+								};
+							};
+
+							function CompleteGeometry() {
+								if (options.rectangle === true) {
+									var rectangleWidth;
+									var rectangleHeight;
+									if (options.autorecWidthHeight === true) {
+										rectangleWidth = bbox.width;
+										rectangleHeight = bbox.height;
+									} else {
+										rectangleWidth = 0;
+										rectangleHeight = 0;
+									}
+									rectangle
+										.attr("x", bbox.x - 3).attr("y", bbox.y)
+										.attr("width", rectangleWidth + (options.recWidth))
+										.attr("height", rectangleHeight + (options.recHeight))
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+										.style("fill", options.recFill)
+										.style("fill-opacity", options.recFillOpacity)
+										.style("stroke", options.recStroke)
+										.style("stroke-width", options.recStrokeWidth)
+										.style("stroke-opacity", options.recStrokeOpacity);
+								};
+								if (options.circle === true) {
+									var circleRad;
+									if (options.autorecWidthHeight === true) {
+										circleRad = bbox.width;
+									} else {
+										circleRad = 0;
+									};
+									circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+										.attr("r", circleRad / 2 + (options.recWidth))
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+										.style("fill", options.recFill)
+										.style("fill-opacity", options.recFillOpacity)
+										.style("stroke", options.recStroke)
+										.style("stroke-width", options.recStrokeWidth)
+										.style("stroke-opacity", options.recStrokeOpacity);
+								}
+								if (options.ellipse === true) {
+									var ellipceWidth;
+									var ellipceHeight;
+									if (options.autorecWidthHeight === true) {
+										ellipceWidth = bbox.width;
+										ellipceHeight = bbox.height;
+									} else {
+										ellipceWidth = 0;
+										ellipceHeight = 0;
+									};
+									ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+										.attr("rx", ellipceWidth + (options.recWidth))
+										.attr("ry", ellipceHeight + (options.recHeight))
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+										.style("fill", options.recFill)
+										.style("fill-opacity", options.recFillOpacity)
+										.style("stroke", options.recStroke)
+										.style("stroke-width", options.recStrokeWidth)
+										.style("stroke-opacity", options.recStrokeOpacity);
+								}
+							};
+						});
+					}
+				}
+			});
+	},
+
+	_PolygonLabel: function(layer, nameForGroups) {
+
+		var opt = this.options;
+		var options = this.options;
+
+		layer._path.id = "layer" + layer._leaflet_id;
+
+		var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'polygonLabels');
+
+		d3.selectAll("#layer" + layer._leaflet_id)
+			.each(function(d, i) {
+				var bounds = this.getBBox();
+				var labelPositions = {
+					x: bounds.x + bounds.width / 2,
+					y: bounds.y + bounds.height / 2
+				};
+
+				if (options.circle === true) {
+					var circle = group.append("circle");
+				}
+				if (options.ellipse === true) {
+					var ellipse = group.append("ellipse");
+				}
+				if (options.rectangle === true) {
+					var rectangle = group.append("rect");
+				}
+
+
+				if (options.halo === true) {
+					var halo = group.append('text')
+						.attr("class", "halo")
+						.attr("x", labelPositions.x)
+						.attr("y", labelPositions.y)
+						.style("stroke", options.haloColor)
+						.style("opacity", options.haloOpacity)
+						.style("stroke-width", options.haloWidth)
+						.style("text-anchor", options.textAnchor)
+						.style("font-size", options.fontSize)
+						.style("font-family", options.fontFamily)
+						.text(eval(opt.fieldToLabel));
+				}
+				var text = group.append('text')
+					.attr("class", "textpath")
+					.attr("x", labelPositions.x)
+					.attr("y", labelPositions.y)
+					.attr("fill-opacity", options.opacity)
+					.style("text-anchor", options.textAnchor)
+					.style("font-size", options.fontSize)
+					.style("fill", options.textColor)
+					.style("font-family", options.fontFamily)
+					.text(eval(opt.fieldToLabel));
+
+				var bbox = text.node().getBBox();
+				if (options.rectangle === true) {
+
+					var rectangleWidth;
+					var rectangleHeight;
+					if (options.autorecWidthHeight === true) {
+						rectangleWidth = bbox.width;
+						rectangleHeight = bbox.height
+					} else {
+						rectangleWidth = 0
+						rectangleHeight = 0
+					}
+					rectangle.attr("x", bbox.x - 2)
+						.attr("y", bbox.y)
+						.attr("width", rectangleWidth + (options.recWidth))
+						.attr("height", rectangleHeight + (options.recHeight))
+						.style("fill", options.recFill)
+						.style("fill-opacity", options.recFillOpacity)
+						.style("stroke", options.recStroke)
+						.style("stroke-width", options.recStrokeWidth)
+						.style("stroke-opacity", options.recStrokeOpacity);
+				};
+				if (options.circle === true) {
+					var circleRad
+					if (options.autorecWidthHeight === true) {
+						circleRad = bbox.width;
+					} else {
+						circleRad = 0
+					};
+					circle.attr("cx", bbox.x + bbox.width / 2)
+						.attr("cy", bbox.y + bbox.height / 2)
+						.attr("r", circleRad / 2 + (options.recWidth))
+						.style("fill", options.recFill)
+						.style("fill-opacity", options.recFillOpacity)
+						.style("stroke", options.recStroke)
+						.style("stroke-width", options.recStrokeWidth)
+						.style("stroke-opacity", options.recStrokeOpacity);
+				}
+				if (options.ellipse === true) {
+					var ellipceWidth;
+					var ellipceHeight;
+					if (options.autorecWidthHeight === true) {
+						ellipceWidth = bbox.width;
+						ellipceHeight = bbox.height
+					} else {
+						ellipceWidth = 0
+						ellipceHeight = 0
+					};
+					ellipse
+						.attr("cx", bbox.x + bbox.width / 2)
+						.attr("cy", bbox.y + bbox.height / 2)
+						.attr("rx", ellipceWidth + (options.recWidth))
+						.attr("ry", ellipceHeight + (options.recHeight))
+						.style("fill", options.recFill)
+						.style("fill-opacity", options.recFillOpacity)
+						.style("stroke", options.recStroke)
+						.style("stroke-width", options.recStrokeWidth)
+						.style("stroke-opacity", options.recStrokeOpacity);
+				}
+
+			});
+	},
+
+	_PointLabel: function(layer, nameForGroups) {
+		var opt = this.options;
+		var options = this.options;
+
+		layer._icon.id = "marker_" + layer._leaflet_id;
+		var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'pointLabels');
+		d3.selectAll("#marker_" + layer._leaflet_id)
+			.each(function(d, i) {
+				var labelPositions = {
+					x: layer._icon._leaflet_pos.x,
+					y: layer._icon._leaflet_pos.y,
+				};
+
+				if (options.circle === true) {
+					var circle = group.append("circle");
+				}
+				if (options.ellipse === true) {
+					var ellipse = group.append("ellipse");
+				}
+				if (options.rectangle === true) {
+					var rectangle = group.append("rect");
+				}
+
+				if (options.halo === true) {
+					var halo = group.append('text')
+						.attr("class", "halo")
+						.attr("x", labelPositions.x)
+						.attr("y", labelPositions.y)
+						.attr("dy", "-3em")
+						.style("stroke", options.haloColor)
+						.style("opacity", options.haloOpacity)
+						.style("stroke-width", options.haloWidth)
+						.style("text-anchor", options.textAnchor)
+						.style("font-size", options.fontSize)
+						.style("font-family", options.fontFamily)
+						.text(eval(opt.fieldToLabel));
+				}
+
+				var text = group.append('text')
+					.attr("class", "textpath")
+					.attr("x", labelPositions.x)
+					.attr("y", labelPositions.y)
+					.attr("dy", "-3em")
+					.attr("fill-opacity", options.opacity)
+					.style("text-anchor", options.textAnchor)
+					.style("font-size", options.fontSize)
+					.style("fill", options.textColor)
+					.style("font-family", options.fontFamily)
+					.text(eval(opt.fieldToLabel));
+
+				if (options.rectangle === true) {
+					var bbox = text.node().getBBox();
+					var rectangleWidth;
+					var rectangleHeight;
+					if (options.autorecWidthHeight === true) {
+						rectangleWidth = bbox.width;
+						rectangleHeight = bbox.height
+					} else {
+						rectangleWidth = 0
+						rectangleHeight = 0
+					};
+					rectangle.attr("x", bbox.x - 2)
+						.attr("y", bbox.y)
+						.attr("width", rectangleWidth + (options.recWidth))
+						.attr("height", rectangleHeight + (options.recHeight))
+						.style("fill", options.recFill)
+						.style("fill-opacity", options.recFillOpacity)
+						.style("stroke", options.recStroke)
+						.style("stroke-width", options.recStrokeWidth)
+						.style("stroke-opacity", options.recStrokeOpacity);
+				}
+				if (options.circle === true) {
+					var bbox = text.node().getBBox();
+					var circleRad
+					if (options.autorecWidthHeight === true) {
+						circleRad = bbox.width;
+					} else {
+						circleRad = 0
+					};
+					circle.attr("cx", bbox.x + bbox.width / 2)
+						.attr("cy", bbox.y + bbox.height / 2)
+						.attr("r", circleRad / 2 + (options.recWidth))
+						.style("fill", options.recFill)
+						.style("fill-opacity", options.recFillOpacity)
+						.style("stroke", options.recStroke)
+						.style("stroke-width", options.recStrokeWidth)
+						.style("stroke-opacity", options.recStrokeOpacity);
+				}
+				if (options.ellipse === true) {
+					var bbox = text.node().getBBox();
+					var ellipceWidth;
+					var ellipceHeight;
+					if (options.autorecWidthHeight === true) {
+						ellipceWidth = bbox.width;
+						ellipceHeight = bbox.height
+					} else {
+						ellipceWidth = 0
+						ellipceHeight = 0
+					};
+					ellipse
+						.attr("cx", bbox.x + bbox.width / 2)
+						.attr("cy", bbox.y + bbox.height / 2)
+						.attr("rx", ellipceWidth + (options.recWidth))
+						.attr("ry", ellipceHeight + (options.recHeight))
+						.style("fill", options.recFill)
+						.style("fill-opacity", options.recFillOpacity)
+						.style("stroke", options.recStroke)
+						.style("stroke-width", options.recStrokeWidth)
+						.style("stroke-opacity", options.recStrokeOpacity);
+				}
+
+			});
+	},
+
+	_removeLabels: function(nameForGroups) {
+		var elem = $(".Labels" + nameForGroups);
+		if (elem) {
+			elem.remove();
+		}
+	}
+
+});
+/* jshint ignore:end */;MapExpress.Layers.TileServiceLayer = L.TileLayer.extend({	initialize: function(tileProvider, options) {		L.TileLayer.prototype.initialize.call(this, null, options);		L.setOptions(this, options);		this._dataPovider = tileProvider;	},	onAdd: function(map) {		L.TileLayer.prototype.onAdd.call(this, map);	},		onRemove: function(map) {		L.TileLayer.prototype.onRemove.call(this, map);	},	createTile: function(coords, done) {		var tile = document.createElement('img');		L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));		L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));		if (this.options.crossOrigin) {			tile.crossOrigin = '';		}		tile.alt = '';		tile.src = this._dataPovider.getDataUrlByTile(coords);		return tile;	}});MapExpress.Layers.tileServiceLayer = function(tileProvider, options) {	return new MapExpress.Layers.TileServiceLayer(tileProvider, options);};;MapExpress.Mapping.LayerModel = L.Class.extend({
 
 	initialize: function(id, options) {
 		this.id = id;
@@ -618,10 +1683,6 @@ MapExpress.Layers.imageOverlayLayer = function(dataPovider, options) {
 		if (jsonLayerModel.dataProviderClass && jsonLayerModel.layerClass) {
 			var providerClass = this._createProvider(jsonLayerModel.dataProviderClass.constructor, jsonLayerModel.dataProviderClass.args, jsonLayerModel.dataProviderClass.options);
 			if (providerClass) {
-
-				//providerClass.setOptions(jsonLayerModel.dataProviderClass.options);
-				//L.setOptions(providerClass, jsonLayerModel.dataProviderClass.options);
-
 				if (!jsonLayerModel.layerClass.args) {
 					jsonLayerModel.layerClass.args = [];
 				}
@@ -645,7 +1706,7 @@ MapExpress.Layers.imageOverlayLayer = function(dataPovider, options) {
 				if (layerClass) {
 					layerClass.id = jsonLayerModel.id;
 					layerClass.styles = jsonLayerModel.layerClass.styles;
-					//L.setOptions(layerClass, jsonLayerModel.layerClass.options);
+					layerClass.labels = jsonLayerModel.layerClass.labels;
 				}
 			}
 		}
@@ -727,6 +1788,7 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 				il.mapLayer.addTo(this._map);
 			}
 		}
+		return this._map;
 	},
 
 
@@ -796,11 +1858,43 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		}
 	},
 
+	
+	toogleLabelLayer: function(layerId) {
+		if (this.layerLabelingEnabledInZoom(layerId)) {
+			var layerModel = this._mapModel.getLayerById(layerId);
+			if (layerModel.mapLayer) {
+				layerModel.mapLayer.options.labelEnabled = !layerModel.mapLayer.options.labelEnabled;
+				layerModel.mapLayer._labelLayer();
+			}
+		}
+	},
+
 	layerEnabled: function(layerId) {
 		var layerModel = this._mapModel.getLayerById(layerId);
 		if (layerModel && layerModel.mapLayer && layerModel.mapLayer.options) {
+			if (layerModel.mapLayer.options.visible && this.layerVisibleEnableInZoom(layerId)) {
+				return true;
+			}
+		}
+		return false;
+	},
+
+	layerVisibleEnableInZoom: function(layerId) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel && layerModel.mapLayer && layerModel.mapLayer.options) {
 			var zoom = this._map.getZoom();
-			if (layerModel.mapLayer.options.visible && zoom < layerModel.mapLayer.options.maxZoom && zoom > layerModel.mapLayer.options.minZoom) {
+			if (zoom <= layerModel.mapLayer.options.maxZoom && zoom >= layerModel.mapLayer.options.minZoom) {
+				return true;
+			}
+		}
+		return false;
+	},
+
+	layerLabelingEnabledInZoom: function(layerId) {
+		var layerModel = this._mapModel.getLayerById(layerId);
+		if (layerModel && layerModel.mapLayer && layerModel.mapLayer.options) {
+			var geoJson = layerModel.mapLayer instanceof MapExpress.Layers.GeoJSONServiceLayer;
+			if (geoJson && layerModel.mapLayer._getLabelLayerOptionsByZoom()) {
 				return true;
 			}
 		}
@@ -818,32 +1912,58 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		}
 	},
 
-
 	getMapModel: function() {
-			//var overlays = this._reorderLayersVisibleIndex();
-			//var bases = this._reorderBaseLayersVisibleIndex(overlays);
-			//this._sortLayersByVisibleIndex(this._mapModel.layers);
-			// TODO: А сортировать не надо?
-			return this._mapModel;
+		return this._mapModel;
+	},
+
+	getSelection: function(layerId) {
+		var ind = this._findIndex(this.selections, function(iter) {
+			return iter._layerId === layerId;
+		});
+		if (ind > -1) {
+			return this.selections[ind];
+		} else {
+			var newSelection = new MapExpress.Mapping.Selection(layerId);
+			this.selections.push(newSelection);
+			return newSelection;
 		}
-		//,
+	},
 
+	addPulseMarker: function(latLng, closeTimeout, options) {
+		this.removePulseMarker();
+		if (!options) {
+			options = {
+				iconSize: [12, 12],
+				color: 'blue'
+			};
+		}
+		this.pulseMarker = new MapExpress.Styles.PulseMarker(latLng, options);
+		this._map.addLayer(this.pulseMarker);
 
-	//getSelection: function(layerId) {
-	//	var ind = this._findIndex(this.selections, function(iter) {
-	//		return iter._layerId === layerId;
-	//	});
-	//	if (ind > -1) {
-	//		return this.selections[ind];
-	//	} else {
-	//		var newSelection = new MapExpress.Mapping.Selection(layerId);
-	//		this.selections.push(newSelection);
-	//		return newSelection;
-	//	}
-	//}
+		if (closeTimeout > 0) {
+			window.setTimeout(this.removePulseMarker.bind(this), closeTimeout);
+		}
+		return this.pulseMarker;
+	},
 
+	removePulseMarker: function() {
+		if (this.pulseMarker) {
+			this._map.removeLayer(this.pulseMarker);
+			delete this.pulseMarker;
+		}
+	},
 
-
+	// TODO: В утиль
+	_findIndex: function(arr, cond) {
+		var i, x;
+		for (i in arr) {
+			x = arr[i];
+			if (cond(x)) {
+				return parseInt(i);
+			}
+		}
+		return -1;
+	}
 });;MapExpress.Mapping.MapModel = MapExpress.Mapping.LayerModel.extend({
 
 
@@ -1031,7 +2151,8 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 			}
 		}
 	},
-
+	
+	// TODO: В утиль
 	_findIndex: function(arr, cond) {
 		var i, x;
 		for (i in arr) {
@@ -2891,7 +4012,116 @@ MapExpress.Service.tileProvider = function(url, options) {
 
 MapExpress.Service.wmsProvider = function(url, options) {
 	return new MapExpress.Service.WmsProvider(url, options);
-};;MapExpress.Tools.BaseMapCommand = L.Class.extend({
+};;MapExpress.Styles.PulseIcon = L.DivIcon.extend({
+
+	options: {
+		className: '',
+		iconSize: [12, 12],
+		color: 'red'
+	},
+
+	initialize: function(options) {
+		L.setOptions(this, options);
+		//this.setStyle(options);
+		L.DivIcon.prototype.initialize.call(this, options);
+	},
+
+	setStyle: function(options) {
+		L.setOptions(this, options);
+		// creating unique class name
+		var uniqueClassName = 'lpi-' + new Date().getTime() + '-' + Math.round(Math.random() * 100000);
+
+		this.options.className = this.options.className + ' leaflet-pulsing-icon ' + uniqueClassName;
+
+		// prepare styles
+		var css = '.' + uniqueClassName + '{background-color:' + this.options.color + ';}';
+		css += '.' + uniqueClassName + ':after{box-shadow: 0 0 6px 2px ' + this.options.color + ';}';
+
+		// CREATE STYLE ELEMENT
+		var styleEl = document.createElement('style');
+		if (styleEl.styleSheet) {
+
+			styleEl.styleSheet.cssText = css;
+		} else {
+
+			styleEl.appendChild(document.createTextNode(css));
+		}
+
+		// appending style element to document
+		document.getElementsByTagName('head')[0].appendChild(styleEl);
+	}
+});
+
+
+MapExpress.Styles.PulseMarker = L.Marker.extend({
+	statics: {
+		PULSE_ICON: new MapExpress.Styles.PulseIcon()
+	},
+
+	initialize: function(latlng, options) {
+		if (!options) {
+			options = {};
+		}
+		MapExpress.Styles.PulseMarker.PULSE_ICON.setStyle(options);
+		options.icon = MapExpress.Styles.PulseMarker.PULSE_ICON;
+		L.Marker.prototype.initialize.call(this, latlng, options);
+	}
+});;MapExpress.Styles.StyleDivIcon = L.DivIcon.extend({
+
+	statics: {
+
+		CIRCLE: "width:11px;height:11px;background:black;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;"
+	},
+
+
+	createIcon: function(oldIcon) {
+		var div = L.DivIcon.prototype.createIcon.call(this, oldIcon);
+		this._styleDivIcon = div;
+
+		if (this.options.id) {
+			div.id = this.options.id;
+		}
+		if (this.options.divStyle) {
+			this.setStyle(this.options.divStyle);
+		}
+		return div;
+	},
+
+	setStyle: function(divStyle) {
+		this.options.divStyle = divStyle;
+
+		if (!this._styleDivIcon) {
+			return;
+		}
+
+		if (this.options.divStyle && typeof(this.options.divStyle) === "string" && this.options.divStyle.length > 0) {
+			this._styleDivIcon.style.cssText = this.options.divStyle;
+			return;
+		}
+
+		if (this.options.divStyle && typeof(this.options.divStyle) === "object") {
+			for (var key in this.options.divStyle) {
+				this._styleDivIcon.style[key] = this.options.divStyle[key];
+			}
+		}
+	}
+});
+
+MapExpress.Styles.StyleMarker = L.Marker.extend({
+	initialize: function(latlng, options) {
+		if (!options) {
+			options = {};
+		}
+		options.icon = new MapExpress.Styles.StyleDivIcon(options);
+		L.Marker.prototype.initialize.call(this, latlng, options);
+	},
+
+	setStyle: function(divStyle) {
+		//if (this.options.icon && this.options.icon instanceof MapExpress.Styles.StyleDivIcon) {
+		//	this.options.icon.setStyle(divStyle);
+		//}
+	}
+});;MapExpress.Tools.BaseMapCommand = L.Class.extend({
 
 	_active: false,
 
@@ -3139,6 +4369,8 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 			return;
 		}
 
+		this._mapManager.addPulseMarker(identifyedResults.latlng, 4000);
+
 		var that = this;
 		var content = '';
 		$("#layerInfoTemplate").empty();
@@ -3154,7 +4386,8 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 
 
 			L.popup({
-					maxWidth: 700
+					maxWidth: 550.5
+						//,maxHeight: 600
 				})
 				.setLatLng(identifyedResults.latlng)
 				.setContent(rend)
@@ -3162,22 +4395,12 @@ MapExpress.Service.boxZoom = function(mapManager, options) {
 
 
 			/* jshint ignore:start */
-
 			$('ul.tabs__caption').on('click', 'li:not(.active)', function() {
 				$(this)
 					.addClass('active').siblings().removeClass('active')
 					.closest('div.tabs').find('div.tabs__content').removeClass('active').eq($(this).index()).addClass('active');
 			});
-			//var lyrDiv = document.getElementById("layerInfoMenu");
-
-			//var ak1 = Accordion(
-			//	lyrDiv, {
-			//		openIdx: 2,
-			//		speed: 10,
-			//	}
-			//);
 			/* jshint ignore:end */
-
 		});
 
 
@@ -3323,12 +4546,12 @@ MapExpress.Service.mapToolbar = function(mapManager, options) {
 
 	_activateTool: function(act) {
 		var that = this;
-		var selectionLayer = this._mapManager.getLayerById(this.options.selectionLayerId);
+		var selectionLayer = this._mapManager.getMapModel().getLayerById(this.options.selectionLayerId);
 		if (!selectionLayer) {
 			return;
 		}
 
-		selectionLayer.eachLayer(function(layer) {
+		selectionLayer.mapLayer.eachLayer(function(layer) {
 			if (!act) {
 				layer.off('click', that._addSelection, that);
 			} else {
@@ -5456,7 +6679,7 @@ return Q;
 				deferred.resolve(data);
 			})
 			.fail(function(xhr, textStatus, errorThrown) {
-				var error = new Error("getJSON request failed" + url);
+				var error = new Error("getJSON request failed " + url);
 				error.textStatus = textStatus;
 				error.errorThrown = errorThrown;
 				deferred.reject(error);

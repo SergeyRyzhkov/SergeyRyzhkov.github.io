@@ -12,7 +12,7 @@ function MapExpressToolsShowLegend() {
 	var t1 = createLayerModel("Статус актуальности СУПР", "land_thematic_status_view");
 	var t2 = createLayerModel("Дней до завершения по БП", "land_thematic_base_plan_view");
 	var t3 = createLayerModel("Дней до завершения", "land_thematic_event_day_control_view");
-	var t4 = createLayerModel("Наличие мероприятий", "land_thematic_event_kind_view");
+	var t4 = createLayerModel("Состояние земельного участка", "land_thematic_event_kind_view");
 	//var t5 = createLayerModel("Минимальный активный Тип мероприятия", "land_thematic_event_type_view");
 	//var t6 = createLayerModel("Тип кадастровых работ", "land_thematic_work_type_view");
 
@@ -38,7 +38,7 @@ function MapExpressToolsShowLegend() {
 
 		//layer.off('add', layeradded, this);
 		//window.MapManager.setLayerVisible(layer.options.id, true);
-		layer.bringToFront();
+		//layer.bringToFront();
 		//layer.on('add', layeradded, this);
 
 
@@ -63,7 +63,7 @@ function MapExpressToolsShowLegend() {
 				activateLegend("#land-thematic-event-type-view");
 				break;
 
-			case 'Наличие мероприятий':
+			case 'Состояние земельного участка':
 				activateLegend("#land-thematic-event-kind-view");
 				break;
 		}
@@ -89,7 +89,7 @@ function MapExpressToolsShowLegend() {
 
 
 	function createLayerModel(layerName, viewName) {
-		var providerUrl = VSM_SITE_ROOT + "/Map/Map/GeoJsonData/?view=vsm." + viewName + "&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}";
+		var providerUrl = VSM_SITE_ROOT + "/Map/Map/GeoJsonData/?view=" + viewName + "&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}";
 		var provider = new MapExpress.Service.GeoJSONProvider(providerUrl);
 
 		var layerClassOptions = {
