@@ -3,6 +3,7 @@
     background: rgba(0,0,0, 0.4);
     z-index: 1500;
 }
+
 .leaflet-areaselect-handle {
     position: absolute;
     background: #fff;
@@ -28,6 +29,13 @@
     border-radius: 1px;
     background: #FFF none repeat scroll 0% 0%;
     z-index:1501;
+	color: #007FB1;
+	font-family:RobotoBold;
+	outline: medium none;
+}
+
+.map-print-container:hover {
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .zoomInput {
@@ -38,7 +46,7 @@
   display: inline-block;
   width: 25px;
   padding: 3px 3px 5px 8px;
-  border: 1px solid #b7b7b7;
+  border: none;
  
   text-overflow: clip;
   background: rgba(249,249,249,1);
