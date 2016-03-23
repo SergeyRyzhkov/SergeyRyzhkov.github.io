@@ -107,7 +107,7 @@ function addUserLayers() {
 	);
 
 	function createLayerObj(layerName) {
-		var providerUrl = VSM_SITE_ROOT + "/Map/Map/GeoJsonData/?view=" + layerName + "&geoColumn=wkb_geometry&idColumn=ogc_fid&bbox={xMin},{yMin},{xMax},{yMax}";
+		var providerUrl = VSM_SITE_ROOT + "/Map/Map/GeoJsonData/?schema=user_layers&view=" + layerName + "&geoColumn=wkb_geometry&idColumn=ogc_fid&bbox={xMin},{yMin},{xMax},{yMax}";
 		var provider = new MapExpress.Service.GeoJSONProvider(providerUrl);
 
 		var layerClassOptions = {

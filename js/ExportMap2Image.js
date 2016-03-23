@@ -20,30 +20,16 @@ MapExpress.Tools.ExportMapImage = MapExpress.Tools.BaseMapCommand.extend({
 	},
 
 	activate: function() {
-		$(".leaflet-control-container").attr("data-html2canvas-ignore", "true");
-		$(this.options.mapSelector).crossOrigin = 'anonymous';
-
-		html2canvas($(this.options.mapSelector), {
-			allowTaint: false,
-			logging: false,
-			taintTest: false,
-			useCORS: true,
-			onrendered: function(canvas) {
-				var myImage = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-				//myImage.crossOrigin = 'anonymous';
-				var link = document.createElement('a');
-				if (link.download !== undefined) {
-					link.download = "map.png";
-					link.href = myImage;
-					document.body.appendChild(link);
-					$(link).css("display", "none");
-					link.click();
-					document.body.removeChild(link);
-				} else {
-					alert('Экспорт поддерживается только в браузерах Chrome, Firefox и Opera')
-				}
-			}
-		});
+		this.print = L.Control.mapPrint({ position:'bottomright'});
+		this.print.onAdd(this._mapManager._map);
+		this.print.setStateOn();
+		this.print.creatButtonAndAreaPackage();
+	},
+	
+	deactivate: function() {
+		if (this.print) {
+			this.print.setStateOff();
+		}
 	}
 
 });

@@ -89,7 +89,7 @@ function MapExpressToolsShowLegend() {
 
 
 	function createLayerModel(layerName, viewName) {
-		var providerUrl = VSM_SITE_ROOT + "/Map/Map/GeoJsonData/?view=" + viewName + "&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}";
+		var providerUrl = VSM_SITE_ROOT + "/Map/Map/GeoJsonData/?schema=vsm&view=" + viewName + "&geoColumn=geom&idColumn=id&bbox={xMin},{yMin},{xMax},{yMax}";
 		var provider = new MapExpress.Service.GeoJSONProvider(providerUrl);
 
 		var layerClassOptions = {
