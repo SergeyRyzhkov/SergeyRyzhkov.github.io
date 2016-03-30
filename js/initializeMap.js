@@ -42,7 +42,7 @@ function onWorkspaceLoaded() {
 	});
 
 
-	var measureControl = new L.Control.Measure(mapManager);
+	var measureControl = new L.Control.Measure(mapManager,{position:'topleft'});
 	measureControl.addTo(map);
 
 
@@ -243,7 +243,7 @@ MapExpress.Tools.ShowLayerControlMapCommand = MapExpress.Tools.BaseMapCommand.ex
 			new MapExpress.Controls.TreeLayerControl(MapManager).renderTree();
 			new MapExpress.Controls.LayerOrderControl(MapManager).render();
 
-			setTimeout(openSideBar, 0);
+			openSideBar();
 
 			function openSideBar() {
 				var control = $("#mapSidebarTemplate");

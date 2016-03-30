@@ -36,7 +36,7 @@ L.AreaSelect = L.Class.extend({
 
 		return new L.LatLngBounds(sw, ne);
 	},
-	
+
 	getPixelBounds: function() {
 		var size = this.map.getSize();
 		var topLef = new L.Point();
@@ -46,7 +46,7 @@ L.AreaSelect = L.Class.extend({
 		topLef.y = Math.round((size.y - this._height) / 2);
 		bottomRig.x = size.x - topLef.x;
 		bottomRig.y = size.y - topLef.y;
-	
+
 		return [topLef, bottomRig];
 	},
 
@@ -55,7 +55,9 @@ L.AreaSelect = L.Class.extend({
 		this.map.off("zoomend", this._onMapChange);
 		this.map.off("resize", this._onMapResize);
 
-		this._container.parentNode.removeChild(this._container);
+		if (this._container && this._container.parentNode) {
+			this._container.parentNode.removeChild(this._container);
+		}
 	},
 
 	_createElements: function() {
@@ -206,44 +208,10 @@ L.areaSelect = function(options) {
 	return new L.AreaSelect(options);
 };
 
-L.Control.MapPrint = L.Control.extend({
-	options: {
-		position: 'topright'
-	},
-	initialize: function(options) {
-		L.setOptions(this, options);
-		this.map = null;
-		this.active = false;
-	},
+L.Control.MapPrint = L.Class.extend({
 
-	onAdd: function(map) {
-
+	setStateOn: function(map) {
 		this.map = map;
-		this.active = false;
-
-		this.controlDiv = L.DomUtil.create('div', 'leaflet-control-mapPrint');
-		this.controlDiv.control = this;
-		this.controlDiv.title = 'Click here then draw a square on the map, to zoom in to an area';
-		this.controlDiv.innerHTML = ' ';
-		L.DomEvent
-			.addListener(this.controlDiv, 'mousedown', L.DomEvent.stopPropagation)
-			.addListener(this.controlDiv, 'click', L.DomEvent.stopPropagation)
-			.addListener(this.controlDiv, 'click', L.DomEvent.preventDefault)
-			.addListener(this.controlDiv, 'click', function() {
-				this.control.toggleState();
-			});
-
-		this.setStateOff();
-
-		return this.controlDiv;
-	},
-
-	toggleState: function() {
-		this.active ? this.setStateOff() : this.setStateOn();
-	},
-
-	setStateOn: function() {
-		L.DomUtil.addClass(this.controlDiv, 'leaflet-control-mapPrint-active');
 		this.active = true;
 		this.map.dragging.disable();
 		this.map.boxZoom.addHooks();
@@ -255,9 +223,9 @@ L.Control.MapPrint = L.Control.extend({
 	},
 
 	setStateOff: function() {
-		L.DomUtil.removeClass(this.controlDiv, 'leaflet-control-mapPrint-active');
 		this.active = false;
 		this.map.off('mousedown', this.handleMouseDown, this);
+		this.map.off('boxzoomend', this.setStateOff, this);
 		this.map.off('mousedown', this.getCoordinatesToAddAreaX, this);
 		this.map.off('mouseup', this.getCoordinatesToAddAreaY, this);
 
@@ -309,9 +277,11 @@ L.Control.MapPrint = L.Control.extend({
 		var that = this;
 		$("#remove").click(function(e) {
 			d.remove();
-			that.map.areaSelect.off("change", that._resetChange, that);
 			that.map.off('zoomend', that._zoomBack, that);
-			that.map.areaSelect.remove();
+			if (that.map.areaSelect) {
+				that.map.areaSelect.off("change", that._resetChange, that);
+				that.map.areaSelect.remove();
+			}
 		});
 
 		$("#zoomUp").click(function() {
@@ -471,6 +441,9 @@ L.Control.MapPrint = L.Control.extend({
 		}).addTo(this.map);
 		//запоминаем размер и зум карты для восстановления изначального вида
 		this.ZZoom = this.map.getZoom();
+		this.prevHeight = $(this.map.getContainer()).height();
+		this.prevWidth = $(this.map.getContainer()).width();
+		
 		//создаем панель с кнопками
 		//this.creatButtonAndAreaPackage();
 		//восстанавливаем зум первоначальный из-за использования выбора территории путем аналога Shift+мышь
@@ -480,6 +453,12 @@ L.Control.MapPrint = L.Control.extend({
 		var that = this;
 
 		$("#print").click(function() {
+
+			if (that.map.areaSelect === undefined) {
+				alert("Укажите область экспорта!");
+				return;
+			}
+
 			$("#map-print-container").append('<div id="loader-wrapper"/>');
 			$("#loader-wrapper").append('<div id="loader"/>');
 			$(".leaflet-control-container, #map-print-container").attr("data-html2canvas-ignore", "true");
@@ -514,9 +493,9 @@ L.Control.MapPrint = L.Control.extend({
 				$(".leaflet-control-container").attr("data-html2canvas-ignore", "true");
 				//подготовка зума
 				//формирование канваса и свг для передачи в canvg
-				
+
 				var svgE = $(that.map.getContainer()).find('svg');
-												
+
 				if (svgE.length > 0) {
 					var canvas, xml;
 					canvas = document.createElement("canvas");
@@ -538,6 +517,35 @@ L.Control.MapPrint = L.Control.extend({
 				mapPane.style.transform = "";
 				mapPane.style.left = mapX + "px";
 				mapPane.style.top = mapY + "px";
+
+				// овелей	
+				var mapImageOverlay = $("img.leaflet-image-layer");
+				var mapImageOverlayLeft = [];
+				var mapImageOverlayTop = [];
+				var mapImageOverlayMethod = [];
+				for (var i = 0; i < mapImageOverlay.length; i++) {
+
+					if (mapImageOverlay[i].style.left != "") {
+						mapImageOverlayLeft.push(parseFloat(mapImageOverlay[i].style.left.replace("px", "")));
+						mapImageOverlayTop.push(parseFloat(mapImageOverlay[i].style.top.replace("px", "")));
+						mapImageOverlayMethod[i] = "left";
+					} else if (mapImageOverlay[i].style.transform != "") {
+						var tileTransform = mapImageOverlay[i].style.transform.split(",");
+						mapImageOverlayLeft[i] = parseFloat(tileTransform[0].split("(")[1].replace("px", ""));
+						mapImageOverlayTop[i] = parseFloat(tileTransform[1].replace("px", ""));
+						mapImageOverlay[i].style.transform = "";
+						mapImageOverlayMethod[i] = "transform";
+
+					} else {
+						mapImageOverlayLeft[i] = 0;
+						tilesRight[i] = 0;
+						mapImageOverlayMethod[i] = "neither";
+					};
+					mapImageOverlay[i].style.left = (mapImageOverlayLeft[i]) + "px";
+					mapImageOverlay[i].style.top = (mapImageOverlayTop[i]) + "px";
+				};
+
+
 				//подготовка тайлов
 				var myTiles = $("img.leaflet-tile");
 				var tilesLeft = [];
@@ -582,7 +590,7 @@ L.Control.MapPrint = L.Control.extend({
 						$(this).attr('class', 'tempHide').attr("id", "chtoto").hide();
 					});
 					//подготовка канваса
-					var canas =$(that.map.getContainer()).find('canvas')[0];
+					var canas = $(that.map.getContainer()).find('canvas')[0];
 					var canasTransform = canas.style.transform.split(",");
 					var canasX = parseFloat(canasTransform[0].split("(")[1].replace("px", ""));
 					var canasY = parseFloat(canasTransform[1].replace("px", ""));
@@ -590,6 +598,7 @@ L.Control.MapPrint = L.Control.extend({
 					canas.style.left = canasX + "px";
 					canas.style.top = canasY + "px";
 				}
+
 				//в пнг
 				html2canvas(that.map.getContainer(), {
 					allowTaint: false,
@@ -597,6 +606,7 @@ L.Control.MapPrint = L.Control.extend({
 					taintTest: false,
 					useCORS: true,
 					onrendered: function(canvas) {
+
 						var myImage = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
 						var link = document.createElement('a');
 						if (link.download !== undefined) {
@@ -609,6 +619,8 @@ L.Control.MapPrint = L.Control.extend({
 						} else {
 							alert('Скачивание поддерживается только в браузерах Chrome, Firefox и Opera')
 						};
+
+						//а почему бы туту не возвращать настройки карты?
 					}
 				});
 				//возвращение настроек карты
@@ -626,6 +638,23 @@ L.Control.MapPrint = L.Control.extend({
 						myTiles[i].style.transform = "translate(0px, 0px)";
 					};
 				};
+
+				for (var i = 0; i < mapImageOverlay.length; i++) {
+					if (mapImageOverlayMethod[i] == "left") {
+						mapImageOverlay[i].style.left = (mapImageOverlayLeft[i]) + "px";
+						mapImageOverlay[i].style.top = (mapImageOverlayTop[i]) + "px";
+					} else if (mapImageOverlayMethod[i] == "transform") {
+						mapImageOverlay[i].style.left = "";
+						mapImageOverlay[i].style.top = "";
+						mapImageOverlay[i].style.transform = "translate(" + mapImageOverlayLeft[i] + "px, " + mapImageOverlayTop[i] + "px)";
+					} else {
+						mapImageOverlay[i].style.left = "0px";
+						mapImageOverlay[i].style.top = "0px";
+						mapImageOverlay[i].style.transform = "translate(0px, 0px)";
+					};
+
+				};
+
 				if (svgE.length > 0) {
 					svgElements.style.transform = "translate(" + (svgElementsX) + "px," + (svgElementsY) + "px, 0px)";
 					svgElements.style.left = "";
@@ -636,15 +665,18 @@ L.Control.MapPrint = L.Control.extend({
 				mapPane.style.top = "";
 
 			}, timer);
+			
 			setTimeout(function() {
 				$(that.map.getContainer()).find("#canvas1").remove();
 				$("#loader-wrapper").remove();
 				$(that.map.getContainer()).find('#chtoto').show().removeClass('tempHide');
 				$("[class^='Labels']").remove();
 				$("#map-print-container").remove();
-				$(that.map.getContainer()).height("100%").width("100%");
+
+				$(that.map.getContainer()).height(that.prevHeight).width(that.prevWidth);
 				that.map.setView(that.map.areaSelect.futureSize.center, that.ZZoom);
 				that.map.invalidateSize(true);
+
 			}, backTimer)
 
 		});

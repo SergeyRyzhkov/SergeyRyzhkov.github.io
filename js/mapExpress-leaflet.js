@@ -205,7 +205,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			onEnd: function(evt) {
 				that._mapManager.moveOverlay(evt.item.id, evt.newIndex);
 			},
-			animation: 200
+			animation: 100
 		};
 		/* jshint ignore:start */
 		Sortable.create(rootControl, opt);
@@ -328,8 +328,8 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 	initialize: function(vectorProvider, options) {
 		L.GeoJSON.prototype.initialize.call(this, null, options);
-		options.pointToLayer = this._pointToLayer;
 		L.setOptions(this, options);
+		this.options.pointToLayer = this._pointToLayer;
 		this._dataPovider = vectorProvider;
 		this._prevMapView = {};
 		this._singleDataLoaded = false;
@@ -351,17 +351,13 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 
 	_pointToLayer: function(feature, latlng) {
-		//var opt = {
-		//	id: feature.properties.id,
-		//	divStyle: MapExpress.Styles.StyleDivIcon.CIRCLE
-		//};
-		//var marker = new MapExpress.Styles.StyleMarker(latlng, opt);
-		//return marker;
-		//
+		var opt = {
+			id: feature.properties.id
+		};
 
-		return L.circleMarker(latlng, {
-			radius: 8
-		});
+		var marker = new MapExpress.Styles.StyleMarker(latlng, opt);
+		return marker;
+
 	},
 
 	_refreshData: function() {
@@ -508,27 +504,35 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		var zoomStyle = this._getStyleByZoom();
 		for (var i in this._layers) {
 			var iterLayer = this._layers[i];
-			if ('setStyle' in iterLayer) {
+			if (iterLayer.setStyle) {
 				this._updateStyle(iterLayer, zoomStyle);
+			}
+			if (iterLayer instanceof L.Marker) {
+				this._updateMarkerStyle(iterLayer, zoomStyle);
 			}
 		}
 	},
 
 	_updateStyle: function(layer, zoomStyle) {
 		if (!zoomStyle) {
-			if (layer && layer.feature && layer.feature.properties && layer.feature.properties.style) {
-				var style = null;
-				if (typeof(layer.feature.properties.style) === "string") {
-					style = JSON.parse(layer.feature.properties.style);
-				} else {
-					style = layer.feature.properties.style;
-				}
-				if (style) {
-					layer.setStyle(style);
-				}
+			var style = this._getStyleByLayerProperties(layer);
+			if (style) {
+				layer.setStyle(style);
 			}
 		} else {
 			layer.setStyle(zoomStyle);
+		}
+	},
+
+	_updateMarkerStyle: function(layer, zoomStyle) {
+		if (zoomStyle) {
+			if (layer instanceof L.Marker && layer.options.icon) {
+				layer.options.icon.options.html = zoomStyle.markerDivInnerHtml;
+				layer.options.icon.options.className = zoomStyle.markerDivClassName;
+			}
+			if (layer.setDivStyle) {
+				layer.setDivStyle(zoomStyle.markerDivStyle);
+			}
 		}
 	},
 
@@ -544,6 +548,17 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		}
 	},
 
+	_getStyleByLayerProperties: function(layer) {
+		var style = null;
+		if (layer && layer.feature && layer.feature.properties && layer.feature.properties.style) {
+			if (typeof(layer.feature.properties.style) === "string") {
+				style = JSON.parse(layer.feature.properties.style);
+			} else {
+				style = layer.feature.properties.style;
+			}
+		}
+		return style;
+	},
 
 	_labelLayer: function() {
 		if (this._map && this.options.labelEnabled) {
@@ -663,7 +678,7 @@ MapExpress.Layers.imageOverlayLayer = function(dataPovider, options) {
 };;/* jshint ignore:start */
 L.LabelOverlay = L.Class.extend({
 	options: {
-		minZoom: 14,
+		minZoom: 5,
 		maxZoom: 23,
 
 		fieldToLabel: "layer.feature.properties.id",
@@ -671,9 +686,16 @@ L.LabelOverlay = L.Class.extend({
 		fontSize: "11px",
 		textColor: "#800000",
 		fontFamily: "sans-serif",
+		fontWeight: 'normal', //'bold'|'bolder'|'lighter'|'normal'|
+		fontStyle: 'normal', // normal | italic | oblique | inherit
+		textDecoration: 'none', // [ 'blink' || 'line-through' || 'overline' || 'underline' ] | 'none' | 'inherit'
 		opacity: 1,
+		dy: "0em",
+		dx: "0em",
 
-		halo: false,
+		markerLabelPlace: 'right', //'top', 'left', 'right', 'bottom'
+
+		halo: true,
 		haloWidth: "2px",
 		haloColor: "white",
 		haloOpacity: 0.8,
@@ -686,13 +708,13 @@ L.LabelOverlay = L.Class.extend({
 		rectangle: false,
 		ellipse: false,
 		circle: false,
-		
+
 		autorecWidthHeight: true,
 
 		recWidth: 5,
 		recHeight: 0,
 		recFill: "#ccc",
-		recFillOpacity: 0.8,
+		recFillOpacity: 0.2,
 		recStroke: "#666",
 		recStrokeWidth: "1px",
 		recStrokeOpacity: 0.7
@@ -780,13 +802,29 @@ L.LabelOverlay = L.Class.extend({
 
 	_LineLabel: function(layer, nameForGroups) {
 		this._correctOptions();
-		var opt = this.options;
 		var options = this.options;
 		layer._path.id = "layer" + layer._leaflet_id;
 		var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'lineLabels');
+		var that = this;
+
 		d3.selectAll("#layer" + layer._leaflet_id)
 			.each(function(d, i) {
-				if (options.repeat === true) {
+				if (options.typeOfLabel === "simpleAlong") {
+					if (options.halo === true) {
+						that.haloPrototype.call(this, group, options)
+							.append("textPath")
+							.attr("xlink:href", "#layer" + layer._leaflet_id)
+							.attr("startOffset", options.simpleAlongPointPosition)
+							.text(eval(options.fieldToLabel));
+					}
+
+					var text = that.textPrototype.call(this, group, options)
+						.append("textPath")
+						.attr("xlink:href", "#layer" + layer._leaflet_id)
+						.attr("startOffset", options.simpleAlongPointPosition)
+						.text(eval(options.fieldToLabel));
+
+				} else if (options.repeat === true) {
 					if (options.typeOfLabel === "pointedAlong") {
 						for (var i = 100; i < d3.selectAll("#layer" + layer._leaflet_id)[0][0].getTotalLength() - 50; i = i + options.repeatOffset) {
 							var all = layer._parts;
@@ -824,38 +862,26 @@ L.LabelOverlay = L.Class.extend({
 							if (options.rectangle === true) {
 								var rectangle = group.append("rect");
 							}
-							var halo = group.append('text').attr("class", "halo")
-								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
-								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
-								.attr("dy", "-0.55em")
-								.attr("transform", "rotate(" + angle + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y + ")")
-								.attr("opacity", options.haloOpacity)
-								.style("text-anchor", options.textAnchor)
-								.style("font-size", options.fontSize)
-								.style("stroke-width", options.haloWidth)
-								.style("stroke", options.haloColor)
-								.style("font-family", options.fontFamily)
-								.text(eval(opt.fieldToLabel));
+							if (options.halo === true) {
+								that.haloPrototype.call(this, group, options)
+									.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
+									.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
+									.attr("transform", "rotate(" + angle + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y + ")")
+									.text(eval(options.fieldToLabel));
+							};
 
-							var text = group.append('text').attr("class", "textpath")
+							var text = that.textPrototype.call(this, group, options)
 								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
 								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
-								.attr("dy", "-0.55em")
 								.attr("transform", "rotate(" + angle + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x + ", " + d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y + ")")
-								.attr("fill-opacity", options.opacity)
-								.style("text-anchor", options.textAnchor)
-								.style("font-size", options.fontSize)
-								.style("fill", options.textColor)
-								.style("font-family", options.fontFamily)
-								.text(eval(opt.fieldToLabel));
+								.text(eval(options.fieldToLabel));
 
 							var bbox = text.node().getBBox();
 							var centerX = d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x;
 							var centerY = d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y;
 
 							if (options.rectangle === true) {
-								var rectangleWidth;
-								var rectangleHeight;
+								var rectangleWidth, rectangleHeight;
 								if (options.autorecWidthHeight === true) {
 									rectangleWidth = bbox.width;
 									rectangleHeight = bbox.height;
@@ -863,16 +889,11 @@ L.LabelOverlay = L.Class.extend({
 									rectangleWidth = 0;
 									rectangleHeight = 0;
 								}
-								rectangle
+								that.rectangleProtype.call(this, rectangle, options)
 									.attr("x", bbox.x - 2).attr("y", bbox.y)
 									.attr("width", rectangleWidth + (options.recWidth))
 									.attr("height", rectangleHeight + (options.recHeight))
-									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")")
-									.style("fill", options.recFill)
-									.style("fill-opacity", options.recFillOpacity)
-									.style("stroke", options.recStroke)
-									.style("stroke-width", options.recStrokeWidth)
-									.style("stroke-opacity", options.recStrokeOpacity);
+									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")");
 							}
 							if (options.circle === true) {
 								var circleRad;
@@ -881,18 +902,14 @@ L.LabelOverlay = L.Class.extend({
 								} else {
 									circleRad = 0;
 								}
-								circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+								that.circlePrototype.call(this, circle, options)
+									.attr("cx", bbox.x + bbox.width / 2)
+									.attr("cy", bbox.y + bbox.height / 2)
 									.attr("r", circleRad / 2 + (options.recWidth))
-									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")")
-									.style("fill", options.recFill)
-									.style("fill-opacity", options.recFillOpacity)
-									.style("stroke", options.recStroke)
-									.style("stroke-width", options.recStrokeWidth)
-									.style("stroke-opacity", options.recStrokeOpacity);
+									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")");
 							}
 							if (options.ellipse === true) {
-								var ellipceWidth;
-								var ellipceHeight;
+								var ellipceWidth, ellipceHeight;
 								if (options.autorecWidthHeight === true) {
 									ellipceWidth = bbox.width;
 									ellipceHeight = bbox.height;
@@ -900,15 +917,12 @@ L.LabelOverlay = L.Class.extend({
 									ellipceWidth = 0;
 									ellipceHeight = 0;
 								}
-								ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+								that.ellipsePrototype.call(this, ellipse, options)
+									.attr("cx", bbox.x + bbox.width / 2)
+									.attr("cy", bbox.y + bbox.height / 2)
 									.attr("rx", ellipceWidth + (options.recWidth))
 									.attr("ry", ellipceHeight + (options.recHeight))
-									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")")
-									.style("fill", options.recFill)
-									.style("fill-opacity", options.recFillOpacity)
-									.style("stroke", options.recStroke)
-									.style("stroke-width", options.recStrokeWidth)
-									.style("stroke-opacity", options.recStrokeOpacity);
+									.attr("transform", "rotate(" + angle + ", " + centerX + ", " + centerY + ")");
 							}
 
 						}
@@ -917,43 +931,30 @@ L.LabelOverlay = L.Class.extend({
 
 							if (options.circle === true) {
 								var circle = group.append("circle")
-							}
+							};
 							if (options.ellipse === true) {
 								var ellipse = group.append("ellipse")
-							}
+							};
 							if (options.rectangle === true) {
 								var rectangle = group.append("rect")
-							}
+							};
 
-							var halo = group.append('text').attr("class", "halo")
+							if (options.halo === true) {
+								that.haloPrototype.call(this, group, options)
+									.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
+									.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
+									.text(eval(options.fieldToLabel));
+							};
+
+							var text = that.textPrototype.call(this, group, options)
 								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
 								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
-								.attr("dy", "-0.55em")
-								.attr("opacity", opt.opacity)
-								.attr("opacity", options.haloOpacity)
-								.style("text-anchor", options.textAnchor)
-								.style("font-size", options.fontSize)
-								.style("stroke-width", options.haloWidth)
-								.style("stroke", options.haloColor)
-								.style("font-family", opt.fontFamily)
-								.text(eval(opt.fieldToLabel));
-
-							var text = group.append('text').attr("class", "textpath")
-								.attr("x", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).x)
-								.attr("y", d3.selectAll("#layer" + layer._leaflet_id)[0][0].getPointAtLength(i).y)
-								.attr("dy", "-0.55em")
-								.attr("fill-opacity", options.opacity)
-								.style("text-anchor", options.textAnchor)
-								.style("font-size", options.fontSize)
-								.style("fill", options.textColor)
-								.style("font-family", options.fontFamily)
-								.text(eval(opt.fieldToLabel));
+								.text(eval(options.fieldToLabel));
 
 							var bbox = text.node().getBBox();
 
 							if (options.rectangle === true) {
-								var rectangleWidth;
-								var rectangleHeight;
+								var rectangleWidth, rectangleHeight;
 								if (options.autorecWidthHeight === true) {
 									rectangleWidth = bbox.width;
 									rectangleHeight = bbox.height;
@@ -961,81 +962,43 @@ L.LabelOverlay = L.Class.extend({
 									rectangleWidth = 0;
 									rectangleHeight = 0;
 								}
-								rectangle.attr("x", bbox.x - 2).attr("y", bbox.y)
+								that.rectangleProtype.call(this, rectangle, options)
+									.attr("x", bbox.x - 2)
+									.attr("y", bbox.y)
 									.attr("width", rectangleWidth + (options.recWidth))
-									.attr("height", rectangleHeight + (options.recHeight))
-									.style("fill", options.recFill)
-									.style("fill-opacity", options.recFillOpacity)
-									.style("stroke", options.recStroke)
-									.style("stroke-width", options.recStrokeWidth)
-									.style("stroke-opacity", options.recStrokeOpacity);
-							}
+									.attr("height", rectangleHeight + (options.recHeight));
+							};
 							if (options.circle === true) {
 								var circleRad;
 								if (options.autorecWidthHeight === true) {
 									circleRad = bbox.width;
 								} else {
 									circleRad = 0;
-								}
-								circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
-									.attr("r", circleRad / 2 + (options.recWidth))
-									.style("fill", options.recFill)
-									.style("fill-opacity", options.recFillOpacity)
-									.style("stroke", options.recStroke)
-									.style("stroke-width", options.recStrokeWidth)
-									.style("stroke-opacity", options.recStrokeOpacity);
-							}
+								};
+								that.circlePrototype.call(this, circle, options)
+									.attr("cx", bbox.x + bbox.width / 2)
+									.attr("cy", bbox.y + bbox.height / 2)
+									.attr("r", circleRad / 2 + (options.recWidth));
+							};
 							if (options.ellipse === true) {
-								var ellipceWidth;
-								var ellipceHeight;
+								var ellipceWidth, ellipceHeight;
 								if (options.autorecWidthHeight === true) {
 									ellipceWidth = bbox.width;
 									ellipceHeight = bbox.height
 								} else {
-									ellipceWidth = 0
-									ellipceHeight = 0
+									ellipceWidth = 0;
+									ellipceHeight = 0;
 								};
-								ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+								that.ellipsePrototype.call(this, ellipse, options)
+									.attr("cx", bbox.x + bbox.width / 2)
+									.attr("cy", bbox.y + bbox.height / 2)
 									.attr("rx", ellipceWidth + (options.recWidth))
-									.attr("ry", ellipceHeight + (options.recHeight))
-									.style("fill", options.recFill)
-									.style("fill-opacity", options.recFillOpacity)
-									.style("stroke", options.recStroke)
-									.style("stroke-width", options.recStrokeWidth)
-									.style("stroke-opacity", options.recStrokeOpacity);
-							}
-						}
+									.attr("ry", ellipceHeight + (options.recHeight));
+							};
+						};
 					};
 				} else if (options.repeat !== true) {
-					if (options.typeOfLabel === "simpleAlong") {
-						if (options.halo === true) {
-							var halo = group.append('text').attr("class", "halo")
-								.attr("dy", "-0.55em")
-								.append("textPath")
-								.attr("xlink:href", "#layer" + layer._leaflet_id)
-								.attr("startOffset", options.simpleAlongPointPosition)
-								.attr("opacity", options.haloOpacity)
-								.style("text-anchor", options.textAnchor)
-								.style("font-size", options.fontSize)
-								.style("stroke", options.haloColor)
-								.style("stroke-width", options.haloWidth)
-								.style("font-family", options.fontFamily)
-								.text(eval(opt.fieldToLabel));
-						}
-
-						var text = group.append('text').attr("class", "textpath")
-							.attr("dy", "-0.55em")
-							.append("textPath")
-							.attr("xlink:href", "#layer" + layer._leaflet_id)
-							.attr("startOffset", options.simpleAlongPointPosition)
-							.attr("fill-opacity", options.opacity)
-							.style("text-anchor", options.textAnchor)
-							.style("font-size", options.fontSize)
-							.style("fill", options.textColor)
-							.style("font-family", options.fontFamily)
-							.text(eval(opt.fieldToLabel));
-
-					} else if (options.typeOfLabel === "pointedAlongGorisontal") {
+					if (options.typeOfLabel === "pointedAlongGorisontal") {
 						var allParts = layer._parts;
 						allParts.forEach(function(items, i, allParts) {
 							if (items.length > 2) {
@@ -1051,18 +1014,15 @@ L.LabelOverlay = L.Class.extend({
 									var rectangle = group.append("rect");
 								}
 
-								Halo();
+								if (options.halo === true) {
+									that.haloPrototype.call(this, group, options)
+										.attr("x", cx).attr("y", cy)
+										.text(eval(options.fieldToLabel));
+								}
 
-								var text = group.append('text').attr("class", "textpath")
-									.attr("x", cx)
-									.attr("y", cy)
-									.attr("dy", "-0.55em")
-									.attr("fill-opacity", options.opacity)
-									.style("text-anchor", options.textAnchor)
-									.style("font-size", options.fontSize)
-									.style("fill", options.textColor)
-									.style("font-family", options.fontFamily)
-									.text(eval(opt.fieldToLabel));
+								var text = that.textPrototype.call(this, group, options)
+									.attr("x", cx).attr("y", cy)
+									.text(eval(options.fieldToLabel));
 
 								var bbox = text.node().getBBox();
 								completeGeometries();
@@ -1079,42 +1039,24 @@ L.LabelOverlay = L.Class.extend({
 									var rectangle = group.append("rect");
 								}
 
-								Halo();
+								if (options.halo === true) {
+									that.haloPrototype.call(this, group, options)
+										.attr("x", cx).attr("y", cy)
+										.text(eval(options.fieldToLabel));
+								}
 
-								var text = group.append('text').attr("class", "textpath")
+								var text = that.textPrototype.call(this, group, options)
 									.attr("x", cx).attr("y", cy)
-									.attr("dy", "-0.55em")
 									.attr("fill-opacity", options.opacity)
-									.style("text-anchor", options.textAnchor)
-									.style("font-size", options.fontSize)
-									.style("fill", options.textColor)
-									.style("font-family", options.fontFamily)
-									.text(eval(opt.fieldToLabel));
+									.text(eval(options.fieldToLabel));
 
 								var bbox = text.node().getBBox();
 								completeGeometries();
 							};
 
-							function Halo() {
-								if (options.halo === true) {
-									var halo = group.append('text').attr("class", "halo")
-										.attr("x", cx)
-										.attr("y", cy)
-										.attr("dy", "-0.55em")
-										.attr("opacity", options.haloOpacity)
-										.style("text-anchor", options.textAnchor)
-										.style("font-size", options.fontSize)
-										.style("stroke", options.haloColor)
-										.style("stroke-width", options.haloWidth)
-										.style("font-family", options.fontFamily)
-										.text(eval(opt.fieldToLabel));
-								}
-							};
-
 							function completeGeometries() {
 								if (options.rectangle === true) {
-									var rectangleWidth;
-									var rectangleHeight;
+									var rectangleWidth, rectangleHeight;
 									if (options.autorecWidthHeight === true) {
 										rectangleWidth = bbox.width;
 										rectangleHeight = bbox.height;
@@ -1122,14 +1064,10 @@ L.LabelOverlay = L.Class.extend({
 										rectangleWidth = 0;
 										rectangleHeight = 0;
 									}
-									rectangle.attr("x", bbox.x - 2).attr("y", bbox.y)
+									that.rectangleProtype.call(this, rectangle, options)
+										.attr("x", bbox.x - 2).attr("y", bbox.y)
 										.attr("width", rectangleWidth + (options.recWidth))
-										.attr("height", rectangleHeight + (options.recHeight))
-										.style("fill", options.recFill)
-										.style("fill-opacity", options.recFillOpacity)
-										.style("stroke", options.recStroke)
-										.style("stroke-width", options.recStrokeWidth)
-										.style("stroke-opacity", options.recStrokeOpacity);
+										.attr("height", rectangleHeight + (options.recHeight));
 								}
 								if (options.circle === true) {
 									var circleRad;
@@ -1138,17 +1076,15 @@ L.LabelOverlay = L.Class.extend({
 									} else {
 										circleRad = 0;
 									}
-									circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
-										.attr("r", circleRad / 2 + (options.recWidth))
-										.style("fill", options.recFill)
-										.style("fill-opacity", options.recFillOpacity)
-										.style("stroke", options.recStroke)
-										.style("stroke-width", options.recStrokeWidth)
-										.style("stroke-opacity", options.recStrokeOpacity);
+									that.circlePrototype.call(this, circle, options)
+										.attr("cx", bbox.x + bbox.width / 2)
+										.attr("cy", bbox.y + bbox.height / 2)
+										.attr("r", circleRad / 2 + (options.recWidth));
+
 								}
 								if (options.ellipse === true) {
-									var ellipceWidth;
-									var ellipceHeight;
+									var ellipceWidth, ellipceHeight;
+
 									if (options.autorecWidthHeight === true) {
 										ellipceWidth = bbox.width;
 										ellipceHeight = bbox.height;
@@ -1156,14 +1092,11 @@ L.LabelOverlay = L.Class.extend({
 										ellipceWidth = 0;
 										ellipceHeight = 0;
 									}
-									ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+									that.ellipsePrototype.call(this, ellipse, options)
+										.attr("cx", bbox.x + bbox.width / 2)
+										.attr("cy", bbox.y + bbox.height / 2)
 										.attr("rx", ellipceWidth + (options.recWidth))
-										.attr("ry", ellipceHeight + (options.recHeight))
-										.style("fill", options.recFill)
-										.style("fill-opacity", options.recFillOpacity)
-										.style("stroke", options.recStroke)
-										.style("stroke-width", options.recStrokeWidth)
-										.style("stroke-opacity", options.recStrokeOpacity);
+										.attr("ry", ellipceHeight + (options.recHeight));
 								}
 							};
 						});
@@ -1201,18 +1134,18 @@ L.LabelOverlay = L.Class.extend({
 									var rectangle = group.append("rect");
 								}
 
-								Halo();
+								if (options.halo === true) {
+									that.haloPrototype.call(this, group, options)
+										.attr("x", cx).attr("y", cy)
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+										.text(eval(options.fieldToLabel));
+								}
 
-								var text = group.append('text').attr("class", "textpath")
+								var text = that.textPrototype.call(this, group, options)
 									.attr("x", cx).attr("y", cy)
 									.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
-									.attr("dy", "-0.55em")
-									.attr("fill-opacity", options.opacity)
-									.style("text-anchor", options.textAnchor)
-									.style("font-size", options.fontSize)
-									.style("fill", options.textColor)
-									.style("font-family", options.fontFamily)
-									.text(eval(opt.fieldToLabel));
+									.text(eval(options.fieldToLabel));
+
 								var bbox = text.node().getBBox();
 								CompleteGeometry();
 
@@ -1247,38 +1180,21 @@ L.LabelOverlay = L.Class.extend({
 								}
 
 
-								Halo();
+								if (options.halo === true) {
+									that.haloPrototype.call(this, group, options)
+										.attr("x", cx).attr("y", cy)
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
+										.text(eval(options.fieldToLabel));
+								}
 
-								var text = group.append('text').attr("class", "textpath")
+								var text = that.textPrototype.call(this, group, options)
 									.attr("x", cx).attr("y", cy)
-									.attr("dy", "-0.55em")
 									.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
-									.attr("fill-opacity", options.opacity)
-									.style("text-anchor", options.textAnchor)
-									.style("font-size", options.fontSize)
-									.style("fill", options.textColor)
-									.style("font-family", options.fontFamily)
-									.text(eval(opt.fieldToLabel));
+									.text(eval(options.fieldToLabel));
 
 								var bbox = text.node().getBBox();
 								CompleteGeometry();
 							}
-
-							function Halo() {
-								if (options.halo === true) {
-									var halo = group.append('text').attr("class", "halo")
-										.attr("x", cx).attr("y", cy)
-										.attr("dy", "-0.55em")
-										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
-										.attr("opacity", options.haloOpacity)
-										.style("text-anchor", options.textAnchor)
-										.style("font-size", options.fontSize)
-										.style("stroke", options.haloColor)
-										.style("stroke-width", options.haloWidth)
-										.style("font-family", options.fontFamily)
-										.text(eval(opt.fieldToLabel));
-								};
-							};
 
 							function CompleteGeometry() {
 								if (options.rectangle === true) {
@@ -1291,16 +1207,12 @@ L.LabelOverlay = L.Class.extend({
 										rectangleWidth = 0;
 										rectangleHeight = 0;
 									}
-									rectangle
-										.attr("x", bbox.x - 3).attr("y", bbox.y)
+									that.rectangleProtype.call(this, rectangle, options)
+										.attr("x", bbox.x - 3)
+										.attr("y", bbox.y)
 										.attr("width", rectangleWidth + (options.recWidth))
 										.attr("height", rectangleHeight + (options.recHeight))
-										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
-										.style("fill", options.recFill)
-										.style("fill-opacity", options.recFillOpacity)
-										.style("stroke", options.recStroke)
-										.style("stroke-width", options.recStrokeWidth)
-										.style("stroke-opacity", options.recStrokeOpacity);
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")");
 								};
 								if (options.circle === true) {
 									var circleRad;
@@ -1309,14 +1221,11 @@ L.LabelOverlay = L.Class.extend({
 									} else {
 										circleRad = 0;
 									};
-									circle.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+									that.circlePrototype.call(this, circle, options)
+										.attr("cx", bbox.x + bbox.width / 2)
+										.attr("cy", bbox.y + bbox.height / 2)
 										.attr("r", circleRad / 2 + (options.recWidth))
-										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
-										.style("fill", options.recFill)
-										.style("fill-opacity", options.recFillOpacity)
-										.style("stroke", options.recStroke)
-										.style("stroke-width", options.recStrokeWidth)
-										.style("stroke-opacity", options.recStrokeOpacity);
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")");
 								}
 								if (options.ellipse === true) {
 									var ellipceWidth;
@@ -1328,15 +1237,12 @@ L.LabelOverlay = L.Class.extend({
 										ellipceWidth = 0;
 										ellipceHeight = 0;
 									};
-									ellipse.attr("cx", bbox.x + bbox.width / 2).attr("cy", bbox.y + bbox.height / 2)
+									that.ellipsePrototype.call(this, ellipse, options)
+										.attr("cx", bbox.x + bbox.width / 2)
+										.attr("cy", bbox.y + bbox.height / 2)
 										.attr("rx", ellipceWidth + (options.recWidth))
 										.attr("ry", ellipceHeight + (options.recHeight))
-										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")")
-										.style("fill", options.recFill)
-										.style("fill-opacity", options.recFillOpacity)
-										.style("stroke", options.recStroke)
-										.style("stroke-width", options.recStrokeWidth)
-										.style("stroke-opacity", options.recStrokeOpacity);
+										.attr("transform", "rotate(" + angle + ", " + cx + ", " + cy + ")");
 								}
 							};
 						});
@@ -1346,13 +1252,10 @@ L.LabelOverlay = L.Class.extend({
 	},
 
 	_PolygonLabel: function(layer, nameForGroups) {
-
-		var opt = this.options;
 		var options = this.options;
-
 		layer._path.id = "layer" + layer._leaflet_id;
-
 		var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'polygonLabels');
+		var that = this;
 
 		d3.selectAll("#layer" + layer._leaflet_id)
 			.each(function(d, i) {
@@ -1361,7 +1264,9 @@ L.LabelOverlay = L.Class.extend({
 					x: bounds.x + bounds.width / 2,
 					y: bounds.y + bounds.height / 2
 				};
-
+				if (labelPositions.x === 0 && labelPositions.y === 0) {
+					return
+				}
 				if (options.circle === true) {
 					var circle = group.append("circle");
 				}
@@ -1372,36 +1277,21 @@ L.LabelOverlay = L.Class.extend({
 					var rectangle = group.append("rect");
 				}
 
-
 				if (options.halo === true) {
-					var halo = group.append('text')
-						.attr("class", "halo")
+					that.haloPrototype.call(this, group, options)
 						.attr("x", labelPositions.x)
 						.attr("y", labelPositions.y)
-						.style("stroke", options.haloColor)
-						.style("opacity", options.haloOpacity)
-						.style("stroke-width", options.haloWidth)
-						.style("text-anchor", options.textAnchor)
-						.style("font-size", options.fontSize)
-						.style("font-family", options.fontFamily)
-						.text(eval(opt.fieldToLabel));
+						.text(eval(options.fieldToLabel));
 				}
-				var text = group.append('text')
-					.attr("class", "textpath")
+				var text = that.textPrototype.call(this, group, options)
 					.attr("x", labelPositions.x)
 					.attr("y", labelPositions.y)
-					.attr("fill-opacity", options.opacity)
-					.style("text-anchor", options.textAnchor)
-					.style("font-size", options.fontSize)
-					.style("fill", options.textColor)
-					.style("font-family", options.fontFamily)
-					.text(eval(opt.fieldToLabel));
+					.text(eval(options.fieldToLabel));
 
 				var bbox = text.node().getBBox();
-				if (options.rectangle === true) {
 
-					var rectangleWidth;
-					var rectangleHeight;
+				if (options.rectangle === true) {
+					var rectangleWidth, rectangleHeight;
 					if (options.autorecWidthHeight === true) {
 						rectangleWidth = bbox.width;
 						rectangleHeight = bbox.height
@@ -1409,15 +1299,11 @@ L.LabelOverlay = L.Class.extend({
 						rectangleWidth = 0
 						rectangleHeight = 0
 					}
-					rectangle.attr("x", bbox.x - 2)
+					that.rectangleProtype.call(this, rectangle, options)
+						.attr("x", bbox.x - 2)
 						.attr("y", bbox.y)
 						.attr("width", rectangleWidth + (options.recWidth))
-						.attr("height", rectangleHeight + (options.recHeight))
-						.style("fill", options.recFill)
-						.style("fill-opacity", options.recFillOpacity)
-						.style("stroke", options.recStroke)
-						.style("stroke-width", options.recStrokeWidth)
-						.style("stroke-opacity", options.recStrokeOpacity);
+						.attr("height", rectangleHeight + (options.recHeight));
 				};
 				if (options.circle === true) {
 					var circleRad
@@ -1426,18 +1312,13 @@ L.LabelOverlay = L.Class.extend({
 					} else {
 						circleRad = 0
 					};
-					circle.attr("cx", bbox.x + bbox.width / 2)
+					that.circlePrototype.call(this, circle, options)
+						.attr("cx", bbox.x + bbox.width / 2)
 						.attr("cy", bbox.y + bbox.height / 2)
-						.attr("r", circleRad / 2 + (options.recWidth))
-						.style("fill", options.recFill)
-						.style("fill-opacity", options.recFillOpacity)
-						.style("stroke", options.recStroke)
-						.style("stroke-width", options.recStrokeWidth)
-						.style("stroke-opacity", options.recStrokeOpacity);
+						.attr("r", circleRad / 2 + (options.recWidth));
 				}
 				if (options.ellipse === true) {
-					var ellipceWidth;
-					var ellipceHeight;
+					var ellipceWidth, ellipceHeight;
 					if (options.autorecWidthHeight === true) {
 						ellipceWidth = bbox.width;
 						ellipceHeight = bbox.height
@@ -1445,33 +1326,40 @@ L.LabelOverlay = L.Class.extend({
 						ellipceWidth = 0
 						ellipceHeight = 0
 					};
-					ellipse
+					that.ellipsePrototype.call(this, ellipse, options)
 						.attr("cx", bbox.x + bbox.width / 2)
 						.attr("cy", bbox.y + bbox.height / 2)
 						.attr("rx", ellipceWidth + (options.recWidth))
-						.attr("ry", ellipceHeight + (options.recHeight))
-						.style("fill", options.recFill)
-						.style("fill-opacity", options.recFillOpacity)
-						.style("stroke", options.recStroke)
-						.style("stroke-width", options.recStrokeWidth)
-						.style("stroke-opacity", options.recStrokeOpacity);
+						.attr("ry", ellipceHeight + (options.recHeight));
 				}
 
 			});
 	},
 
 	_PointLabel: function(layer, nameForGroups) {
-		var opt = this.options;
 		var options = this.options;
-
 		layer._icon.id = "marker_" + layer._leaflet_id;
-		var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'pointLabels');
+
+		if (d3.select('svg')[0][0] !== null) {
+			var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'pointLabels');
+		} else {
+			var polygon = L.polygon([
+				[0, -0.1],
+				[-0.1, -0.02],
+				[-0.02, 0]
+			], {
+				color: 'red',
+				opacity: 0.0,
+				fillColor: '#f03',
+				fillOpacity: 0.0
+			}).addTo(this.labelingLayer._map);
+			var group = d3.select('svg').append('g').attr("class", 'Labels' + nameForGroups).append('g').attr("class", 'pointLabels');
+		};
+
+		var that = this;
+		//Внимание! Порядок обьявления переменных текста, гало и подложек не должен меняться.
 		d3.selectAll("#marker_" + layer._leaflet_id)
-			.each(function(d, i) {
-				var labelPositions = {
-					x: layer._icon._leaflet_pos.x,
-					y: layer._icon._leaflet_pos.y,
-				};
+			.each(function() {
 
 				if (options.circle === true) {
 					var circle = group.append("circle");
@@ -1483,97 +1371,149 @@ L.LabelOverlay = L.Class.extend({
 					var rectangle = group.append("rect");
 				}
 
-				if (options.halo === true) {
-					var halo = group.append('text')
-						.attr("class", "halo")
-						.attr("x", labelPositions.x)
-						.attr("y", labelPositions.y)
-						.attr("dy", "-3em")
-						.style("stroke", options.haloColor)
-						.style("opacity", options.haloOpacity)
-						.style("stroke-width", options.haloWidth)
-						.style("text-anchor", options.textAnchor)
-						.style("font-size", options.fontSize)
-						.style("font-family", options.fontFamily)
-						.text(eval(opt.fieldToLabel));
-				}
+				var imageWigth = parseInt(this.style.width, 10);
+				var imageHeight = parseInt(this.style.height, 10);
+				var labelPositions = {};
 
-				var text = group.append('text')
-					.attr("class", "textpath")
-					.attr("x", labelPositions.x)
-					.attr("y", labelPositions.y)
-					.attr("dy", "-3em")
-					.attr("fill-opacity", options.opacity)
-					.style("text-anchor", options.textAnchor)
-					.style("font-size", options.fontSize)
-					.style("fill", options.textColor)
-					.style("font-family", options.fontFamily)
-					.text(eval(opt.fieldToLabel));
+				if (options.halo === true) {
+					var halo = that.haloPrototype.call(this, group, options).text(eval(options.fieldToLabel));
+				};
+				var text = that.textPrototype.call(this, group, options).text(eval(options.fieldToLabel));
+
+				var bbox = text.node().getBBox();
+
+				if (options.markerLabelPlace === "top") {
+					labelPositions.x = layer._icon._leaflet_pos.x;
+					labelPositions.y = layer._icon._leaflet_pos.y - imageHeight / 2;
+				} else if (options.markerLabelPlace === "bottom") {
+					labelPositions.x = layer._icon._leaflet_pos.x;
+					labelPositions.y = layer._icon._leaflet_pos.y + imageHeight / 2 + bbox.height;
+				} else if (options.markerLabelPlace === "left") {
+					labelPositions.x = layer._icon._leaflet_pos.x - bbox.width / 2 - 3 - imageWigth / 2;
+					labelPositions.y = layer._icon._leaflet_pos.y + bbox.height / 4;
+				} else if (options.markerLabelPlace === "right") {
+					labelPositions.x = layer._icon._leaflet_pos.x + bbox.width / 2 + 3 + imageWigth / 2;
+					labelPositions.y = layer._icon._leaflet_pos.y + bbox.height / 4;
+				}
+				if (labelPositions.x === 0 && labelPositions.y === 0) {
+					return
+				}
+				if (options.halo === true) {
+					halo.attr("x", labelPositions.x).attr("y", labelPositions.y);
+				};
+
+				text.attr("x", labelPositions.x).attr("y", labelPositions.y);
+
+				var newBbox = text.node().getBBox();
 
 				if (options.rectangle === true) {
-					var bbox = text.node().getBBox();
-					var rectangleWidth;
-					var rectangleHeight;
+					var rectangleWidth, rectangleHeight;
 					if (options.autorecWidthHeight === true) {
-						rectangleWidth = bbox.width;
-						rectangleHeight = bbox.height
+						rectangleWidth = newBbox.width + 1;
+						rectangleHeight = newBbox.height
 					} else {
 						rectangleWidth = 0
 						rectangleHeight = 0
 					};
-					rectangle.attr("x", bbox.x - 2)
-						.attr("y", bbox.y)
-						.attr("width", rectangleWidth + (options.recWidth))
-						.attr("height", rectangleHeight + (options.recHeight))
-						.style("fill", options.recFill)
-						.style("fill-opacity", options.recFillOpacity)
-						.style("stroke", options.recStroke)
-						.style("stroke-width", options.recStrokeWidth)
-						.style("stroke-opacity", options.recStrokeOpacity);
+					that.rectangleProtype.call(this, rectangle, options)
+					.attr("x", newBbox.x - 2)
+					.attr("y", newBbox.y)
+					.attr("width", rectangleWidth + (options.recWidth))
+					.attr("height", rectangleHeight + (options.recHeight));
 				}
+
 				if (options.circle === true) {
-					var bbox = text.node().getBBox();
 					var circleRad
 					if (options.autorecWidthHeight === true) {
-						circleRad = bbox.width;
+						circleRad = newBbox.width;
 					} else {
 						circleRad = 0
 					};
-					circle.attr("cx", bbox.x + bbox.width / 2)
-						.attr("cy", bbox.y + bbox.height / 2)
-						.attr("r", circleRad / 2 + (options.recWidth))
-						.style("fill", options.recFill)
-						.style("fill-opacity", options.recFillOpacity)
-						.style("stroke", options.recStroke)
-						.style("stroke-width", options.recStrokeWidth)
-						.style("stroke-opacity", options.recStrokeOpacity);
+					that.circlePrototype.call(this, circle, options)
+						.attr("cx", newBbox.x + newBbox.width / 2)
+						.attr("cy", newBbox.y + newBbox.height / 2)
+						.attr("r", circleRad / 2 + (options.recWidth));
 				}
 				if (options.ellipse === true) {
-					var bbox = text.node().getBBox();
-					var ellipceWidth;
-					var ellipceHeight;
+					var ellipceWidth, ellipceHeight;
 					if (options.autorecWidthHeight === true) {
-						ellipceWidth = bbox.width;
-						ellipceHeight = bbox.height
+						ellipceWidth = newBbox.width;
+						ellipceHeight = newBbox.height
 					} else {
 						ellipceWidth = 0
 						ellipceHeight = 0
 					};
-					ellipse
-						.attr("cx", bbox.x + bbox.width / 2)
-						.attr("cy", bbox.y + bbox.height / 2)
+					that.ellipsePrototype.call(this, ellipse, options)
+						.attr("cx", newBbox.x + newBbox.width / 2)
+						.attr("cy", newBbox.y + newBbox.height / 2)
 						.attr("rx", ellipceWidth + (options.recWidth))
-						.attr("ry", ellipceHeight + (options.recHeight))
-						.style("fill", options.recFill)
-						.style("fill-opacity", options.recFillOpacity)
-						.style("stroke", options.recStroke)
-						.style("stroke-width", options.recStrokeWidth)
-						.style("stroke-opacity", options.recStrokeOpacity);
-				}
-
+						.attr("ry", ellipceHeight + (options.recHeight));
+				};
 			});
 	},
+	haloPrototype: function(group, options) {
+		var halo = group.append('text')
+			.attr("class", "halo")
+			.style("dx", options.dx)
+			.style("dy", options.dy)
+			.style("stroke", options.haloColor)
+			.style("opacity", options.haloOpacity)
+			.style("stroke-width", options.haloWidth)
+			.style("text-anchor", options.textAnchor)
+			.style("font-size", options.fontSize)
+			.style('font-weight', options.fontWeight)
+			.style('font-style', options.fontStyle)
+			.style('text-decoration', options.textDecoration)
+			.style("font-family", options.fontFamily);
 
+		return halo
+	},
+	textPrototype: function(group, options) {
+		var text = group.append('text')
+			.attr("class", "textpath")
+			.style("dx", options.dx)
+			.style("dy", options.dy)
+			.style("fill-opacity", options.opacity)
+			.style("text-anchor", options.textAnchor)
+			.style("font-size", options.fontSize)
+			.style('font-weight', options.fontWeight)
+			.style('font-style', options.fontStyle)
+			.style('text-decoration', options.textDecoration)
+			.style("fill", options.textColor)
+			.style("font-family", options.fontFamily);
+
+		return text;
+	},
+	circlePrototype: function(circle, options) {
+		circle
+			.style("fill", options.recFill)
+			.style("fill-opacity", options.recFillOpacity)
+			.style("stroke", options.recStroke)
+			.style("stroke-width", options.recStrokeWidth)
+			.style("stroke-opacity", options.recStrokeOpacity);
+
+		return circle;
+	},
+	ellipsePrototype: function(ellipse, options) {
+		ellipse
+			.style("fill", options.recFill)
+			.style("fill-opacity", options.recFillOpacity)
+			.style("stroke", options.recStroke)
+			.style("stroke-width", options.recStrokeWidth)
+			.style("stroke-opacity", options.recStrokeOpacity);
+
+		return ellipse
+	},
+	rectangleProtype: function(rectangle, options) {
+		rectangle
+			.style("fill", options.recFill)
+			.style("fill-opacity", options.recFillOpacity)
+			.style("stroke", options.recStroke)
+			.style("stroke-width", options.recStrokeWidth)
+			.style("stroke-opacity", options.recStrokeOpacity);
+
+		return rectangle
+	},
 	_removeLabels: function(nameForGroups) {
 		var elem = $(".Labels" + nameForGroups);
 		if (elem) {
@@ -3604,7 +3544,7 @@ MapExpress.Service.baseDataProvider = function(options) {
 		crs: L.CRS.EPSG3857,
 		identifyUrl: '',
 		identifyFormat: 'json',
-		identifyTolerance: 1,
+		identifyTolerance: 5,
 		layersId: ''
 	},
 
@@ -4068,11 +4008,10 @@ MapExpress.Styles.PulseMarker = L.Marker.extend({
 	}
 });;MapExpress.Styles.StyleDivIcon = L.DivIcon.extend({
 
-	statics: {
-
-		CIRCLE: "width:11px;height:11px;background:black;-moz-border-radius:6px;-webkit-border-radius:6px;border-radius:6px;"
+	options: {
+		style: "width:12px;height:12px;border-radius:50%;border-width:2px;border-style: solid;border-color:black;margin-left:-6px;margin-top:-6px;",
+		className: "mapexpress-empty-marker-style"
 	},
-
 
 	createIcon: function(oldIcon) {
 		var div = L.DivIcon.prototype.createIcon.call(this, oldIcon);
@@ -4081,27 +4020,29 @@ MapExpress.Styles.PulseMarker = L.Marker.extend({
 		if (this.options.id) {
 			div.id = this.options.id;
 		}
-		if (this.options.divStyle) {
-			this.setStyle(this.options.divStyle);
+
+		if (this.options.style) {
+			this.setStyle(this.options.style);
 		}
+
 		return div;
 	},
 
 	setStyle: function(divStyle) {
-		this.options.divStyle = divStyle;
+		this.options.style = divStyle;
 
 		if (!this._styleDivIcon) {
 			return;
 		}
 
-		if (this.options.divStyle && typeof(this.options.divStyle) === "string" && this.options.divStyle.length > 0) {
-			this._styleDivIcon.style.cssText = this.options.divStyle;
+		if (this.options.style && typeof(this.options.style) === "string" && this.options.style.length > 0) {
+			this._styleDivIcon.style.cssText = this._styleDivIcon.style.cssText + ";" + this.options.style;
 			return;
 		}
 
-		if (this.options.divStyle && typeof(this.options.divStyle) === "object") {
-			for (var key in this.options.divStyle) {
-				this._styleDivIcon.style[key] = this.options.divStyle[key];
+		if (this.options.style && typeof(this.options.style) === "object") {
+			for (var key in this.options.style) {
+				this._styleDivIcon.style[key] = this.options.style[key];
 			}
 		}
 	}
@@ -4112,14 +4053,16 @@ MapExpress.Styles.StyleMarker = L.Marker.extend({
 		if (!options) {
 			options = {};
 		}
+		//options.html = "<img src='images/check_@2X.png' style='margin-left:-6px;margin-top:-6px;'>";
+		//options.html = "<i class='fa fa-info fa-lg fa-fw' style='margin-left:-6px;margin-top:-6px;'/>";
 		options.icon = new MapExpress.Styles.StyleDivIcon(options);
 		L.Marker.prototype.initialize.call(this, latlng, options);
 	},
 
-	setStyle: function(divStyle) {
-		//if (this.options.icon && this.options.icon instanceof MapExpress.Styles.StyleDivIcon) {
-		//	this.options.icon.setStyle(divStyle);
-		//}
+	setDivStyle: function(divStyle) {
+		if (divStyle && this.options.icon && this.options.icon instanceof MapExpress.Styles.StyleDivIcon) {
+			this.options.icon.setStyle(divStyle);
+		}
 	}
 });;MapExpress.Tools.BaseMapCommand = L.Class.extend({
 
@@ -4566,57 +4509,6 @@ MapExpress.Service.mapToolbar = function(mapManager, options) {
 	}
 
 });;/* jshint ignore:start */
-(function() {
-
-	"use strict";
-
-	var root;
-	root = typeof exports !== "undefined" && exports !== null ? exports : this;
-
-	function resultFormatter() {
-		var formater = {};
-
-		formater.formatGeoJSON = function(data) {
-			if (data.attributes) {
-				return formatAsTable(data.attributes);
-			}
-
-			if (data.properties) {
-				return formatAsTable(data.properties)
-			}
-		};
-
-		function formatAsTable(props) {
-			var result = '<table class="table"> <tbody>';
-
-			for (var i in props) {
-				result = result + '<tr>';
-				result = result + '<td>' + i + '</td>';
-				result = result + '<td>' + props[i] + '</td>';
-				result = result + '</tr>';
-			}
-			return result + '</tbody></table>';
-		};
-
-		return formater;
-	}
-
-	if (typeof define === 'function') {
-		var module = {
-			resultFormatter: resultFormatter,
-		};
-
-		define([], function() {
-
-			return module;
-
-		});
-	} else {
-		root.resultFormatter = resultFormatter;
-	}
-
-}).call(this);
-/* jshint ignore:end */;/* jshint ignore:start */
 // vim:ts=4:sts=4:sw=4:
 /*!
  *
