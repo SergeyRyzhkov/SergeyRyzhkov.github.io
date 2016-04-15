@@ -1300,7 +1300,7 @@ L.LabelOverlay = L.Class.extend({
 						rectangleHeight = 0
 					}
 					that.rectangleProtype.call(this, rectangle, options)
-						.attr("x", bbox.x - 2)
+						.attr("x", bbox.x)
 						.attr("y", bbox.y)
 						.attr("width", rectangleWidth + (options.recWidth))
 						.attr("height", rectangleHeight + (options.recHeight));
@@ -1409,14 +1409,14 @@ L.LabelOverlay = L.Class.extend({
 				if (options.rectangle === true) {
 					var rectangleWidth, rectangleHeight;
 					if (options.autorecWidthHeight === true) {
-						rectangleWidth = newBbox.width + 1;
+						rectangleWidth = newBbox.width;
 						rectangleHeight = newBbox.height
 					} else {
 						rectangleWidth = 0
 						rectangleHeight = 0
 					};
 					that.rectangleProtype.call(this, rectangle, options)
-					.attr("x", newBbox.x - 2)
+					.attr("x", newBbox.x)
 					.attr("y", newBbox.y)
 					.attr("width", rectangleWidth + (options.recWidth))
 					.attr("height", rectangleHeight + (options.recHeight));
@@ -1522,7 +1522,7 @@ L.LabelOverlay = L.Class.extend({
 	}
 
 });
-/* jshint ignore:end */;MapExpress.Layers.TileServiceLayer = L.TileLayer.extend({	initialize: function(tileProvider, options) {		L.TileLayer.prototype.initialize.call(this, null, options);		L.setOptions(this, options);		this._dataPovider = tileProvider;	},	onAdd: function(map) {		L.TileLayer.prototype.onAdd.call(this, map);	},		onRemove: function(map) {		L.TileLayer.prototype.onRemove.call(this, map);	},	createTile: function(coords, done) {		var tile = document.createElement('img');		L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));		L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));		if (this.options.crossOrigin) {			tile.crossOrigin = '';		}		tile.alt = '';		tile.src = this._dataPovider.getDataUrlByTile(coords);		return tile;	}});MapExpress.Layers.tileServiceLayer = function(tileProvider, options) {	return new MapExpress.Layers.TileServiceLayer(tileProvider, options);};;MapExpress.Mapping.LayerModel = L.Class.extend({
+/* jshint ignore:end */;MapExpress.Layers.TileServiceLayer = L.TileLayer.extend({	initialize: function(tileProvider, options) {		L.TileLayer.prototype.initialize.call(this, null, options);		L.setOptions(this, options);		this._dataPovider = tileProvider;	},	onAdd: function(map) {		L.TileLayer.prototype.onAdd.call(this, map);	},		onRemove: function(map) {		L.TileLayer.prototype.onRemove.call(this, map);	},	createTile: function(coords, done) {		var tile = document.createElement('img');		L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));		L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));		if (this.options.crossOrigin) {			tile.crossOrigin = '';		}		tile.alt = '';		tile.src = this._dataPovider.getDataUrlByTile(coords);		return tile;	}});MapExpress.Layers.tileServiceLayer = function(tileProvider, options) {	return new MapExpress.Layers.TileServiceLayer(tileProvider, options);};;MapExpress.Mapping.LayerModel = L.Class.extend({
 
 	initialize: function(id, options) {
 		this.id = id;
@@ -3721,6 +3721,12 @@ MapExpress.Service.featureServiceAgsProvider = function(url, options) {
 			var url = this.getDataUrlByTile(tileCoord);
 			return MapExpress.Utils.Promise.qAjax(url);
 		}
+	},
+
+	getDataUrlByTile: function(tileCoord) {
+		var bounds = this._tileCoordToBounds(tileCoord);
+		var mapSize = new L.Point(this.options.tileSize, this.options.tileSize);
+		return this.getDataUrlByBounds(bounds, mapSize);
 	},
 
 	getFeatureInfoAsync: function(latlng, layerPoint, mapBounds, mapSize, zoom) {
