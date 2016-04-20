@@ -74,23 +74,8 @@ if (typeof window !== 'undefined' && window.L) {
 			this._div = L.DomUtil.create('div', this.options.className);
 			this._div.setAttribute('id', 'floatMapPanel');
 			this._visible = true;
-			L.DomEvent
-				.addListener(this._div, 'mousemove', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'click', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'dblclick', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'mousemove', L.DomEvent.preventDefault)
-				.addListener(this._div, 'click', L.DomEvent.preventDefault)
-				.addListener(this._div, 'dblclick', L.DomEvent.preventDefault)
-				.addListener(this._div, 'onwheel', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'onwheel', L.DomEvent.preventDefault)
-				.addListener(this._div, 'wheel', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'wheel', L.DomEvent.preventDefault)
-				.addListener(this._div, 'mousewheel', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'mousewheel', L.DomEvent.preventDefault)
-				.addListener(this._div, 'mouseover', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'mouseover', L.DomEvent.preventDefault)
-				.addListener(this._div, 'mouseout', L.DomEvent.stopPropagation)
-				.addListener(this._div, 'mouseout', L.DomEvent.preventDefault);
+			MapExpress.Controls.MapControlUtils.stopMousePropagation (this._div);
+			MapExpress.Controls.MapControlUtils.stopMousePropagation (this.controlDiv);
 		}
 		return this._div;
 	}
@@ -129,7 +114,6 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 		var rootControl = document.getElementById('layer-order-control');
 
-		// TODO: В утиль или базовый класс
 		L.DomEvent
 			.addListener(rootControl, 'mousemove', L.DomEvent.stopPropagation)
 			.addListener(rootControl, 'click', L.DomEvent.stopPropagation)
@@ -143,6 +127,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			.addListener(rootControl, 'wheel', L.DomEvent.preventDefault)
 			.addListener(rootControl, 'mousewheel', L.DomEvent.stopPropagation)
 			.addListener(rootControl, 'mousewheel', L.DomEvent.preventDefault);
+
 
 		for (var i = 0; i < overlays.length; i++) {
 			var iterLayer = overlays[i];
@@ -211,7 +196,33 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		Sortable.create(rootControl, opt);
 		/* jshint ignore:end */
 	}
-});;MapExpress.Controls.TreeLayerControl = L.Control.extend({
+});;MapExpress.Controls.MapControlUtils = {
+
+	// preventDefault нельзя
+	stopMousePropagation: function(control) {
+
+		if (control) {
+			L.DomEvent
+				.addListener(control, 'mousemove', L.DomEvent.stopPropagation)
+				.addListener(control, 'click', L.DomEvent.stopPropagation)
+				.addListener(control, 'dblclick', L.DomEvent.stopPropagation)
+				.addListener(control, 'mousemove', L.DomEvent.preventDefault)
+				.addListener(control, 'click', L.DomEvent.preventDefault)
+				.addListener(control, 'dblclick', L.DomEvent.preventDefault)
+				.addListener(control, 'onwheel', L.DomEvent.stopPropagation)
+				.addListener(control, 'onwheel', L.DomEvent.preventDefault)
+				.addListener(control, 'wheel', L.DomEvent.stopPropagation)
+				.addListener(control, 'wheel', L.DomEvent.preventDefault)
+				.addListener(control, 'mousewheel', L.DomEvent.stopPropagation)
+				.addListener(control, 'mousewheel', L.DomEvent.preventDefault)
+				.addListener(control, 'mousedown', L.DomEvent.stopPropagation)
+				//.addListener(control, 'mousedown', L.DomEvent.preventDefault);
+				.addListener(control, 'mouseup', L.DomEvent.stopPropagation);
+				//.addListener(control, 'mouseup', L.DomEvent.preventDefault);
+		}
+	}
+
+};;MapExpress.Controls.TreeLayerControl = L.Control.extend({
 
 	options: {
 		position: 'topright',
@@ -251,20 +262,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 		
 		var treeControl = document.getElementById('treelayercontrol');
-
-		L.DomEvent
-			.addListener(treeControl, 'mousemove', L.DomEvent.stopPropagation)
-			.addListener(treeControl, 'click', L.DomEvent.stopPropagation)
-			.addListener(treeControl, 'dblclick', L.DomEvent.stopPropagation)
-			.addListener(treeControl, 'mousemove', L.DomEvent.preventDefault)
-			.addListener(treeControl, 'click', L.DomEvent.preventDefault)
-			.addListener(treeControl, 'dblclick', L.DomEvent.preventDefault)
-			.addListener(treeControl, 'onwheel', L.DomEvent.stopPropagation)
-			.addListener(treeControl, 'onwheel', L.DomEvent.preventDefault)
-			.addListener(treeControl, 'wheel', L.DomEvent.stopPropagation)
-			.addListener(treeControl, 'wheel', L.DomEvent.preventDefault)
-			.addListener(treeControl, 'mousewheel', L.DomEvent.stopPropagation)
-			.addListener(treeControl, 'mousewheel', L.DomEvent.preventDefault);
+		MapExpress.Controls.MapControlUtils.stopMousePropagation (treeControl);
 
 		$("#treelayercontrol").empty();
 		$.jstree.destroy();
@@ -442,15 +440,14 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			function(geoJSON) {
 				if (geoJSON !== undefined && geoJSON.features && geoJSON.features.length > 0) {
 					var added = that.addData(geoJSON);
-					var zoomStyle = this._getStyleByZoom();
 					var tileKey = that._dataPovider._tileCoordsToKey(tileCoord);
 					for (var i in added._layers) {
 						if (!added._layers[i]._tileCoordKey) {
 							added._layers[i]._tileCoordKey = tileKey;
-							that._updateStyle(added._layers[i], zoomStyle);
 						}
 					}
-					this._labelLayer();
+					that._labelLayer();
+					that.updateStyle();
 				}
 			}
 		);
@@ -488,8 +485,14 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			var features = [];
 			for (var i in that._layers) {
 				var iterLayer = that._layers[i];
-				if (iterLayer._containsPoint && iterLayer._containsPoint(layerPoint)) {
-					features.push(iterLayer.feature);
+				if (iterLayer instanceof L.Marker && iterLayer._latlng) {
+					if (latlng.distanceTo(iterLayer._latlng) <= 1) {
+						features.push(iterLayer.feature);
+					}	
+				}else{
+					if (iterLayer._containsPoint && iterLayer._containsPoint(layerPoint)) {
+						features.push(iterLayer.feature);
+					}
 				}
 			}
 			d.resolve(features);
@@ -2103,7 +2106,63 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 		}
 		return -1;
 	}
-});;/* jshint ignore:start */
+});;MapExpress.Mapping.MapUtils = {
+
+	//bbox обязательно формируется массивом из двух объектов latlng (_northEast и _southWest)
+	//bbox=[map.getBounds()._northEast,map.getBounds()._southWest]
+	//generateWldFile.generateFile(bbox, map.getSize())
+	generateWldFile: function(bbox, imageSize, fileName) {
+		var pixelSize;
+		var oXY;
+		if (bbox[0].x) {
+			pixelSize = this.getPixelSizeXY(bbox, imageSize);
+			oXY = this.getOPointXY(bbox);
+		} else if (bbox[0].lng) {
+			pixelSize = this.getPixelSizeLatLng(bbox, imageSize);
+			oXY = this.getOPointLatLng(bbox);
+		}
+
+		if (pixelSize && oXY) {
+			var text = [pixelSize.x, 0, 0, pixelSize.y, oXY.x, oXY.y].toString();
+			var element = document.createElement('a');
+			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text.replace(new RegExp(',', 'g'), '\r\n')));
+			element.setAttribute('download', fileName);
+			element.style.display = 'none';
+			document.body.appendChild(element);
+			element.click();
+			document.body.removeChild(element);
+		}
+	},
+
+	getPixelSizeLatLng: function(bbox, imageSize) {
+		var pixelSize = {};
+		pixelSize.x = (bbox[0].lng - bbox[1].lng) / (imageSize.x);
+		pixelSize.y = -(bbox[0].lat - bbox[1].lat) / (imageSize.y);
+		return pixelSize;
+	},
+
+	getOPointLatLng: function(bbox) {
+		var oXY = {};
+		oXY.x = bbox[1].lng;
+		oXY.y = bbox[0].lat;
+		return oXY;
+	},
+
+	getPixelSizeXY: function(bbox, imageSize) {
+		var pixelSize = {};
+		pixelSize.x = (bbox[0].x - bbox[1].x) / (imageSize.x);
+		pixelSize.y = -(bbox[0].y - bbox[1].y) / (imageSize.y);
+		return pixelSize;
+	},
+
+	getOPointXY: function(bbox) {
+		var oXY = {};
+		oXY.x = bbox[1].x;
+		oXY.y = bbox[0].y;
+		return oXY;
+	},
+
+};;/* jshint ignore:start */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.geojsonvt = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -4403,21 +4462,8 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 		for (var i = 0; i < this._commands.length; i++) {
 			this._createCommandContent(this._commands[i], panelBody);
 		}
-
-		L.DomEvent
-			.addListener(this._container, 'mousemove', L.DomEvent.stopPropagation)
-			.addListener(this._container, 'click', L.DomEvent.stopPropagation)
-			.addListener(this._container, 'mousemove', L.DomEvent.preventDefault)
-			.addListener(this._container, 'click', L.DomEvent.preventDefault)
-			.addListener(this._container, 'dbclick', L.DomEvent.stopPropagation)
-			.addListener(this._container, 'dbclick', L.DomEvent.preventDefault)
-			.addListener(this._container, 'onwheel', L.DomEvent.stopPropagation)
-			.addListener(this._container, 'onwheel', L.DomEvent.preventDefault)
-			.addListener(this._container, 'wheel', L.DomEvent.stopPropagation)
-			.addListener(this._container, 'wheel', L.DomEvent.preventDefault)
-			.addListener(this._container, 'mousewheel', L.DomEvent.stopPropagation)
-			.addListener(this._container, 'mousewheel', L.DomEvent.preventDefault);
-
+		MapExpress.Controls.MapControlUtils.stopMousePropagation (this._container);
+		MapExpress.Controls.MapControlUtils.stopMousePropagation (this.controlDiv);
 
 		return this._container;
 	},
@@ -4426,24 +4472,7 @@ MapExpress.Service.identifyMapCommand = function(mapManager, options) {
 		var that = this;
 		var commandContent = mapCommand.createContent(panelBody);
 		commandContent.command = mapCommand;
-		//L.DomEvent
-		//    .on(commandContent, 'mousedown dblclick', L.DomEvent.stopPropagation)
-		//    .on(commandContent, 'click', L.DomEvent.stop)
-		//    .on(commandContent, 'click', fn, this)
-		//   .on(commandContent, 'click', this._refocusOnMap, this);
-		L.DomEvent
-			.addListener(commandContent, 'mousemove', L.DomEvent.stopPropagation)
-			.addListener(commandContent, 'click', L.DomEvent.stopPropagation)
-			.addListener(commandContent, 'mousemove', L.DomEvent.preventDefault)
-			.addListener(commandContent, 'click', L.DomEvent.preventDefault)
-			.addListener(commandContent, 'dbclick', L.DomEvent.stopPropagation)
-			.addListener(commandContent, 'dbclick', L.DomEvent.preventDefault)
-			.addListener(commandContent, 'onwheel', L.DomEvent.stopPropagation)
-			.addListener(commandContent, 'onwheel', L.DomEvent.preventDefault)
-			.addListener(commandContent, 'wheel', L.DomEvent.stopPropagation)
-			.addListener(commandContent, 'wheel', L.DomEvent.preventDefault)
-			.addListener(commandContent, 'mousewheel', L.DomEvent.stopPropagation)
-			.addListener(commandContent, 'mousewheel', L.DomEvent.preventDefault);
+		MapExpress.Controls.MapControlUtils.stopMousePropagation (commandContent);
 		L.DomEvent
 			.addListener(commandContent, 'click', function() {
 				if (that._activeCommand) {

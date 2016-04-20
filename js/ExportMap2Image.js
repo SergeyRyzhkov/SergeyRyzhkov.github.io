@@ -20,16 +20,13 @@ MapExpress.Tools.ExportMapImage = MapExpress.Tools.BaseMapCommand.extend({
 	},
 
 	activate: function() {
-		this.print = L.Control.mapPrint();
-		this.print.setStateOn(this._mapManager._map);
-		this.print.creatButtonAndAreaPackage();
+		this.print = L.Control.mapPrintControl();
+		this.print.addTo(this._mapManager._map);
 	},
 	
 	deactivate: function() {
 		if (this.print) {	
-			this.print.setStateOff();
-			$("#map-print-container").remove();
-			delete this.print;
+			this.print.remove();
 		}
 	}
 
