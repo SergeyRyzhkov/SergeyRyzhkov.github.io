@@ -7,8 +7,8 @@
 .leaflet-areaselect-handle {
     position: absolute;
     background: #fff;
-    border: 2px solid #666;
-	border-color:darkblue;
+    border: 1px solid #666;
+	border-color:blue;
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -34,8 +34,8 @@
 }
 
 .zoomInput {
-  border: 1px solid #666;
-  border-color:darkgray;
+  border: 2px solid #666;
+  border-color:blue;
   display: inline-block;
   width: 28px;
   height: 28px;

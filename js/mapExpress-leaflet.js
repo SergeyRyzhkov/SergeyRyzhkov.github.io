@@ -95,7 +95,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		this._mapManager = mapManager;
 		L.setOptions(this, options);
 	},
-	
+
 	// TODO: Надо посмотреть как будет использоваться если прсото добавить на карту.
 	onAdd: function() {
 		this._div = L.DomUtil.create('div', this.options.className);
@@ -118,15 +118,9 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			.addListener(rootControl, 'mousemove', L.DomEvent.stopPropagation)
 			.addListener(rootControl, 'click', L.DomEvent.stopPropagation)
 			.addListener(rootControl, 'dblclick', L.DomEvent.stopPropagation)
-			.addListener(rootControl, 'mousemove', L.DomEvent.preventDefault)
-			.addListener(rootControl, 'click', L.DomEvent.preventDefault)
-			.addListener(rootControl, 'dblclick', L.DomEvent.preventDefault)
 			.addListener(rootControl, 'onwheel', L.DomEvent.stopPropagation)
-			.addListener(rootControl, 'onwheel', L.DomEvent.preventDefault)
 			.addListener(rootControl, 'wheel', L.DomEvent.stopPropagation)
-			.addListener(rootControl, 'wheel', L.DomEvent.preventDefault)
-			.addListener(rootControl, 'mousewheel', L.DomEvent.stopPropagation)
-			.addListener(rootControl, 'mousewheel', L.DomEvent.preventDefault);
+			.addListener(rootControl, 'mousewheel', L.DomEvent.stopPropagation);
 
 
 		for (var i = 0; i < overlays.length; i++) {
@@ -164,7 +158,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			img.setAttribute('src', visibleImgSrc);
 		}
 
-		
+
 		function setLabelImgSrc(img) {
 			var labelImgSrc = "images/label_n.gif";
 			var layerModel = that._mapManager._mapModel.getLayerById(img.getAttribute("id"));
@@ -184,7 +178,7 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 			setLabelImgSrc(evnt.target);
 		}
 
-		
+
 		var opt = {
 			// dragging ended
 			onEnd: function(evt) {
@@ -196,29 +190,310 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 		Sortable.create(rootControl, opt);
 		/* jshint ignore:end */
 	}
+});;MapExpress.Controls.MapControl = L.Evented.extend({
+
+
+	options: {
+		className: '',
+		position: 'center',
+		modal: false,
+		maxWidth: 700,
+		headerEnabled: false,
+		footerEnabled: false,
+		closeButtonEnabled: false,
+		draggable: true,
+		showDuration: 0,
+		parentContainer: undefined
+	},
+
+	// модальность
+	
+	initialize: function(map, options) {
+		this._map = map;
+		L.setOptions(this, options);
+	},
+
+	show: function() {
+		if (!this._control) {
+			this.createControl();
+		}
+
+		if (this._control) {
+			MapExpress.Controls.MapControlUtils.setPosition(this._getContainer(), this._control, this.options.position);
+			MapExpress.Controls.MapControlUtils.stopMousePropagation(this._control);
+
+			if (this.options.draggable && this._controlHeaderBar) {
+				var draggable = new L.Draggable(this._control, this._controlHeaderBar);
+				draggable.enable();
+			}
+
+			if (this.options.showDuration > 0) {
+				setTimeout(this.hide.bind(this), this.options.showDuration);
+			}
+			this._control.visibility = "visible";
+		}
+		return this;
+	},
+
+	showSmallCircleWaitControl: function() {
+		this.show();
+		this.setControlStyle({
+			"height": "36px",
+			"width": "36px",
+			"border-radius": "50%",
+			"padding": "0px",
+			"margin": "0px"
+		});
+		this.setContentStyle({
+			"padding": "6px"
+		});
+		this.setContent(this.getPreloaderContent(24, 12, 10, 4));
+		if (this._control) {
+			$(this._control).attr("data-html2canvas-ignore", "true");
+		}
+	},
+
+	showCircleWaitControl: function() {
+		this.show();
+		this.setControlStyle({
+			"height": "36px",
+			"width": "36px",
+			"border-radius": "50%",
+			"padding": "0px",
+			"margin": "0px"
+		});
+		this.setContentStyle({
+			"padding": "0px"
+		});
+		this.setContent(this.getPreloaderContent(36, 18, 14, 5));
+		if (this._control) {
+			$(this._control).attr("data-html2canvas-ignore", "true");
+		}
+	},
+
+	showWaitControl: function(text) {
+		this.show();
+		this.setControlStyle({
+			"height": "36px",
+			"border-radius": "36px"
+		});
+		this.setContentStyle({
+			"padding": "0px",
+			"margin": "0px"
+		});
+		this.setContent(this.getPreloaderContent(36, 18, 14, 5) + "<div class='noselect' style='margin-right:8px;margin-left:4px;float:right;font-size:12px;font-weight:bold;display: inline-block;line-height: 36px;'>" + text + "</div>");
+		if (this._control) {
+			$(this._control).attr("data-html2canvas-ignore", "true");
+		}
+	},
+
+	hide: function() {
+		if (this._control) {
+			this.fire("mapcontrol:remove:before", this);
+			$(this._control).remove();
+			this.fire("mapcontrol:remove:after", this);
+		}
+	},
+
+	setContent: function(content) {
+		if (this._controlContent) {
+			$(this._controlContent).html(content);
+		}
+		MapExpress.Controls.MapControlUtils.setPosition(this._getContainer(), this._control, this.options.position);
+	},
+
+	setContentFromTemplate: function(templatePath, templateId, templateData) {
+		var that = this;
+
+		var tempDiv = document.createElement('div');
+		document.body.appendChild(tempDiv);
+
+		$(tempDiv).load(templatePath, function() {
+			var template = $.templates("#" + templateId);
+			if (template) {
+				var content = template.render(templateData);
+				that.setContent(content);
+				$(tempDiv).remove();
+			}
+		});
+	},
+
+	setHeaderContent: function(headerContent) {
+		if (this._controlHeaderBar) {
+			$(this._controlHeaderBar).html(headerContent);
+		}
+	},
+
+	setFooterContent: function(footerContent) {
+		if (this._controlFooterBar) {
+			$(this._controlFooterBar).html(footerContent);
+		}
+	},
+
+	setControlStyle: function(style) {
+		MapExpress.Controls.MapControlUtils.setStyle(this._control, style);
+	},
+
+	setContentStyle: function(style) {
+		MapExpress.Controls.MapControlUtils.setStyle(this._controlContent, style);
+	},
+
+	setHeaderWrapperStyle: function(style) {
+		MapExpress.Controls.MapControlUtils.setStyle(this._controlHeaderBar, style);
+	},
+
+	setFooterWrapperStyle: function(style) {
+		MapExpress.Controls.MapControlUtils.setStyle(this._controlFooterBar, style);
+	},
+
+	setCloseButtonStyle : function(style) {
+		MapExpress.Controls.MapControlUtils.setStyle(this._closeButton, style);
+	},
+
+	createControl: function() {
+		this._control = L.DomUtil.create('div', this.options.className + ' mapexpress-control-wrapper',this._getContainer());
+		this._control.setAttribute('style', 'max-width:' + this.options.maxWidth + 'px');
+		this._control.visibility = "hidden";
+
+		if (this.options.closeButtonEnabled) {
+			this._closeButton = L.DomUtil.create('div', 'mapexpress-control-closebutton', this._control);
+			$(this._closeButton).html("X");
+			var that = this;
+			$(this._closeButton).click(function() {
+				that.hide();
+			});
+		}
+
+		if (this.options.headerEnabled) {
+			this._controlHeaderBar = L.DomUtil.create('div', 'mapexpress-control-header-wrapper', this._control);
+		}
+
+		this._controlContent = L.DomUtil.create('div', 'mapexpress-control-content', this._control);
+
+		if (this.options.footerEnabled) {
+			this._controlFooterBar = L.DomUtil.create('div', 'mapexpress-control-footer-wrapper', this._control);
+		}
+
+		if (this.options.modal) {
+			this._control.style.zIndex = 7000;
+			this._control.style.position = 'fixed';
+		} else {
+			this._control.style.zIndex = 2000;
+			this._control.style.position = 'absolute';
+		}
+
+		return this.control;
+	},
+
+	getPreloaderContent: function(size, cx, r, strokewidth) {
+		var css = ".md-preloader{font-size:0;display:inline-block;-webkit-animation:outer 6600ms linear infinite;animation:outer 6600ms linear infinite}.md-preloader svg{-webkit-animation:inner 1320ms linear infinite;animation:inner 1320ms linear infinite}.md-preloader svg circle{fill:none;stroke:#4285F4;stroke-linecap:square;-webkit-animation:arc 1320ms cubic-bezier(.8, 0, .4, .8) infinite;animation:arc 1320ms cubic-bezier(.8, 0, .4, .8) infinite}@-webkit-keyframes outer{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes outer{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@-webkit-keyframes inner{0%{-webkit-transform:rotate(-100.8deg);transform:rotate(-100.8deg)}100%{-webkit-transform:rotate(0);transform:rotate(0)}}@keyframes inner{0%{-webkit-transform:rotate(-100.8deg);transform:rotate(-100.8deg)}100%{-webkit-transform:rotate(0);transform:rotate(0)}}@-webkit-keyframes arc{0%{stroke-dasharray:1 210.48670779px;stroke-dashoffset:0}40%{stroke-dasharray:151.55042961px,210.48670779px;stroke-dashoffset:0}100%{stroke-dasharray:1 210.48670779px;stroke-dashoffset:-151.55042961px}}@keyframes arc{0%{stroke-dasharray:1 210.48670779px;stroke-dashoffset:0}40%{stroke-dasharray:151.55042961px,210.48670779px;stroke-dashoffset:0}100%{stroke-dasharray:1 210.48670779px;stroke-dashoffset:-151.55042961px}}";
+
+		var styleEl = document.createElement('style');
+		if (styleEl.styleSheet) {
+
+			styleEl.styleSheet.cssText = css;
+		} else {
+
+			styleEl.appendChild(document.createTextNode(css));
+		}
+		this.preloaderStyleElement = document.getElementsByTagName('head')[0].appendChild(styleEl);
+
+		var divTemplate = "<div class='md-preloader'>" + "<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='{size}' width='{size}' viewbox='0 0 {size} {size}'><circle cx='{cx}' cy='{cx}' r='{r}' stroke-width='{strokewidth}'/></svg></div>";
+		var divContent = L.Util.template(divTemplate, {
+			size: size,
+			cx: cx,
+			r: r,
+			strokewidth: strokewidth
+		});
+
+		return divContent;
+	},
+
+	_getContainer : function(){
+		if (!this._container) {
+			this._container = this.options.parentContainer === undefined ? this._map.getContainer() : this.options.parentContainer;
+		}
+		return this._container;
+	}
+
+
 });;MapExpress.Controls.MapControlUtils = {
 
 	// preventDefault нельзя
 	stopMousePropagation: function(control) {
 
 		if (control) {
+			var stop = L.DomEvent.stopPropagation;
 			L.DomEvent
-				.addListener(control, 'mousemove', L.DomEvent.stopPropagation)
-				.addListener(control, 'click', L.DomEvent.stopPropagation)
-				.addListener(control, 'dblclick', L.DomEvent.stopPropagation)
-				.addListener(control, 'mousemove', L.DomEvent.preventDefault)
-				.addListener(control, 'click', L.DomEvent.preventDefault)
-				.addListener(control, 'dblclick', L.DomEvent.preventDefault)
-				.addListener(control, 'onwheel', L.DomEvent.stopPropagation)
-				.addListener(control, 'onwheel', L.DomEvent.preventDefault)
-				.addListener(control, 'wheel', L.DomEvent.stopPropagation)
-				.addListener(control, 'wheel', L.DomEvent.preventDefault)
-				.addListener(control, 'mousewheel', L.DomEvent.stopPropagation)
-				.addListener(control, 'mousewheel', L.DomEvent.preventDefault)
-				.addListener(control, 'mousedown', L.DomEvent.stopPropagation)
-				//.addListener(control, 'mousedown', L.DomEvent.preventDefault);
-				.addListener(control, 'mouseup', L.DomEvent.stopPropagation);
-				//.addListener(control, 'mouseup', L.DomEvent.preventDefault);
+				.addListener(control, 'touchstart', stop)
+				//.addListener(control, 'mousemove', stop)
+				.addListener(control, 'click', stop)
+				.addListener(control, 'dblclick', stop)
+				//.addListener(control, 'onwheel', stop)
+				//.addListener(control, 'wheel', stop)
+				.addListener(control, 'mousewheel', stop)
+				.addListener(control, 'mousedown', stop)
+				.addListener(control, 'MozMousePixelScroll', stop)
+				.addListener(control, 'contextmenu', stop);
+				//.addListener(control, 'mouseup', stop);
+		}
+	},
+
+	setPosition: function(container, element, position) {
+		var pos = this.getPosition(container, element, position);
+		L.DomUtil.setPosition(element, L.point(Math.round(pos[0]), Math.round(pos[1]), true));
+
+	},
+
+	getPosition: function(container, element, position) {
+		var margin = 8;
+		var thisWidth = element.offsetWidth;
+		var thisHeight = element.offsetHeight;
+
+		var rect = container.getBoundingClientRect();
+		var width = rect.right - rect.left || Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+		var height = rect.bottom - rect.top || Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+		var top = rect.top;
+		var left = rect.left;
+		var offset = 0;
+
+		if (position === 'topLeft') {
+			return [left, top + offset];
+		} else if (position === 'left') {
+			return [left, top + height / 2 - thisHeight / 2 - margin + offset];
+		} else if (position === 'bottomLeft') {
+			return [left, top + height - thisHeight - margin * 2 - offset];
+		} else if (position === 'top') {
+			return [left + width / 2 - thisWidth / 2 - margin, top + offset];
+		} else if (position === 'topRight') {
+			return [left + width - thisWidth - margin * 2, top + offset];
+		} else if (position === 'right') {
+			return [left + width - thisWidth - margin * 2, top + height / 2 - thisHeight / 2 - margin + offset];
+		} else if (position === 'bottomRight') {
+			return [left + width - thisWidth - margin * 2, top + height - thisHeight - margin * 2 - offset];
+		} else if (position === 'bottom') {
+			return [left + width / 2 - thisWidth / 2 - margin, top + height - thisHeight - margin * 2 - offset];
+		} else {
+			return [left + width / 2 - thisWidth / 2 - margin, top + top + height / 2 - thisHeight / 2 - margin + offset];
+		}
+	},
+
+	setStyle: function(element, style) {
+		
+		if (!element) {
+			return;
+		}
+
+		if (style && typeof(style) === "string" && style.length > 0) {
+			element.style.cssText = element.style.cssText + ";" + style;
+			return;
+		}
+
+		if (style && typeof(style) === "object") {
+			for (var key in style) {
+				element.style[key] = style[key];
+			}
 		}
 	}
 
@@ -2111,7 +2386,7 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 	//bbox обязательно формируется массивом из двух объектов latlng (_northEast и _southWest)
 	//bbox=[map.getBounds()._northEast,map.getBounds()._southWest]
 	//generateWldFile.generateFile(bbox, map.getSize())
-	generateWldFile: function(bbox, imageSize, fileName) {
+	generateWldFileHref: function(bbox, imageSize) {
 		var pixelSize;
 		var oXY;
 		if (bbox[0].x) {
@@ -2121,23 +2396,16 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 			pixelSize = this.getPixelSizeLatLng(bbox, imageSize);
 			oXY = this.getOPointLatLng(bbox);
 		}
-
 		if (pixelSize && oXY) {
 			var text = [pixelSize.x, 0, 0, pixelSize.y, oXY.x, oXY.y].toString();
-			var element = document.createElement('a');
-			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text.replace(new RegExp(',', 'g'), '\r\n')));
-			element.setAttribute('download', fileName);
-			element.style.display = 'none';
-			document.body.appendChild(element);
-			element.click();
-			document.body.removeChild(element);
+			return 'data:text/plain;charset=utf-8,' + encodeURIComponent(text.replace(new RegExp(',', 'g'), '\r\n'));
 		}
 	},
 
 	getPixelSizeLatLng: function(bbox, imageSize) {
 		var pixelSize = {};
-		pixelSize.x = (bbox[0].lng - bbox[1].lng) / (imageSize.x);
-		pixelSize.y = -(bbox[0].lat - bbox[1].lat) / (imageSize.y);
+		pixelSize.x = (bbox[0].lng - bbox[1].lng) / (imageSize.width);
+		pixelSize.y = -(bbox[0].lat - bbox[1].lat) / (imageSize.height);
 		return pixelSize;
 	},
 
@@ -2150,8 +2418,8 @@ MapExpress.Mapping.mapLoader = function(map, options) {
 
 	getPixelSizeXY: function(bbox, imageSize) {
 		var pixelSize = {};
-		pixelSize.x = (bbox[0].x - bbox[1].x) / (imageSize.x);
-		pixelSize.y = -(bbox[0].y - bbox[1].y) / (imageSize.y);
+		pixelSize.x = (bbox[0].x - bbox[1].x) / (imageSize.width);
+		pixelSize.y = -(bbox[0].y - bbox[1].y) / (imageSize.height);
 		return pixelSize;
 	},
 
@@ -4095,21 +4363,7 @@ MapExpress.Styles.PulseMarker = L.Marker.extend({
 
 	setStyle: function(divStyle) {
 		this.options.style = divStyle;
-
-		if (!this._styleDivIcon) {
-			return;
-		}
-
-		if (this.options.style && typeof(this.options.style) === "string" && this.options.style.length > 0) {
-			this._styleDivIcon.style.cssText = this._styleDivIcon.style.cssText + ";" + this.options.style;
-			return;
-		}
-
-		if (this.options.style && typeof(this.options.style) === "object") {
-			for (var key in this.options.style) {
-				this._styleDivIcon.style[key] = this.options.style[key];
-			}
-		}
+		MapExpress.Controls.MapControlUtils.setStyle(this._styleDivIcon, this.options.style);
 	}
 });
 

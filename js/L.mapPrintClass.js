@@ -1,7 +1,7 @@
 L.MapPrint = L.Class.extend({
 
 	exportActiveMapView: function(map) {
-		var mapSize = map.getSize(); 
+		var mapSize = map.getSize();
 		var width = mapSize.x;
 		var height = mapSize.y;
 		var size = width * height;
@@ -17,17 +17,16 @@ L.MapPrint = L.Class.extend({
 		//exportMapPixelSize - размер экспортируемой карты , необходим для формирования таймера для полной прогрузки тайлов
 		//
 		this.map = map;
-		map.fireEvent('exportStart', this);
+		map.fireEvent('mapexport:export:start', this);
 		//запоминаем размер и зум карты для восстановления изначального вида
 		var prevHeight = $(map.getContainer()).height();
 		var prevWidth = $(map.getContainer()).width();
 		var prevZoom = map.getZoom();
 		var prevCenter = map.getCenter();
 		var prevMinHeight = $(map.getContainer()).css("min-height");
-		
 		$(map.getContainer()).css("min-height", "0%");
 		$(map.getContainer()).height(exportMapHeight).width(exportMapWidth);
-				
+
 		map.invalidateSize(true);
 		map.setView(prevCenter, exportMapZoom);
 
@@ -51,16 +50,16 @@ L.MapPrint = L.Class.extend({
 
 			that._prepareExport(map);
 			setTimeout(function() {
-				that._html2CanvasWork(map, prevHeight, prevWidth, prevZoom, prevCenter,prevMinHeight);
+				that._html2Canvas(map, prevHeight, prevWidth, prevZoom, prevCenter, prevMinHeight);
 			}, 1000);
 		}, timer);
 	},
 
 	_prepareExport: function(map) {
+		map.fireEvent('mapexport:prepareexport:start', this);
 		var exportStorage = {};
-		//подготовка зума
 		//формирование канваса и свг для передачи в canvg
-		var svgE = $(map.getContainer()).find('svg');
+		var svgE = $(map.getContainer()).find('leaflet-overlay-pane').find('svg');
 		var canvas, xml;
 		if (svgE && svgE[0]) {
 			canvas = document.createElement("canvas");
@@ -80,7 +79,7 @@ L.MapPrint = L.Class.extend({
 		mapPane.style.transform = "";
 		mapPane.style.left = mapX + "px";
 		mapPane.style.top = mapY + "px";
-		map.fireEvent('transformMap', this);
+		
 		//запоминаем для пана настройки
 		exportStorage.mapPane = mapPane;
 		exportStorage.mapX = mapX;
@@ -110,7 +109,7 @@ L.MapPrint = L.Class.extend({
 				mapImageOverlay[i].style.left = (mapImageOverlayLeft[i]) + "px";
 				mapImageOverlay[i].style.top = (mapImageOverlayTop[i]) + "px";
 			}
-			map.fireEvent('transformOverlays', this);
+			
 			//запоминаем настройки для оверлеев
 			exportStorage.mapImageOverlay = mapImageOverlay;
 			exportStorage.mapImageOverlayLeft = mapImageOverlayLeft;
@@ -118,7 +117,7 @@ L.MapPrint = L.Class.extend({
 			exportStorage.mapImageOverlayMethod = mapImageOverlayMethod;
 		}
 
-		///подготовка тайлов
+		//подготовка тайлов
 		if ($("img.leaflet-tile")[0] !== undefined) {
 			var myTiles = $("img.leaflet-tile");
 			var tilesLeft = [];
@@ -143,7 +142,7 @@ L.MapPrint = L.Class.extend({
 				myTiles[j].style.top = (tilesTop[j]) + "px";
 			}
 
-			map.fireEvent('transformTiles', this);
+			
 			//запоминаем настройки для тайлов 
 			exportStorage.myTiles = myTiles;
 			exportStorage.tilesLeft = tilesLeft;
@@ -165,7 +164,7 @@ L.MapPrint = L.Class.extend({
 				divicons[k].style.left = dx[k] + "px";
 				divicons[k].style.top = dy[k] + "px";
 			}
-			map.fireEvent('transformDivIcons', this);
+			
 			//запоминаем настройки для дивиконок
 			exportStorage.divicons = divicons;
 			exportStorage.dx = dx;
@@ -181,7 +180,6 @@ L.MapPrint = L.Class.extend({
 			svgElements.style.transform = "";
 			svgElements.style.left = svgElementsX + "px";
 			svgElements.style.top = svgElementsY + "px";
-			map.fireEvent('transformTiles', this);
 			//запоминаем для свг настройки
 			exportStorage.svgElements = svgElements;
 			exportStorage.svgElementsX = svgElementsX;
@@ -213,10 +211,10 @@ L.MapPrint = L.Class.extend({
 		}
 		//запомнинаем настройки
 		this.storage = exportStorage;
-		map.fireEvent('transformationReady', this);
+		map.fireEvent('mapexport:prepareexport:end', this);
 	},
 
-	_html2CanvasWork: function(map, prevHeight, prevWidth, prevZoom, prevCenter,prevMinHeight) {
+	_html2Canvas: function(map, prevHeight, prevWidth, prevZoom, prevCenter, prevMinHeight) {
 		var that = this;
 		var workMap = map;
 		html2canvas($(map.getContainer()), {
@@ -225,40 +223,34 @@ L.MapPrint = L.Class.extend({
 			taintTest: true,
 			useCORS: true,
 			onrendered: function(canvas) {
+				that.map.fireEvent('mapexport:html2canvas:start', this);
 				var extra_canvas = document.createElement("canvas");
 				extra_canvas.setAttribute('width', canvas.width);
 				extra_canvas.setAttribute('height', canvas.height);
 				var ctx = extra_canvas.getContext('2d');
 				ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-				var myImage = extra_canvas.toDataURL("image/jpg");
-				var link = document.createElement('a');
-				if (link.download !== undefined) {
-					link.download = "export.jpg";
-					link.href = myImage;
-					document.body.appendChild(link);
-					$(link).css("display", "none");
-					link.click();
-					document.body.removeChild(link);
+				var resultImage = extra_canvas.toDataURL("image/jpg");
 
-					var bbox = [workMap.getBounds()._northEast, workMap.getBounds()._southWest];
-					var size = {};
-					size.x = canvas.width;
-					size.y = canvas.height;
+				that._restoreObjects(workMap, prevHeight, prevWidth, prevZoom, prevCenter, prevMinHeight);
+				
+				var bbox = [workMap.getBounds()._northEast, workMap.getBounds()._southWest];
+				var size = {};
+				size.width = canvas.width;
+				size.height = canvas.height;
 
-					MapExpress.Mapping.MapUtils.generateWldFile(bbox, size, "export.wld");
-
-					setTimeout(function() {
-						that._restoreObjects(workMap, prevHeight, prevWidth, prevZoom, prevCenter,prevMinHeight);
-						workMap.fireEvent('exportEnd', that);
-					}, 1000);
-				} else {
-					console.log('Скачивание поддерживается только в браузерах Chrome, Firefox и Opera');
-				}
+				var result = {
+					printer : this,
+					image:resultImage,
+					bbox:bbox,		
+					imageSize:size			
+				};
+				that.map.fireEvent('mapexport:html2canvas:end', result);
 			}
 		});
 	},
 
-	_restoreObjects: function(map, prevHeight, prevWidth, prevZoom, prevCenter,prevMinHeight) {
+	_restoreObjects: function(map, prevHeight, prevWidth, prevZoom, prevCenter, prevMinHeight) {
+		map.fireEvent('mapexport:restorestate:start', this);
 		var storage = this.storage;
 		//восстанавливаем пан
 		storage.mapPane.style.transform = "translate(" + (storage.mapX) + "px," + (storage.mapY) + "px, 0px)";
@@ -316,14 +308,13 @@ L.MapPrint = L.Class.extend({
 		delete this.storage;
 
 		$(map.getContainer()).height(prevHeight).width(prevWidth);
-		$(map.getContainer()).css("min-height",prevMinHeight);
+		$(map.getContainer()).css("min-height", prevMinHeight);
 		map.setView(prevCenter, prevZoom);
 		map.invalidateSize(true);
 
 		$(map.getContainer()).find("#SvgToCanvas").remove();
 		$(map.getContainer()).find('#TempSvgToHide').show().removeClass('tempHide');
 		$("[class^='Labels']").remove();
-
 	},
 
 });

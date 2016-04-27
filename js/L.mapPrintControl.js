@@ -10,7 +10,8 @@ L.Control.MapPrintControl = L.Control.extend({
 		zoom: 0
 	},
 
-	initialize: function(options) {
+	initialize: function(map, options) {
+		this.map = map;
 		L.setOptions(this, options);
 		this.active = false;
 	},
@@ -19,13 +20,7 @@ L.Control.MapPrintControl = L.Control.extend({
 		this.map = map;
 		L.Control.prototype.addTo.call(this, map);
 		this._setUpButtonHandlers();
-		this.areaSelect = L.areaSelect({
-			width: 300,
-			height: 300
-		}).addTo(this.map);
-		this.updateFutureSize();
-		this.alertWarningDiv();
-		this.areaSelect.on("change", this._areaSelectChanged, this);
+		this._activateAreaSelect();
 		return this;
 	},
 
@@ -40,38 +35,52 @@ L.Control.MapPrintControl = L.Control.extend({
 			this.areaSelect.remove();
 		}
 	},
-	
+
 	_areaSelectChanged: function(e) {
 		this.updateFutureSize();
 		this.alertWarningDiv();
 	},
-	
+
 	_createContent: function() {
 		this.controlDiv = L.DomUtil.create('div', 'map-print-container');
 		this.controlDiv.setAttribute('id', 'map-print-container');
-		MapExpress.Controls.MapControlUtils.stopMousePropagation (this.controlDiv);
+		MapExpress.Controls.MapControlUtils.stopMousePropagation(this.controlDiv);
 
 		$(this.controlDiv).append('<button id="mapprint-zoomDown"  class="btn btn-default btn-sm text-center" title="Уменьшить масштабный коэффициент карты">-</button>');
 		$(this.controlDiv).append('<input id="mapprint-zoomInput" class="zoomInput" title="Масштабный коэффициент карты" maxlength="2"/>');
 		$(this.controlDiv).append('<button id="mapprint-zoomUp" class="btn btn-default btn-sm text-center" title="Увеличить масштабный коэффициент карты">+</button>');
 		$(this.controlDiv).append('<button id="mapprint-print" class="btn btn-default btn-sm text-center" title="Экспорт" value="Экспорт">Экспорт</button>');
-
 		$(this.controlDiv).append('<button id="mapprint-print-activemap" class="btn btn-default btn-sm text-center" title="Экспорт активного вида карты" value="активный вид карты">Активный вид</button>');
-
 		$(this.controlDiv).append('<button id="mapprint-remove" class="btn btn-default btn-sm text-center" title="Cбросить выбор территории" value="Отмена">Отмена</button>');
 
 		return this.controlDiv;
 	},
 
+	_activateAreaSelect: function() {
+		var mapHeight = $(this.map.getContainer()).height();
+		var mapWidth = $(this.map.getContainer()).width();
+
+		this.areaSelect = L.areaSelect({
+			width: mapWidth * 0.8,
+			height: mapHeight * 0.8
+		}).addTo(this.map);
+		this.updateFutureSize();
+		this.alertWarningDiv();
+		this.areaSelect.on("change", this._areaSelectChanged, this);
+	},
+
+
 	_setUpButtonHandlers: function() {
 		var that = this;
 
 		$("#mapprint-print-activemap").click(function(e) {
+			that.map.fire("map-print-control:export-activemap", this);
 			that.exportMap(true);
 		});
 
 		$("#mapprint-remove").click(function(e) {
 			that.remove();
+			that.map.fire("map-print-control:removed", this);
 		});
 
 		$("#mapprint-zoomUp").click(function() {
@@ -83,6 +92,7 @@ L.Control.MapPrintControl = L.Control.extend({
 			}
 			document.getElementById('mapprint-zoomInput').value = value;
 			$('#mapprint-zoomInput').trigger('valuechanged');
+			that.map.fire("map-print-control:zoomUp", this);
 		});
 
 		$("#mapprint-zoomDown").click(function() {
@@ -94,6 +104,7 @@ L.Control.MapPrintControl = L.Control.extend({
 			}
 			document.getElementById('mapprint-zoomInput').value = value;
 			$('#mapprint-zoomInput').trigger('valuechanged');
+			that.map.fire("map-print-control:zoomDown", this);
 		});
 
 		$('#mapprint-zoomInput').bind('valuechanged', function() {
@@ -102,6 +113,7 @@ L.Control.MapPrintControl = L.Control.extend({
 		});
 
 		$('#mapprint-print').click(function() {
+			that.map.fire("map-print-control:export-click", this);
 			that.exportMap();
 		});
 
@@ -140,6 +152,8 @@ L.Control.MapPrintControl = L.Control.extend({
 	alertWarningDiv: function() {
 		var colorScheme;
 		var size = this.futureSize.size;
+
+		document.getElementById('mapprint-zoomInput').title = size;
 
 		function colorSchemeGrey() {
 			$('#mapprint-zoomInput').css("color", "rgba(68,68,68,1)");
@@ -190,18 +204,17 @@ L.Control.MapPrintControl = L.Control.extend({
 	},
 
 	exportMap: function(isActiveView) {
-			$(".leaflet-control-container, #map-print-container").attr("data-html2canvas-ignore", "true");
-			$(".leaflet-control-container").attr("data-html2canvas-ignore", "true");
-			this.areaSelect.off("change", this._resetChange, this);
-			this.remove();
+		$(".leaflet-control-container, #map-print-container").attr("data-html2canvas-ignore", "true");
+		$(".leaflet-control-container").attr("data-html2canvas-ignore", "true");
+		this.areaSelect.off("change", this._resetChange, this);
+		this.remove();
 
-		if (isActiveView && isActiveView === true){
+		if (isActiveView && isActiveView === true) {
 			L.mapPrint().exportActiveMapView(this.map);
-		}else{
-
+		} else {
 			L.mapPrint().export(this.map, this.futureSize.width, this.futureSize.height, this.futureSize.zoom, this.futureSize.size);
+			//MapExpress.Mapping.MapUtils.generateWldFile(bbox, size, "export.wld");
 		}
-		
 	}
 
 });
