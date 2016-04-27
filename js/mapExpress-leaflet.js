@@ -683,11 +683,13 @@ MapExpress.Controls.floatMapPanel = function(mapManager, options) {
 
 	_updateVectorDataInBounds: function(mapBounds, zoom) {
 		var that = this;
+		//this.clearLayers();
 		this._dataPovider.getDataInBoundsAsync(mapBounds, zoom).then(
 			function(data) {
 				that._replaceData(data);
 			},
 			function(error) {
+				console.log(error);
 				that.clearLayers();
 			}
 		);

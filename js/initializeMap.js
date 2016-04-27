@@ -3,8 +3,7 @@ function InitializeMap(mapDiv) {
 
 	var map = L.map(mapDiv, {
 		zoomControl: false,
-		editable: true //,
-			//	preferCanvas: true
+		editable: true
 	});
 
 	var mapManager = new MapExpress.Mapping.MapManager(map);
@@ -23,7 +22,7 @@ function onWorkspaceLoaded() {
 	toolbar.addCommand(new MapExpress.Tools.SearchCadastrTool(mapManager));
 	toolbar.addCommand(new MapExpress.Tools.BoxZoom(mapManager));
 	toolbar.addCommand(new MapExpress.Tools.IdentifyMapCommand(mapManager));
-	toolbar.addCommand(new MapExpress.Tools.ParcelInteractionTool(mapManager));
+	//toolbar.addCommand(new MapExpress.Tools.ParcelInteractionTool(mapManager));
 
 	toolbar.addCommand(new MapExpress.Tools.ExportMapImage(mapManager, {
 		mapSelector: VSM_MAP_SELECTOR
@@ -46,12 +45,26 @@ function onWorkspaceLoaded() {
 	measureControl.addTo(map);
 
 
-	setTimeout(this._selectParcels.bind(this), 1100);
+	//setTimeout(this._selectParcels.bind(this), 1100);
 
-	MapExpressToolsShowLegend();
-	this.addUserLayers();
-	this.addRasters();
+	//MapExpressToolsShowLegend();
+	//this.addUserLayers();
+	//this.addRasters();
 	MapExpressAddBaseLayers();
+	setTimeout(function(){
+		map.flyTo([59.925056,30.320225],16);
+		var waitControl = new MapExpress.Controls.MapControl (map,{showDuration:5000});
+		waitControl.showWaitControl("Летим в Питер");
+
+		mapManager.setLayerVisible("e3ec70c2-9b47-434f-aa7d-f9e7f0670ccf", true);
+		setTimeout(function(){
+			var control = new MapExpress.Controls.MapControl(map,{headerEnabled:true,showDuration:6000});
+			control.createControl();
+			control.setContent("<img src='images/baltros_logo.png'/>");
+			control.setHeaderContent("Привет! Антон! Когда в Питер?");
+			control.show();
+		},6000);
+	}, 3000);
 	//return map;
 };
 

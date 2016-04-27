@@ -59,7 +59,8 @@ L.MapPrint = L.Class.extend({
 		map.fireEvent('mapexport:prepareexport:start', this);
 		var exportStorage = {};
 		//формирование канваса и свг для передачи в canvg
-		var svgE = $(map.getContainer()).find('leaflet-overlay-pane').find('svg');
+		var overlayPane = $(".leaflet-overlay-pane")[0];
+		var svgE = $(overlayPane).find('svg');
 		var canvas, xml;
 		if (svgE && svgE[0]) {
 			canvas = document.createElement("canvas");
@@ -86,7 +87,8 @@ L.MapPrint = L.Class.extend({
 		exportStorage.mapY = mapY;
 
 		//подготовка оверлеев
-		if ($("img.leaflet-image-layer")[0] !== undefined) {
+		
+		if ($("img.leaflet-image-layer")[0]&&$("img.leaflet-image-layer")[0] !== undefined) {
 			var mapImageOverlay = $("img.leaflet-image-layer");
 			var mapImageOverlayLeft = [];
 			var mapImageOverlayTop = [];
