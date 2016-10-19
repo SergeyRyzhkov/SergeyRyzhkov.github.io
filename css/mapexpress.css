@@ -132,8 +132,12 @@
 
 .mapexpress-control-content {
 	padding: 10px;
-	flex: 1;
 	flex-grow: 1;
+	-webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    -o-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 .mapexpress-control-footerbar {
@@ -305,6 +309,10 @@ svg.leaflet-zoom-animated > g > path {
 
 .mapexpress-sidebar-header {
     flex: 0 0 auto;
+	-webkit-flex: 0 0 auto;
+    -moz-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    -o-flex: 0 0 auto;
     flex-direction: row;
 	flex-direction: -webkit-row;
 	-webkit-flex-direction: row;
@@ -317,8 +325,12 @@ svg.leaflet-zoom-animated > g > path {
 }
 
 .mapexpress-sidebar-content {
-	flex: 1;
 	flex-grow: 1;
+	-webkit-flex: 1 1 auto;
+    -moz-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    -o-flex: 1 1 auto;
+    flex: 1 1 auto;
 	overflow:auto;
 }
 
