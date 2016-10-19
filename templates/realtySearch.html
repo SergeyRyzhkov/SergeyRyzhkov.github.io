@@ -5,9 +5,10 @@
 		<script>
 				var p1 = new MapExpress.Search.YandexSearchProvider(window.MapManager._map,"Адрес Яндекс.Карты");
 				var p2 = new MapExpress.Search.GoogleSearchProvider(window.MapManager._map,"Адрес Google.Карты");
+				var p3 = new MapExpress.Search.CadastrSearchProviderPPK5(window.MapManager._map,"Кадастровый № ПКК-5");
 								
 				var options = {
-					providers:[p1,p2],
+					providers:[p1,p2,p3],
 					startProvider:p1,
 					drawStyleOptions: {
 						color: "darkgreen",

@@ -7,130 +7,71 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-<title>MapExpress GIS</title>
+<title>ИС Балтика</title>
 <link rel="stylesheet" href="css/leaflet.css"/>
-<link rel="stylesheet" href="css/bootstrap.min.css"/>
-<link rel="stylesheet" href="css/font-awesome.css"/>
-<link rel="stylesheet" href="css/main.css"/>
-<link rel="stylesheet" href="css/leaflet-measure.css">
-<link rel="stylesheet" href="css/themes/default/style.min.css" />
-<link rel="stylesheet" href="css/geojsonautocomplete.css" />
-<link rel="stylesheet" href="css/leaflet-control-mapPrint.css" />
+<link rel="stylesheet" href="css/jstree.min.css" />
+<link rel="stylesheet" href="css/font-awesome.min.css"/>
+<link rel="stylesheet" href="css/scrolltabs.css"/>
+<link rel="stylesheet" href="css/jquery.mfs.css"/>
+<link rel="stylesheet" href="css/nouislider.css"/>
+<link rel="stylesheet" href="css/normalize.css"/>
 
-<script>VSM_SITE_ROOT = "http://vsm.npobaltros.ru/" </script>
-<script>VSM_MAP_SELECTOR = "#map" </script>
+<link rel="stylesheet" href="css/mapexpress.css"/>
+<link rel="stylesheet" href="css/mapexpress.Search.css"/>
+<link rel="stylesheet" href="css/mapExpress-measure.css"/>
 
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery.sidebar.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/leaflet.js"></script>
-<script src="js/mapExpress-leaflet.js"></script>
-<script src="js/SelectParcelOnMap.js"></script>
-<script src="js/initializeMap.js"></script>
-<script src="js/Leaflet.Editable.js"></script>
-<script src="js/jsrender.min.js"></script>
-<script src="js/bootstrap-switch.min.js"></script>
-<script src="js/bootstrap-slider.js"></script>
-<script src="js/leaflet-measure.js"></script>
-<script src="js/jstree.min.js"></script>
-<script src="js/Sortable.min.js"></script>
-<script src="js/accordion.v.1.2.packed.js"></script>
-<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="dist/jquery.min.js"></script>
+<script src="dist/leaflet.js"></script>
+<script src="dist/jstree.min.js"></script>
+<script src="dist/jsrender.min.js"></script>
+<script src="dist/Sortable.min.js"></script>
+<script src="dist/jquery.sidebar.js"></script>
+<script src="dist/Leaflet.Editable.js"></script>
+<script src="dist/d3.min.js"></script>
+<script src="dist/canvg.min.js"></script>
+<script src="dist/html2canvas.min.js"></script>
+<script src="dist/jquery.scrolltabs.js"></script>
+<script src="dist/jquery.mousewheel.js"></script>
+<script src="dist/jquery.mfs.min.js"></script>
+<script src="dist/nouislider.min.js"></script>
+<script src="dist/slick.min.js"></script>
+<script src="dist/proj4js-compressed.js"></script>
+<script src="dist/proj4leaflet.js"></script>
 
-<script src="js/ParcelInteractionTool.js"></script>
-<script src="js/ParcelEditTool.js"></script>
-<script src="js/html2canvas.js"></script>
-<script src="js/ExportMap2Image.js"></script>
-<script src="js/SearchCadaster.js"></script>
-<script src="js/SearchCadastrTool.js"></script>
-<script src="js/SearchAddress.js"></script>
-<script src="js/ParcelFilterTool.js"></script>
-<script src="js/MapWorkspaceManagerTool.js"></script>
-<script src="js/MapExpressToolsShowLegend.js"></script>
-<script src="js/MapExpressAddBaseLayers.js"></script>
+<script src="dist/mapExpress-leaflet.min.js"></script>
+<script src="dist/mapExpress.LayerControl.min.js"></script>
+<script src="dist/mapExpress.Search.min.js"></script>
+<script src="dist/mapExpress.Measure.min.js"></script>
+<script src="dist/mapExpress.Export.min.js"></script>
+<script src="dist/mapExpress.Rosreestr.min.js"></script>
 
-<script src="js/BaseSearchProvider.js"></script>
-<script src="js/GoogleSearchProvider.js"></script>
-<script src="js/CadastrSearchProvider.js"></script>
-<script src="js/YandexSearchProvider.js"></script>
-<script src="js/OsmSeacrhProvider.js"></script>
-<script src="js/geojsonautocomplete.js"></script>
+<script src="dist/brc.realty.min.js"></script>
 
-<script src="js/L.Polyline.SnakeAnim.js"></script>
-<script src="js/vsmPresentation.js"></script>
-
-
-<script src="js/canvg.js"></script>
-<script src="js/L.AreaSelectClass.js"></script>
-<script src="js/L.mapPrintClass.js"></script>
-<script src="js/L.mapPrintControl.js"></script>
+<script src="~/Assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="~/Assets/global/plugins/jquery.blockui.min.js"></script>
+<script src="~/Assets/global/plugins/uniform/jquery.uniform.min.js"></script>
 
 <style type="text/css">
-html, body { height: 100% }
-#map { min-height: 100%; }
-
+	html, body,	#map, div[class^="container"],div[class="page-content"], div[class="wrapper"] {height: 100%;}
+	
+	html {
+		margin: 0;
+		font-family: Roboto , Arial, sans-serif;
+		overflow: hidden;
+	}
 </style>
 
 </head>
 <body>
 
-
 <div id="map"></div>
 
-<div id="mapSidebarTemplate" class="mapsidebar left"></div>
-<div id="layerInfoTemplate"></div>
-
 
 <script type="text/javascript">
-
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-
-$("#mapSidebarTemplate").sidebar({side: "left",close:true});
-
-$(document).on("click", function(e){
-    var div = $("#mapSidebarTemplate"); 
-		if (!div.is(e.target) && div.has(e.target).length === 0) { 
-			$("#mapSidebarTemplate").trigger("sidebar:close")
-		}
+$(document).ready(function(){
+	InitializeMap (map);
 });
-
-InitializeMap (map);
-//var control = new MapExpress.Controls.MapControl(mapControl,{position:"top",headerEnabled:true,footerEnabled:true,closeButtonEnabled:true,parentContainer:mapControl._controlContainer});
-//control.createControl();
-
-
-
 </script>
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function (d, w, c) {
-        (w[c] = w[c] || []).push(function() {
-            try {
-                w.yaCounter29166235 = new Ya.Metrika({
-                    id:29166235,
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true
-                });
-            } catch(e) { }
-        });
-
-        var n = d.getElementsByTagName("script")[0],
-            s = d.createElement("script"),
-            f = function () { n.parentNode.insertBefore(s, n); };
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = "https://mc.yandex.ru/metrika/watch.js";
-
-        if (w.opera == "[object Opera]") {
-            d.addEventListener("DOMContentLoaded", f, false);
-        } else { f(); }
-    })(document, window, "yandex_metrika_callbacks");
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/29166235" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
 
 </body></html>

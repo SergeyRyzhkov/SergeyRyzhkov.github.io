@@ -1,0 +1,181 @@
+<script>
+$.views.helpers({
+	_onImageClickFunction_another:function(e, slider){
+		document.getElementById('mapexpress-slider-connect').noUiSlider.get();
+		var bases = window.MapManager.getMapModel().getBaseLayers();
+
+		for (var i = 0; i < bases.length; i++) {
+			bases[i].mapLayer.setOpacity(document.getElementById('mapexpress-slider-connect').noUiSlider.get() / 100);
+		}
+
+		var id = $(e.currentTarget).attr('id').replace('mapexpress-baselayer-minimap-', '');
+		$('.mapexpress-baselayer-minimap-img.selected').removeClass('selected').parent().removeClass('selected');
+		$(e.currentTarget).addClass('selected').parent().addClass('selected');
+		window.MapManager.setActiveBaseMap(id);
+	},
+
+	_setOpasitySlider_another:function(){
+		slider = document.getElementById('mapexpress-slider-connect');
+		var that = this;
+		window.noUiSlider.create(slider, {
+			start: 100,
+			connect: 'lower',
+			range: {
+				'min': 0,
+				'max': 100
+			}
+		});
+
+		slider.noUiSlider.on('slide', function(e) {
+			var baseLayer = window.MapManager.getActiveBaseMap();
+			baseLayer.mapLayer.setOpacity(Number(e[0]) / 100);
+		});
+	},
+
+	baseLayersPreview: function() {
+		function reorderMiniMaps() {
+            var main = $('.mapexpress-baseLayersMenu-minimapList');
+            var childrens = $('.mapexpress-baselayer-plate');
+            for (var i = 0; i < childrens.length; i++) {
+                if ($(childrens[i]).not(':first-child') && ($(childrens[i]).find('.mapexpress-baselayer-minimap-img').attr('class').indexOf('selected') > 0) === true) {
+                    $(childrens[i]).parent().prepend($(childrens[i]));
+                }
+            }
+        }
+
+		reorderMiniMaps();
+ 		$.views.helpers._setOpasitySlider_another();
+		var clickFunction = function(e){
+			$.views.helpers._onImageClickFunction_another(e);
+			reorderMiniMaps();
+		} 
+
+		$('.mapexpress-baselayer-minimap img').on('click', clickFunction);
+	},
+	baseLayersPreviewCarusel:function(){
+		//vertical = false - горизонтальный слайдер
+		//vertical = true - вертикальный слайдер
+		var vertical = false;
+		function reorderMiniMaps() {
+			var afterI = Math.floor($('.baseLayersPreviewCaruselMenu').get(0).slick.options.slidesToShow/2);
+            var main = $('.slick-track');
+            var childrens = $('.slick-track').find('.slick-active');
+            for (var i = 0; i < childrens.length; i++) {
+                if (($(childrens[i]).find('.mapexpress-baselayer-minimap-img').attr('class').indexOf('selected') > 0) === true) {
+                	if(i<=afterI){
+                		$(childrens[i]).insertAfter($(childrens[afterI]));
+                	}else{
+                		$(childrens[i]).insertBefore($(childrens[afterI]));
+                	}
+                }
+            }
+        }
+
+        $.views.helpers._setOpasitySlider_another();
+
+		$('.baseLayersPreviewCaruselMenu').slick({
+			dots: true,
+			infinite: false,
+			speed: 300,
+			slidesToShow: 3,
+			slidesToScroll: 2,
+			vertical:vertical,
+			verticalSwiping:vertical,
+			prevArrow:'<div class="slick-prev" style="width:0;height:0;border-top:10px solid transparent;border-bottom: 10px solid transparent;border-right:10px solid lightgrey;"></div>',
+			nextArrow:'<div class="slick-next" style="width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:10px solid lightgrey;"></div>'
+		});
+
+		var slidesToShow = $('.baseLayersPreviewCaruselMenu').get(0).slick.options.slidesToShow;
+
+		reorderMiniMaps();
+		var active = $('.slick-track').find('.slick-active');
+		var wi = 0;
+		var he = 0;
+		for (var i = 0; i < active.length; i++) {
+			wi += $(active[i]).width();
+			he += $(active[i]).height();
+		};
+
+		if(vertical === false){
+			he = he/slidesToShow;
+		}else if(vertical === true){
+			wi = wi/slidesToShow;
+		}
+		$('.slick-list').width(wi+'px').height(he+'px').css('margin-bottom', '10px');
+		$('.mapexpress-slider-plate').width(wi+'px');
+
+		var clickFunction = function(e){
+			$.views.helpers._onImageClickFunction_another(e);
+			reorderMiniMaps();
+		} 
+
+		$('.mapexpress-baselayer-minimap img').on('click', clickFunction);
+		$('.baseLayersPreviewCaruselMenu').on('beforeChange', function(e){
+			$('.mapexpress-baselayer-minimap img').off('click', clickFunction);
+		});
+		$('.baseLayersPreviewCaruselMenu').on('afterChange', function(e){
+			$('.mapexpress-baselayer-minimap img').on('click', clickFunction);
+		});
+	},
+});
+</script>
+
+
+
+<script id="baseLayersPreview" type="text/x-jsrender">
+	<div id="mapexpress-baseLayersMenu" class="" style="margin:0px; height:416px;background-color:white;width:160px ">
+	<div id="mapexpress-slider-plate" style="text-align: center;margin-bottom:16px;margin-right:8px;">
+		<span class = "mapexpress-slider-plate-header" style = "font-weight:bold; ">
+			<a class = "mapexpress-slider-plate-header" style = "font-weight:bold; width:130px;color:black; ">Прозрачность</a>
+		</span>
+	<div id="mapexpress-slider-connect" style="height:6px;margin:6px"></div>
+	</div>
+	<div  class="mapexpress-baseLayersMenu-minimapList" style="overflow-y:auto; height:380px">
+		{{for layers}}
+			<div class="mapexpress-baselayer-plate" style="text-align: center; background-color:white; box-shadow:0 2px 3px rgba(0, 0, 0, 0.4);">
+				<span class = "mapexpress-baselayer-header">
+					<a class = "mapexpress-baselayer-header" style = "color:black;">{{:singleBase.options.displayName}}</a>
+				</span>
+				{{if singleBase.mapLayer.options.visible === true}}
+					<div class = "mapexpress-baselayer-minimap selected">
+				{{else}}
+					<div class = "mapexpress-baselayer-minimap">
+				{{/if}}
+					{{if singleBase.mapLayer.options.visible === true}}
+					<img id = 'mapexpress-baselayer-minimap-{{:singleBase.id}}' class = 'mapexpress-baselayer-minimap-img selected' src = {{:tileUrl}}></img>
+					{{else}}
+					<img id = 'mapexpress-baselayer-minimap-{{:singleBase.id}}' class = 'mapexpress-baselayer-minimap-img' src = {{:tileUrl}}></img>
+					{{/if}}
+				</div>
+			</div>	
+		{{/for}}
+		</div>
+	</div>
+</script>
+
+<script id="baseLayersPreviewCarusel" type="text/x-jsrender">
+	<div id="mapexpress-slider-plate" style="text-align: center;margin-bottom:8px; ">
+		<a class = "mapexpress-slider-plate-header" style = "color:black; ">Прозрачность</a>
+		<div id="mapexpress-slider-connect" style="height:6px;margin:6px"></div>
+	</div>
+	<div id="baseLayersPreviewCaruselMenu" class="baseLayersPreviewCaruselMenu" style="padding:4px;margin:0 4px 12px 4px;">
+			{{for layers}}
+				<div class="mapexpress-baselayer-plate" style="text-align: center;">
+					<span class = "mapexpress-baselayer-header">
+						<a class = "mapexpress-baselayer-header" style = "color:black;">{{:singleBase.options.displayName}}</a>
+					</span>
+					{{if singleBase.mapLayer.options.visible === true}}
+						<div class = "mapexpress-baselayer-minimap selected">
+					{{else}}
+						<div class = "mapexpress-baselayer-minimap">
+					{{/if}}
+						{{if singleBase.mapLayer.options.visible === true}}
+							<img id = 'mapexpress-baselayer-minimap-{{:singleBase.id}}' class = 'mapexpress-baselayer-minimap-img selected' src = {{:tileUrl}}></img>
+						{{else}}
+							<img id = 'mapexpress-baselayer-minimap-{{:singleBase.id}}' class = 'mapexpress-baselayer-minimap-img' src = {{:tileUrl}}></img >
+						{{/if}}
+					</div>
+				</div>	
+			{{/for}}
+	</div>
+</script>

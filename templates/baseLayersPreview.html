@@ -1,0 +1,71 @@
+<script>
+$.views.helpers({
+	_onImageClickFunction:function(e, slider){
+		document.getElementById('mapexpress-slider-connect').noUiSlider.get();
+		var bases = window.MapManager.getMapModel().getBaseLayers();
+		for (var i = 0; i < bases.length; i++) {
+			bases[i].mapLayer.setOpacity(document.getElementById('mapexpress-slider-connect').noUiSlider.get() / 100);
+		}
+
+		var id = $(e.currentTarget).attr('id').replace('mapexpress-baselayer-minimap-', '');
+		$('.mapexpress-baselayer-minimap-img.selected').removeClass('selected').parent().removeClass('selected');
+		$(e.currentTarget).addClass('selected').parent().addClass('selected');
+		window.MapManager.setActiveBaseMap(id);
+	},
+
+	_setOpasitySlider:function(){
+		slider = document.getElementById('mapexpress-slider-connect');
+		var that = this;
+		window.noUiSlider.create(slider, {
+			start: 100,
+			connect: 'lower',
+			range: {
+				'min': 0,
+				'max': 100
+			}
+		});
+
+		slider.noUiSlider.on('slide', function(e) {
+			var baseLayer = window.MapManager.getActiveBaseMap();
+			baseLayer.mapLayer.setOpacity(Number(e[0]) / 100);
+		});
+	},
+
+	baseLayersPreviewPalleteMenu: function() {
+		$.views.helpers._setOpasitySlider();
+		
+		var clickFunction = function(e){
+			$.views.helpers._onImageClickFunction(e);
+		};
+
+		$('.mapexpress-baselayer-minimap img').on('click', clickFunction);
+	}
+});
+</script>
+
+
+
+<script id="baseLayersPreviewPalleteMenu" type="text/x-jsrender">
+	<div id="mapexpress-slider-plate">
+		<a>Прозрачность</a>
+		<div id="mapexpress-slider-connect"></div>
+	</div>
+	<div class="baseLayersPreviewPalleteMenu">
+		{{for layers}}
+			<div class="mapexpress-baselayer-plate">
+				{{if singleBase.mapLayer.options.visible === true}}
+					<div class = "mapexpress-baselayer-minimap selected">
+				{{else}}
+					<div class = "mapexpress-baselayer-minimap">
+				{{/if}}
+					{{if singleBase.mapLayer.options.visible === true}}
+						<img id = 'mapexpress-baselayer-minimap-{{:singleBase.id}}' class = 'mapexpress-baselayer-minimap-img selected' src = {{:tileUrl}}></img>
+					{{else}}
+						<img id = 'mapexpress-baselayer-minimap-{{:singleBase.id}}' class = 'mapexpress-baselayer-minimap-img' src = {{:tileUrl}}></img >
+					{{/if}}
+				</div>
+				<div class = "mapexpress-baselayer-header">{{:singleBase.options.displayName}}</div>
+			</div>	
+		{{/for}}
+	</div>
+</script>

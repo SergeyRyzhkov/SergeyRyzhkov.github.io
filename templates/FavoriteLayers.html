@@ -1,0 +1,43 @@
+﻿<script id="favoriteLayers" type="text/x-jsrender">
+		
+	
+		{{for favoriteLayers}}
+			<div class="mapexpress-legend-item-wrapper noselect" onclick="refreshFavoriteLayerDivStyle('{{:id}}',true)">	
+				<div class="mapexpress-legend-img-wrapper">
+					<img id="{{:id}}" style="width:24px;height:24px;" src="images/Show_32x32.png"/>
+				</div>
+				<span class="noselect">{{:options.displayName}}</span>
+			</div>
+		{{/for}}
+							
+		<script>
+		
+			function refreshAllFavoriteLayersDivStyle (){
+				
+				{{for favoriteLayers}}
+					refreshFavoriteLayerDivStyle("{{:id}}",false);
+				{{/for}}
+			};
+			
+			function refreshFavoriteLayerDivStyle (id, isToogleVisible) {
+				var img = $("#"+id);
+				var sewerLayers = window.MapManager.getMapModel().getLayerById(id);
+				if (sewerLayers) {
+					if (isToogleVisible){
+						window.MapManager.toogleLayerVisible(sewerLayers.id);
+					}
+					if (sewerLayers.mapLayer.options.visible) {
+						img.attr('src', "images/Show_32x32.png");
+						img.parent().parent().css("opacity",1);
+					}else{
+						img.parent().parent().css("opacity",0.4);
+						img.attr('src', "images/Hide_32x32.png");
+					}
+				}
+			};
+		{{:"<"}}/script>
+		
+</script>
+
+
+

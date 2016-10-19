@@ -1,0 +1,38 @@
+.leaflet-measure-edge {
+    width: 8px !important;
+    height: 8px !important;
+    margin-top: -4px !important;
+    margin-left: -4px !important;    
+    border-radius: 50%;
+    border: 1px solid #006FB8;
+    background:white;
+}
+
+.leaflet-measure-middleEdge {
+    width: 8px !important;
+    height: 8x !important;
+    margin-top: -4px !important;
+    margin-left: -4px !important;
+	background:white;
+	border-radius: 50%;
+    border: 1px solid #006FB8;
+}
+
+.leaflet-measure-line{
+	stroke: #006FB8;
+	stroke-width:3;
+	stroke-opacity:1;
+	stroke-linecap:round;
+	stroke-linejoin:round;
+}
+
+.leaflet-measure-polygon{
+	stroke: #006FB8;
+	stroke-width:3;
+	stroke-opacity:1;
+	stroke-linecap:round;
+	stroke-linejoin:round;
+	fill:#006FB8;
+	fill-opacity:0.1;
+	fill-rule: evenodd;
+}
