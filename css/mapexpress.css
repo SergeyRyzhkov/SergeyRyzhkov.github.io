@@ -295,7 +295,6 @@ svg.leaflet-zoom-animated > g > path {
 	z-index:100000;
 	width: 400px;
 	left: -420px;
-	transition: all 0.2s ease-in-out;
 	top: 0px;
 	bottom: 0px;
 	visibility:hidden;
@@ -329,9 +328,15 @@ svg.leaflet-zoom-animated > g > path {
 	-moz-flex-direction: row;
 	-ms-flex-direction: row;
 	-o-flex-direction: row;
+	
     flex-wrap: nowrap;
+	-webkit-flex-wrap: nowrap;
+	-ms-flex-wrap: nowrap;
+	
     align-items: center;
     justify-content: space-between;
+	-webkit-flex-content: space-between;
+	-ms-flex-content: space-between;
 }
 
 .mapexpress-sidebar-content {
