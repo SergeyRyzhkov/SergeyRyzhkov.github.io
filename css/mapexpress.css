@@ -96,8 +96,16 @@
 	-ms-flex-direction: row;
 	-o-flex-direction: row;
 	flex-wrap: nowrap;
+	-webkit-flex-wrap: nowrap;
+	-ms-flex-wrap: nowrap;
+	
 	align-items: center;
+	-ms-flex-align-items: center;
+	-webkit-flex-align-items: center;
+	
 	justify-content: space-between;
+	-ms-flex-justify-content: space-between;
+	-webkit-flex-justify-content: space-between;
 	cursor:move;
 }
 
@@ -192,6 +200,7 @@
 	width: 34px;
 	min-width: 34px;
     height: 34px;
+	min-height:34px;
 	margin-left:3px;
 	margin-right:3px;
 	-webkit-box-shadow:  0 1px 1.5px 0 rgba(0,0,0,0.12),0 1px 1px 0 rgba(0,0,0,0.24);
@@ -259,6 +268,7 @@
     border: 2px solid #006FB8;
     width: 12px;
     height: 12px;
+	min-height:12px;
     border-radius: 50%;
     cursor: move;
     z-index: 900;
@@ -331,7 +341,6 @@ svg.leaflet-zoom-animated > g > path {
     -ms-flex: 1 1 auto;
     -o-flex: 1 1 auto;
     flex: 1 1 auto;
-	overflow:auto;
 }
 
 .mapexpress-sidebar-footer {
@@ -343,6 +352,7 @@ svg.leaflet-zoom-animated > g > path {
 
 .tabs__caption {
 	height: 28px;
+	min-height:28px;
 	line-height: 25px;
 	list-style: none;
 	border-bottom: 1px solid #DDD;
@@ -423,6 +433,7 @@ svg.leaflet-zoom-animated > g > path {
     border-left:1px solid #BDBDBD; 
     width: 1px;
     height: 78%;
+	min-height:78%;
     position: absolute;
 }
 
@@ -432,6 +443,7 @@ svg.leaflet-zoom-animated > g > path {
   background-color: white;
 	width: 34px;
   height: 34px;
+  min-height:34px;
 	padding-left: 5px;
 	padding-top: 5px;
 	-webkit-box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.4);
@@ -548,6 +560,7 @@ svg.leaflet-zoom-animated > g > path {
 .mapexpress-baselayer-minimap-img{
   width: 78px;
   height: 78px;
+  min-height:78px;
   margin: auto;
   border-radius:1px;
    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
