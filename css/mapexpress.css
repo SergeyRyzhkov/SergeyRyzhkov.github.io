@@ -332,15 +332,22 @@ svg.leaflet-zoom-animated > g > path {
     flex-wrap: nowrap;
 	-webkit-flex-wrap: nowrap;
 	-ms-flex-wrap: nowrap;
+	-o-flex-wrap: nowrap;
 	
     align-items: center;
     justify-content: space-between;
 	-webkit-flex-content: space-between;
 	-ms-flex-content: space-between;
+	-webkit-flex-align-items: center;
+	-ms-flex-align-items: center;
 }
 
 .mapexpress-sidebar-content {
 	flex-grow: 1;
+	-webkit-flex-grow: 1;
+	-ms-flex-grow: 1;
+	-o-flex-grow: 1;
+	
 	-webkit-flex: 1 1 auto;
     -moz-flex: 1 1 auto;
     -ms-flex: 1 1 auto;
