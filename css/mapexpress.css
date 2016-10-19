@@ -65,6 +65,9 @@
   transition: opacity 0.2s linear;
   display: flex;
   display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -o-flex;
   flex-direction: column;
   flex-direction: -webkit-column;
 }
@@ -78,6 +81,10 @@
 	background: #006FB8 none repeat scroll 0% 0%;
 	min-height:32px;
 	display: flex;
+	display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: -o-flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
 	align-items: center;
@@ -251,6 +258,10 @@ svg.leaflet-zoom-animated > g > path {
 
 .mapexpress-sidebar-wrapper {
     display: flex;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: -o-flex;
     flex-direction: column;
 	position: absolute;
 	z-index:100000;
@@ -477,6 +488,10 @@ svg.leaflet-zoom-animated > g > path {
   padding:0;
   margin:0;
   display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -o-flex;
   flex-flow: row wrap;
   justify-content: space-around;
   max-width:300px;
