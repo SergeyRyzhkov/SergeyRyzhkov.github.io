@@ -105,6 +105,7 @@
 	
 	justify-content: space-between;
 	-ms-flex-justify-content: space-between;
+	-ms-flex-pack:justify;
 	-webkit-flex-justify-content: space-between;
 	cursor:move;
 }
@@ -336,6 +337,7 @@ svg.leaflet-zoom-animated > g > path {
 	
     align-items: center;
     justify-content: space-between;
+	-ms-flex-pack:justify;
 	-webkit-flex-content: space-between;
 	-ms-flex-content: space-between;
 	-webkit-flex-align-items: center;
