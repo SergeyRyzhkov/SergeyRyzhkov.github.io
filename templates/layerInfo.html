@@ -189,7 +189,7 @@ $.views.helpers({
 
 <script id="layerInfoTemplateId" type="text/x-jsrender">
 	<div id="layerInfoMenu" class="tabs" style="margin:0px;overflow:hidden;min-width: 500.5px;height:524px;background-color: #f2f2f2; ">
-		<div style="top:0;left:0; background-color: white;position:relative;border-bottom: 1px solid #dddddd; ">
+		<div style="top:0;left:0;">
 			<ul id = 'mapexpress-tabSet' class="tabSet scroll_tabs_theme_light" style="margin-top:0px;margin-bottom:0px; ">
 				{{for identifiedResults}}
 					{{if numberInList === 0}}
@@ -218,32 +218,6 @@ $.views.helpers({
 	</div>
 </script>
 
-<script id="layerInfoTemplateIdCombobox" type="text/x-jsrender">
-	<div id="layerInfoMenu" class="dropdown-tabs" style="margin:0px;overflow:hidden;min-width:500.5px;height:524px;background-color: #f2f2f2;width:auto; ">
-		<form id='mapexpress-formSet'>
-			<select id="demo" name="demo">
-				{{for identifiedResults}}
-					<option value={{:numberInList}}>{{:layerName}}</option>
-				{{/for}}
- 			</select>
- 		</form> 		
-		{{for identifiedResults}}
-			{{if numberInList === 0}}
-				<div id="data_content_{{:numberInList}}" class="tabs__content active" style="margin-top:12px;padding:4px;overflow-y:auto;max-height:490px; ">
-			{{else}}
-				<div id="data_content_{{:numberInList}}" class="tabs__content" style="margin-top:12px;padding:4px;overflow-y:auto;max-height:490px; ">
-			{{/if}}
-					<div class="mapexpress-layer-info__data props" style="margin-bottom:2px;min-height:478px;padding-top: 4px; ">
-						
-							<ul class="nav" style="font-size:13px;margin-left:10px;margin-bottom:10px;margin-right:10px;margin-top:0;list-style:none;padding:0px; ">
-								<li style="line-height: 1.8em; border-bottom: 1px solid #DDD;"><span style="color:#757575;font-weight: 500;">Поиск объектов ... </span></li>
-							</ul>
-						
-					</div>
-				</div>					
-		{{/for}}
-	</div>
-</script>
 
 <script id="layerInfo-Object-TemplateId" type="text/x-jsrender">
 	<div class="mapexpress-layer-info__data props" style="margin-bottom:2px;min-height:478px;padding-top:4px; ">

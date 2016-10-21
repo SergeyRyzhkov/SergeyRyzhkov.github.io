@@ -9,7 +9,11 @@ $.views.helpers({
 		$("#mapexpress-sidebar-tabSet li").on('click', function() {
 			$("#mapexpress-map-toc").find('div.tabs__content').removeClass('active').eq($(this).index()).addClass('active');
 		});
-
+		
+		$("#map-sidebar-close-btn").on('click', function() {
+			$("#sidebar-mapSidebarTemplateId").remove();
+		});
+		
 		new MapExpress.Controls.TreeLayerControl(MapManager).render();
 		new MapExpress.Controls.LayerOrderControl(MapManager).render();
 	}
@@ -21,31 +25,22 @@ $.views.helpers({
 			
 		<div class="mapexpress-sidebar-header" style="background: white none repeat scroll 0% 0%;border-bottom: 1px solid #BDBDBD; padding:10px;overflow:hidden;">
 			<img src="images/logo.png" style="display:block;margin: 0 auto;"/>
+			<div id="map-sidebar-close-btn" class="mapexpress-sidebar-header-close">
+				<svg width="26" height="26" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><path d="M13 11.586l5.66-5.66c.387-.387 1.02-.388 1.41.003.394.39.394 1.02.007 1.406L14.414 13l5.663 5.663c.38.38.385 1.018-.006 1.408-.39.395-1.02.395-1.406.008L13 14.414l-5.663 5.663c-.38.38-1.018.385-1.408-.006-.395-.39-.394-1.02-.005-1.41l5.66-5.66L5.922 7.34c-.38-.38-.385-1.018.006-1.408.392-.394 1.02-.394 1.407-.007L13 11.586z" fill="#000" fill-rule="evenodd"></path></svg>
+			</div>
 		</div>
 			
-		<div id="mapexpress-map-toc" class="mapexpress-sidebar-content" style="overflow:hidden;height:100%;">
+		<div id="mapexpress-map-toc" class="mapexpress-sidebar-content" style="overflow:hidden;height:100%;margin-top:-5px;">
 			<div class = "mapexpress-flex mapexpress-flex-direction__column" style="margin:10px;margin-top:0px;margin-bottom:0px;flex:1 1 auto;-webkit-flex: 1 1 auto;-moz-flex: 1 1 auto;-ms-flex: 1 1 auto;-webkit-flex-grow:1;flex-grow:1;-ms-flex-grow:1;height:100%;" >
 				<ul id = 'mapexpress-sidebar-tabSet' class="tabSet scroll_tabs_theme_light" style="flex: 0 0 auto;">
 					<li class="tab_selected">Содержание карты</li>
 					<li>Управление слоями</li>
 				</ul>
-				<div  class="mapexpress-control-wrapper" style="height:100%;margin-bottom:10px;padding:10px;overflow-y:auto;">
+				<div  class="mapexpress-control-wrapper" style="height:100%;margin-bottom:10px;margin-top:-5px;padding:10px;overflow-y:auto;">
 					<div id="treelayercontrol" class="tabs__content active" style="overflow-y:auto;"/>
 					<div id="layer-order-control" class="tabs__content"/>
 				</div>
 			</div>
-		</div>
-		
-		<div class="mapexpress-sidebar-footer" style="background-color:#3b434c;color:#a2abb7;padding:14px;">
-			© АО "НПО "Балтрос". Все права защищены.
-			<br>
-			<br>
-			190031, г. Санкт-Петербург, ул. Гражданская д.2-4
-			<br>
-			<br>
-			+7 (812) 777-55-07,
-			<a href="http://www.baltrosgroup.ru/" target="_blank" style="text-decoration:underline">www.baltrosgroup.ru</a>,
-			<a href="mailto:ryzhkov@npobaltros.ru" target="_blank" style="text-decoration:underline">support@npobaltros.ru</a>
 		</div>
 </script>
 
