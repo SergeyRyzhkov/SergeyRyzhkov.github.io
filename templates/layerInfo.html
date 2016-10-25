@@ -173,6 +173,10 @@ $.views.helpers({
 			$(".scroll_tabs_container div.scroll_tab_inner li").on('click', function() {
 				$(this).closest('div.tabs').find('div.tabs__content').removeClass('active').eq($(this).index()).addClass('active');
 			});
+
+			//$('.mapexpress-collapsibleLayerInfoMenu').collapsible({
+       			accordion : true
+   			//});
 			//$('#mapexpress-formSet').mfs({
 			//	'autoWidth': true
 			//});
@@ -185,6 +189,7 @@ $.views.helpers({
 	}
 });
 </script>
+
 
 
 <script id="layerInfoTemplateId" type="text/x-jsrender">
@@ -207,11 +212,9 @@ $.views.helpers({
 				<div id="data_content_{{:numberInList}}" class="tabs__content" style="padding:4px;overflow-y:auto;max-height:490px; ">
 			{{/if}}
 					<div class="mapexpress-layer-info__data props" style="margin-bottom:2px;min-height:478px;padding-top:4px; ">
-						
-							<ul class="nav" style="font-size:13px;margin-left:10px;margin-bottom:10px;margin-right:10px;margin-top:0;list-style:none;padding:0px;overflow-y:auto; ">
-								<li style="line-height: 1.8em; border-bottom: 1px solid #DDD;"><span style="color:#757575;font-weight: 500;">Поиск объектов ...</span></li>
-							</ul>
-						
+						<ul class="nav" style="font-size:13px;margin-left:10px;margin-bottom:10px;margin-right:10px;margin-top:0;list-style:none;padding:0px;overflow-y:auto; ">
+							<li style="line-height: 1.8em; border-bottom: 1px solid #DDD;"><span style="color:#757575;font-weight: 500;">Поиск объектов ...</span></li>
+						</ul>
 					</div>	
 				</div>					
 		{{/for}}
@@ -244,3 +247,23 @@ $.views.helpers({
 </script>
 
 
+
+
+<script id="layerInfoTemplateIdAccordeon" type="text/x-jsrender">
+    <div id="layerInfoMenu" style="margin:0px;overflow:hidden;min-width: 500.5px;height:524px;background-color: #f2f2f2; ">
+       <ul class="mapexpress-collapsibleLayerInfoMenu" style="overflow-y:auto;max-height:490px;">
+            {{for identifiedResults}} 
+                <li>
+             		<div id="tab_layernameid_{{:numberInList}}" class="collapsible-header">{{:layerName}}</div>
+             	    <div id="data_content_{{:numberInList}}" class="collapsible-body" style="margin-top:6px;">
+             			<div class="mapexpress-layer-info__data props" style="padding-top:4px; ">
+        	           		<ul class="nav" style="font-size:13px;margin-left:10px;margin-bottom:10px;margin-right:10px;margin-top:0;list-style:none;padding:0px; ">
+        	           		    <li style="line-height: 1.8em; border-bottom: 1px solid #DDD;"><span style="color:#757575;font-weight: 500;">Поиск объектов ...</span></li>
+        	           		</ul>
+        	       		</div>
+        	        </div>
+        	    </li>
+            {{/for}}
+       </ul>
+    </div>
+</script>

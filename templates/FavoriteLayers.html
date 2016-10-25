@@ -1,15 +1,15 @@
 ﻿<script id="favoriteLayers" type="text/x-jsrender">
 		
-	
+		<div class="mapexpress-legend-items">
 		{{for favoriteLayers}}
-			<div class="mapexpress-legend-item-wrapper noselect" onclick="refreshFavoriteLayerDivStyle('{{:id}}',true)">	
+			<div class="mapexpress-legend-item-wrapper noselect" onclick="refreshFavoriteLayerDivStyle('{{:id}}', true)">	
 				<div class="mapexpress-legend-img-wrapper">
 					<img id="{{:id}}" style="width:24px;height:24px;" src="images/Show_32x32.png"/>
 				</div>
-				<span class="noselect">{{:options.displayName}}</span>
+				<span class="mapexpress-legend-label-wrapper noselect">{{:options.displayName}}</span>
 			</div>
 		{{/for}}
-							
+		</div>					
 		<script>
 		
 			function refreshAllFavoriteLayersDivStyle (){
@@ -20,16 +20,20 @@
 			};
 			
 			function refreshFavoriteLayerDivStyle (id, isToogleVisible) {
+				console.log(id)
 				var img = $("#"+id);
+				console.log(img)
 				var sewerLayers = window.MapManager.getMapModel().getLayerById(id);
 				if (sewerLayers) {
 					if (isToogleVisible){
 						window.MapManager.toogleLayerVisible(sewerLayers.id);
 					}
 					if (sewerLayers.mapLayer.options.visible) {
+						console.log('1')
 						img.attr('src', "images/Show_32x32.png");
 						img.parent().parent().css("opacity",1);
 					}else{
+						console.log('2')
 						img.parent().parent().css("opacity",0.4);
 						img.attr('src', "images/Hide_32x32.png");
 					}
