@@ -1,0 +1,26 @@
+﻿<script id="searchId" type="text/x-jsrender">
+    <div id="mapExpress-searchContainer"></div>
+   	 	<script>
+   	 	var p1 = new MapExpress.Search.YandexSearchProvider(window.MapManager._map, "Адрес Яндекс.Карты");
+   	 	var p2 = new MapExpress.Search.GoogleSearchProvider(window.MapManager._map, "Адрес Google.Карты");
+   	 	var p3 = new MapExpress.Search.CadastrSearchProviderPPK5(window.MapManager._map, "Росреестр ЗУ");
+   	 	var p4 = new MapExpress.Search.OksCadastrSearchProviderPPK5(window.MapManager._map, "Росреестр ОКС");
+   	 	
+   	 	var options = {
+   	 	    providers: [p1, p2, p3, p4],
+   	 	    startProvider: p1,
+   	 	    drawStyleOptions: {
+   	 	        color: "darkgreen",
+   	 	        weight: 4,
+   	 	        opacity: 0.65,
+   	 	        fillColor: "red",
+   	 	        fillOpacity: 0.2
+   	 	    }
+   	 	};
+		
+		
+		
+   	 	var searchConteiner = new geoJSONAutoComplete();
+   	 	searchConteiner.initialize(options, "#mapExpress-searchContainer");
+    </script>
+</script>

@@ -1,47 +1,86 @@
-﻿<script id="favoriteLayers" type="text/x-jsrender">
-		
-		<div class="mapexpress-legend-items">
-		{{for favoriteLayers}}
-			<div class="mapexpress-legend-item-wrapper noselect" onclick="refreshFavoriteLayerDivStyle('{{:id}}', true)">	
-				<div class="mapexpress-legend-img-wrapper">
-					<img id="{{:id}}" style="width:24px;height:24px;" src="images/Show_32x32.png"/>
-				</div>
-				<span class="mapexpress-legend-label-wrapper noselect">{{:options.displayName}}</span>
-			</div>
-		{{/for}}
-		</div>					
-		<script>
-		
-			function refreshAllFavoriteLayersDivStyle (){
-				
-				{{for favoriteLayers}}
-					refreshFavoriteLayerDivStyle("{{:id}}",false);
-				{{/for}}
-			};
-			
-			function refreshFavoriteLayerDivStyle (id, isToogleVisible) {
-				console.log(id)
-				var img = $("#"+id);
-				console.log(img)
-				var sewerLayers = window.MapManager.getMapModel().getLayerById(id);
-				if (sewerLayers) {
-					if (isToogleVisible){
-						window.MapManager.toogleLayerVisible(sewerLayers.id);
-					}
-					if (sewerLayers.mapLayer.options.visible) {
-						console.log('1')
-						img.attr('src', "images/Show_32x32.png");
-						img.parent().parent().css("opacity",1);
-					}else{
-						console.log('2')
-						img.parent().parent().css("opacity",0.4);
-						img.attr('src', "images/Hide_32x32.png");
-					}
-				}
-			};
-		{{:"<"}}/script>
-		
+<script>
+$.views.helpers({
+
+    checkLayerLablelEnabled: function(id) {
+        if (window.MapManager.layerLabelingEnabledInZoom(id)) {
+            return true;
+        }
+        return false;
+    },
+
+    initializeListeners: function() {
+        //jsrender - синхронный, выкидываем функцию из потока, чтобы jquery увидел дом
+        setTimeout(function() {
+            $('.mapexpress-favorite-img-wrapper.labels').on('click', function(e) {
+                var id = e.currentTarget.id.replace('-label-favorite', '');
+                var layer = window.MapManager.getMapModel().getLayerById(id);
+                if (layer.visibleForFavorites) {
+                    var img = $(e.currentTarget).find('img');
+                    var labelImgSrc = "images/label_n.gif";
+                    window.MapManager.toogleLabelLayer(id);
+                    if (layer.mapLayer && layer.mapLayer.options && layer.mapLayer.options.labelEnabled) {
+                        labelImgSrc = "images/label_y.gif";
+                    }
+
+                    img.attr('src', labelImgSrc);
+                }
+                e.stopPropagation();
+            });
+        }, 0);
+    }
+});
 </script>
+<script id="favoriteLayers" type="text/x-jsrender">
+        <div class="mapexpress-legend-items">
+        {{for favoriteLayers}}
+            <div class="mapexpress-favorite-item-wrapper noselect" onclick="refreshFavoriteLayerDivStyle('{{:id}}', true)">               
+                <div class="mapexpress-favorite-img-wrapper">
+                    <img id="{{:id}}-favorite" style="width:24px;height:24px;" src="images/Show_32x32.png"/>
+                </div>
+                {{if ~checkLayerLablelEnabled(id)}}
+                <div id="{{:id}}-label-favorite" class="mapexpress-favorite-img-wrapper labels" style="margin-left:8px;">
+                    <img id="{{:id}}-label-image-favorite" style="width:24px;height:24px;" src="images/label_n.gif"/>
+                </div>
+                {{/if}}
+                <span class="mapexpress-favorite-label-wrapper noselect">{{:options.displayName}}</span>
+            </div>
+        {{/for}}
+        {{>~initializeListeners()}}
+        </div>                  
+        <script>
+        
+            function refreshAllFavoriteLayersDivStyle (){
+                {{for favoriteLayers}}
+                    refreshFavoriteLayerDivStyle("{{:id}}",false);
+                {{/for}}
+            };
 
+            function refreshFavoriteLayerDivStyle(id, isToogleVisible) {
+                var img = $("#" + id + '-favorite');
+                var labelImage = $("#" + id + '-label-image-favorite');
+                var layer = window.MapManager.getMapModel().getLayerById(id);
+                if (layer) {
+                    if (isToogleVisible) {
+                        window.MapManager.setLayerVisible(id, !layer.visibleForFavorites);
+                    }
+                    if (layer.visibleForFavorites) {
+                        img.attr('src', "images/Show_32x32.png");
+                        img.parent().parent().css("opacity", 1);
+                    } else {
+                        img.parent().parent().css("opacity", 0.4);
+                        img.attr('src', "images/Hide_32x32.png");
+                    }
 
-
+                    if (!isToogleVisible) {
+                        var labelImgSrc = "images/label_n.gif";
+                        //а если группа слоев?
+                        if (layer.mapLayer && layer.mapLayer.options && layer.mapLayer.options.labelEnabled) {
+                            labelImgSrc = "images/label_y.gif";
+                        }
+                        labelImage.attr('src', labelImgSrc);
+                    }
+                }
+            };
+        {{:"<"}}/script>
+        
+</script>

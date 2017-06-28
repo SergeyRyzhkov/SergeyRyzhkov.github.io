@@ -1,70 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
- <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-<title>Рыжков С.Н.</title>
-<link rel="stylesheet" href="css/leaflet.min.css"/>
-<link rel="stylesheet" href="css/jstree.min.css" />
-<link rel="stylesheet" href="css/font-awesome.min.css"/>
-<link rel="stylesheet" href="css/scrolltabs.min.css"/>
-<link rel="stylesheet" href="css/jquery.min.css"/>
-<link rel="stylesheet" href="css/nouislider.min.css"/>
-
-<link rel="stylesheet" href="css/mapexpress.min.css"/>
-<link rel="stylesheet" href="css/normalize.min.css"/>
-
-<script src="dist/jquery.min.js"></script>
-<script src="dist/leaflet.js"></script>
-<script src="dist/jstree.min.js"></script>
-<script src="dist/jsrender.min.js"></script>
-<script src="dist/Sortable.min.js"></script>
-<script src="dist/Leaflet.Editable.js"></script>
-<script src="dist/d3.min.js"></script>
-<script src="dist/canvg.min.js"></script>
-<script src="dist/html2canvas.min.js"></script>
-<script src="dist/jquery.scrolltabs.js"></script>
-<script src="dist/jquery.mousewheel.js"></script>
-<script src="dist/jquery.mfs.min.js"></script>
-<script src="dist/nouislider.min.js"></script>
-<script src="dist/slick.min.js"></script>
-<script src="dist/proj4js-compressed.js"></script>
-<script src="dist/proj4leaflet.js"></script>
-
-<script src="dist/mapExpress-leaflet.min.js"></script>
-<script src="dist/mapExpress.LayerControl.min.js"></script>
-<script src="dist/mapExpress.Search.min.js"></script>
-<script src="dist/mapExpress.Measure.min.js"></script>
-<script src="dist/mapExpress.Export.min.js"></script>
-<script src="dist/mapExpress.Rosreestr.min.js"></script>
-
-<script src="dist/brc.realty.min.js"></script>
-
-<style type="text/css">
-	html, body,	#map, div[class^="container"],div[class="page-content"], div[class="wrapper"] {height: 100%;}
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta http-equiv="Cache-Control" content="public, max-age=3600, must-revalidate" />
+    <link rel="stylesheet" href="css/mapexpress.min.css" media="none" onload="if(media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/mapexpress.min.css" />
+    </noscript>
+    <link rel="stylesheet" href="css/leaflet.min.css" media="none" onload="if(media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/leaflet.min.css" />
+    </noscript>
+    <link rel="stylesheet" href="css/jstree.min.css" media="none" onload="if(media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/jstree.min.css" />
+    </noscript>
+    <link rel="stylesheet" href="css/font-awesome.min.css" media="none" onload="if(media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/font-awesome.min.css" />
+    </noscript>
+    <link rel="stylesheet" href="css/scrolltabs.min.css" media="none" onload="if(media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/scrolltabs.min.css" />
+    </noscript>
+    <link rel="stylesheet" href="css/mapexpress.min.css" media="none" onload="if(media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/mapexpress.min.css" />
+    </noscript>
+    <link rel="stylesheet" href="css/nouislider.min.css" media="none" onload="if(media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/nouislider.min.css" />
+    </noscript>
+    <!--[if IE]>
+    	<link rel="stylesheet" type="text/css" href="css/mapexpress-ei-css-fix.css" />
+	<![endif]-->
+    <script src="dist/jquery.min.js"></script>
+    <script src="dist/leaflet.js"></script>
+    <script src="dist/jstree.min.js"></script>
+    <script src="dist/jsrender.min.js"></script>
+    <script src="dist/Sortable.min.js"></script>
+    <script src="dist/Leaflet.Editable.js"></script>
+    <script src="dist/d3.min.js"></script>
+    <script src="dist/canvg.min.js"></script>
+    <script src="dist/html2canvas.min.js"></script>
+    <script src="dist/jquery.scrolltabs.js"></script>
+    <script src="dist/jquery.mousewheel.js"></script>
+    <script src="dist/nouislider.min.js"></script>
+    <script src="dist/proj4js-compressed.js"></script>
+    <script src="dist/proj4leaflet.js"></script>
+    <script src="dist/mapExpress-leaflet.min.js"></script>
+    <script src="dist/mapExpress.Export.min.js"></script>
+    <script src="dist/mapExpress.Rosreestr.min.js"></script>
+    <script src="dist/brc.vsm.min.js"></script>
 	
-	html {
-		margin: 0;
-		font-family: Roboto , Arial, sans-serif;
-		overflow: hidden;
-	}
-</style>
-
+	<link rel="import" href="templates/vsmsearch.html"/>
+	
+    <style>
+    html,
+    body,
+    #map {
+        margin: 0;
+        font-family: Roboto, Arial, sans-serif;
+        overflow: hidden;
+        height: 100%;
+    }
+	
+	link {
+    display: block;
+}
+    </style>
 </head>
+
 <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+		VSM_SITE_ROOT = "http://188.43.2.57/vsm_site/";
+		VSM_MAP_SELECTOR = "#map";
+		//MAPEXPRESS_ROOT_PATH = VSM_SITE_ROOT + "Map/Map/";
+		MAP_WORKSPACE_ID = "10";
+		InitializeMap(map);
+    </script>
+</body>
 
-<div id="map"></div>
-
-
-<script type="text/javascript">
-$(document).ready(function(){
-	InitializeMap (map);
-});
-</script>
-
-
-</body></html>
+</html>

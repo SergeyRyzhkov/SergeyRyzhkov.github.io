@@ -16,24 +16,30 @@ $.views.helpers({
 		
 		new MapExpress.Controls.TreeLayerControl(MapManager).render();
 		new MapExpress.Controls.LayerOrderControl(MapManager).render();
-		new MapExpress.Controls.LegendControl(MapManager).render();
 	}
  }
 );
 </script>
 
 <script id="mapSidebarTemplateId" type="text/x-jsrender">
+
+			
 		<div id="mapexpress-map-toc" class = "mapexpress-flex mapexpress-flex-direction__column mapexpress-toc-wrapper">
 				<ul id = 'mapexpress-sidebar-tabSet' class="tabSet scroll_tabs_theme_light">
-					<li class="tab_selected">Содержание</li>
+					<li class="tab_selected">Содержание карты</li>
 					<li>Управление слоями</li>
-					<li>Легенда</li>
 				</ul>
 				<div  class="mapexpress-toc-content">
-					<div id="treelayercontrol" class="tabs__content active" style="overflow-y:auto; flex:1 1 0%;"/>
-					<div id="layer-order-control" class="tabs__content" style="flex:1 1 0%;"/>
-					<div id="legend-control" class="tabs__content" style="flex:1 1 0%;"/>
+					<div id="treelayercontrol" class="tabs__content active" style="overflow-y:auto; flex:1;"/>
+					<div id="layer-order-control" class="tabs__content" style="flex:1;"/>
 				</div>
+		</div>
+		<div class="mapexpress-sidebar-footer" style="margin:0px;padding:0px;position: relative;border-top: 2px solid #FFFFFF; background:#234469;">
+			<div><img src="images/logo.png" style="vertical-align: middle;"></div>
+			<div style="font-size: 14px;font-weight: 500;vertical-align:middle;text-align:center;color:#FFFFFF;width:100%;">
+				<a href="mailto:info@npobaltros.ru" style="color:#FFFFFF !important">support@npobaltros.ru</a>
+			</div>
+			 
 		</div>
 </script>
 
