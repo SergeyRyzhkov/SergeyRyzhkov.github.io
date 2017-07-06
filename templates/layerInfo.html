@@ -46,8 +46,10 @@ $.views.helpers({
 
             //удалять всегда!
             //в инф.инструменте удалять, здесь ID ставить
+			
+			var templateFullPath = window.MAPEXPRESS_ROOT_PATH ? window.MAPEXPRESS_ROOT_PATH + templateUrl : templateUrl;
 
-            $(tempDiv).load(templateUrl, function() {
+            $(tempDiv).load(templateFullPath, function() {
                 var template = $.templates("#" + templId);
                 if (template) {
                     if (data.multi) {
