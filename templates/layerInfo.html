@@ -277,7 +277,7 @@ $.views.helpers({
 <script id="layerInfo-Object-TemplateId" type="text/x-jsrender">
         <ul>
             {{props properties}} 
-                    {{if key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}} 
+                    {{if key !=='ogc_fid' && key !=='ogr_style' && key !=='label_text' && key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}} 
                         {{if prop === 'Null' || prop === 'null'||prop === 'undefined'}}
                             <li style="line-height: 1.8em; border-bottom: 1px solid #b2b2b2;"><span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp-</li>
                         {{else}} 

@@ -1,55 +1,19 @@
 <script>
 $.views.helpers({
-    checkLayerLegendEnabled: function(id) {
-        var layer = window.MapManager.getMapModel().getLayerById(id);
-        if (layer.options.type !== "base") {
-            var layerVisibleEnable = window.MapManager.layerEnabled(layer.id);
-            if (layerVisibleEnable) {
-                var styleInZoom = MapExpress.Utils.LegendUtils._getLayerStyleByZoomAndId(layer.id);
-                var layerVisibleEnableInZoom = window.MapManager.layerVisibleEnableInZoom(layer.id);
-                if (layerVisibleEnableInZoom && styleInZoom) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    },
-
-    checkLayerLegendType: function(id, type) {
-        var types = MapExpress.Utils.LegendUtils._getLayerStyleTypesByZoomAndId(id);
-        if (type === 'noGeometryTypes' && types.length === 0) {
-            return true;
-        } else if (types.indexOf(type) !== -1) {
-            return true;
-        }
-        return false;
-    },
-
-    getLegendStyle: function(id) {
-        var geomTypesForLegend = ['noGeometryTypes', 'Polygon', 'LineString', 'Point'];
-        var type = null;
+    convertLegendFromDomObjToString: function(element) {
         var tempDiv = document.createElement('div');
-        for (var i = 0; i < geomTypesForLegend.length; i++) {
-            if ($.views.helpers.checkLayerLegendType(id, geomTypesForLegend[i])) {
-                var element = MapExpress.Utils.LegendUtils.processLayerLegendToDiv(id, geomTypesForLegend[i])
-                if (element) {
-                    tempDiv.appendChild(element);
-                }
-            }
-        }
+        tempDiv.appendChild(element);
         return tempDiv.innerHTML;
     }
 });
 </script>
 <script id="legenableLayers" type="text/x-jsrender">
     <div class="mapexpress-legend">
-    {{for legenableLayers}}
-        {{if ~checkLayerLegendEnabled(id)}} 
+        {{for legenableLayers}} 
             <div id="{{:id}}-legend" class="mapexpress-legend__items">
-                <div>{{:~getLegendStyle(id)}}</div>          
-                <span class="noselect">{{:options.displayName}}</span>
-            </div>
-        {{/if}}  
-    {{/for}}
+                <div>{{:~convertLegendFromDomObjToString(legendItem)}}</div>
+                <span class="noselect">{{:displayName}}</span>
+            </div>            
+        {{/for}}
     </div>
 </script>
