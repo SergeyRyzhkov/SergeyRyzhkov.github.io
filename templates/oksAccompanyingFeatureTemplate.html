@@ -1,0 +1,213 @@
+<script id="oksAccompanyingFeatureTemplate" type="text/x-jsrender">
+    <div>
+        <ul>
+            {{props properties}} {{if key !=='ogc_fid' && key !=='ogr_style' && key !=='label_text' && key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}} {{if prop === 'Null' || prop === 'null'||prop === 'undefined'}}
+            <li style="line-height: 1.8em; border-bottom: 1px solid #b2b2b2;"><span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp-</li>
+            {{else}} {{if ~urlIdentify(prop)}}
+            <li>
+                <span style="color:#757575;">{{:key}}:</span>
+                <a href={{:prop}} target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">ссылка</a>&nbsp&nbsp&nbsp
+            </li>
+            {{else}}
+            <li><span style=";color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp{{:prop}}</li>
+            {{/if}} {{/if}} {{/if}} {{/props}}
+        </ul>
+        <div style="display: flex;flex-direction: column;justify-content: center;">
+
+            <button onclick="showApartmentsResidentialModalDialog()">
+                Жилые помещения ({{:apartmentPromisesDataItem.reestr.apartments_residential.found}})
+            </button>
+            <button onclick="showApartmentsNonResidentialModalDialog()">
+                Нежилые помещения ({{:apartmentPromisesDataItem.reestr.apartments_nonresidential.found}})
+            </button>
+            <button onclick="showOthersModalDialog()">
+                Прочее ({{:apartmentPromisesDataItem.reestr.others.found}})
+            </button>
+        </div>
+    </div> 
+    <style type="text/css" media="screen">
+        .oks-reestr__wrapper {
+            overflow: auto;
+        }
+        .oks-reestr__table {
+            border: 1 px solid #006FB8;
+            width: 100%;
+            height: 200%;
+            text-align: center;
+        }
+
+
+        .oks-reestr__table td,
+        .oks-reestr__table th {
+            border: 1px solid #AAAAAA;
+            padding: 8px 8px;
+            max-width: 148px;
+        }
+
+        .oks-reestr__table tbody td {
+            font-size: 12px;
+        }
+
+        .oks-reestr__table tr:nth-child(even) {
+            background: #D0E4F5;
+        }
+
+        .oks-reestr__table thead {
+            background: #006FB8;
+        }
+
+        .oks-reestr__table thead th {
+            font-size: 12px;
+            color: #FFFFFF;
+            text-align: center;
+        }
+    </style>
+    <script>
+    function showApartmentsResidentialModalDialog() {
+        var template = '<div class="oks-reestr__wrapper">' +
+            '   {{if #data.apartmentPromisesDataItem.reestr.apartments_residential.found > 0 }}' +
+            '      <table class="oks-reestr__table">' +
+            '           <thead>' +
+            '               <tr>' +
+            '                   {{props apartmentPromisesDataItem.reestr.apartments_residential.objects[0]}}' +
+            '                       {{if key ==="CADNOMER"}}'+
+            '                           <th>Кадастровый номер</th>' +
+            '                      {{/if}}'+
+            '                      {{if key ==="ADDRESS"}}'+
+            '                           <th>Адрес объекта</th>' +
+            '                      {{/if}}'+
+            '                      {{if key ==="APARTMENT"}}'+
+            '                          <th>Номер помещения</th>' +
+            '                       {{/if}}'+
+            '                       {{if key ==="TYPE"}}'+
+            '                           <th>Тип объекта</th>' +
+            '                       {{/if}}'+
+            '                       {{if key ==="AREA"}}'+
+            '                           <th>Площадь объекта</th>' +
+            '                       {{/if}}'+
+            '                   {{/props}} ' +
+            '               </tr>' +
+            '           </thead>' +
+            '           <tbody>' +
+            '               {{for #data.apartmentPromisesDataItem.reestr.apartments_residential.objects}} ' +
+            '                   <tr>' +
+            '                       {{props}}' +
+            '                           <td>{{:prop}}</td>' +
+            '                       {{/props}} ' +
+            '                   </tr>' +
+            '               {{/for}}' +
+            '           </tbody>' +
+            '       </table>' +
+            '   {{else}}' +
+            '      <label>нет данных</label>' +
+            '   {{/if}}' +
+            '</div>';
+
+        new MapExpress.Controls.OkCancelDialogCustom(window.MapManager._map, {
+            closeButtonEnabled: false,
+            modal: true,
+            position: 'center',
+            okButtonText: self.options.okButtonText || "ОК",
+            cancelButtonText: self.options.cancelButtonText || "Отмена",
+        }).setTitle('Жилые помещения').setContent(template).show();
+    };
+
+    function showApartmentsNonResidentialModalDialog() {
+        var template = '<div class="oks-reestr__wrapper">' +
+            '   {{if #data.apartmentPromisesDataItem.reestr.apartments_nonresidential.found > 0 }}' +
+            '       <table class="oks-reestr__table">' +
+            '           <thead>' +
+            '               <tr>' +
+            '                   {{props apartmentPromisesDataItem.reestr.apartments_nonresidential.objects[0]}}' +
+            '                       {{if key ==="CADNOMER"}}'+
+            '                           <th>Кадастровый номер</th>' +
+            '                      {{/if}}'+
+            '                      {{if key ==="ADDRESS"}}'+
+            '                           <th>Адрес объекта</th>' +
+            '                      {{/if}}'+
+            '                      {{if key ==="APARTMENT"}}'+
+            '                          <th>Номер помещения</th>' +
+            '                       {{/if}}'+
+            '                       {{if key ==="TYPE"}}'+
+            '                           <th>Тип объекта</th>' +
+            '                       {{/if}}'+
+            '                       {{if key ==="AREA"}}'+
+            '                           <th>Площадь объекта</th>' +
+            '                       {{/if}}'+
+            '                   {{/props}} ' +
+            '               </tr>' +
+            '           </thead>' +
+            '           <tbody>' +
+            '               {{for #data.apartmentPromisesDataItem.reestr.apartments_nonresidential.objects}} ' +
+            '                   <tr>' +
+            '                       {{props}}' +
+            '                           <td>{{:prop}}</td>' +
+            '                       {{/props}} ' +
+            '                   </tr>' +
+            '               {{/for}}' +
+            '           </tbody>' +
+            '       </table>' +
+            '   {{else}}' +
+            '      <label>нет данных</label>' +
+            '   {{/if}}' +
+            '</div>';
+
+        new MapExpress.Controls.OkCancelDialogCustom(window.MapManager._map, {
+            closeButtonEnabled: false,
+            modal: true,
+            position: 'center',
+            okButtonText: self.options.okButtonText || "ОК",
+            cancelButtonText: self.options.cancelButtonText || "Отмена",
+        }).setTitle('Нежилые помещения').setContent(template).show();
+    };
+
+    function showOthersModalDialog() {
+        var template = '<div class="oks-reestr__wrapper">' +
+            '   {{if #data.apartmentPromisesDataItem.reestr.others.found > 0 }}' +
+            '       <table class="oks-reestr__table">' +
+            '           <thead>' +
+            '               <tr>' +
+            '                   {{props apartmentPromisesDataItem.reestr.others.objects[0]}}' +
+            '                       {{if key ==="CADNOMER"}}'+
+            '                           <th>Кадастровый номер</th>' +
+            '                      {{/if}}'+
+            '                      {{if key ==="ADDRESS"}}'+
+            '                           <th>Адрес объекта</th>' +
+            '                      {{/if}}'+
+            '                      {{if key ==="APARTMENT"}}'+
+            '                          <th>Номер помещения</th>' +
+            '                       {{/if}}'+
+            '                       {{if key ==="TYPE"}}'+
+            '                           <th>Тип объекта</th>' +
+            '                       {{/if}}'+
+            '                       {{if key ==="AREA"}}'+
+            '                           <th>Площадь объекта</th>' +
+            '                       {{/if}}'+
+            '                   {{/props}} ' +
+            '               </tr>' +
+            '           </thead>' +
+            '           <tbody>' +
+            '               {{for #data.apartmentPromisesDataItem.reestr.others.objects}} ' +
+            '                   <tr>' +
+            '                       {{props}}' +
+            '                           <td>{{:prop}}</td>' +
+            '                       {{/props}} ' +
+            '                   </tr>' +
+            '               {{/for}}' +
+            '           </tbody>' +
+            '       </table>' +
+            '   {{else}}' +
+            '      <label>нет данных</label>' +
+            '   {{/if}}' +
+            '</div>';
+
+        new MapExpress.Controls.OkCancelDialogCustom(window.MapManager._map, {
+            closeButtonEnabled: false,
+            modal: true,
+            position: 'center',
+            okButtonText: self.options.okButtonText || "ОК",
+            cancelButtonText: self.options.cancelButtonText || "Отмена",
+        }).setTitle('Прочие').setContent(template).show();
+    }; 
+    {{:"<"}}/script>
+</script>

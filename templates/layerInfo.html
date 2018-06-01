@@ -46,8 +46,8 @@ $.views.helpers({
 
             //удалять всегда!
             //в инф.инструменте удалять, здесь ID ставить
-			
-			var templateFullPath = window.MAPEXPRESS_ROOT_PATH ? window.MAPEXPRESS_ROOT_PATH + templateUrl : templateUrl;
+
+            var templateFullPath = window.MAPEXPRESS_ROOT_PATH ? window.MAPEXPRESS_ROOT_PATH + templateUrl : templateUrl;
 
             $(tempDiv).load(templateFullPath, function() {
                 var template = $.templates("#" + templId);
@@ -107,13 +107,24 @@ $.views.helpers({
 
             switch (typeof(response)) {
                 case 'object':
-                    var obj = {};
+                    var arrayClean = false;
+					var obj = {};
                     obj.multi = [];
-                    if (L.Util.isArray(response) && response.length > 0) {
+					if (L.Util.isArray(response) && response.length > 0) {
+						if (response[0].features) {
+							response.features = response[0].features;
+							arrayClean = true;
+						}
+					}
+                    
+                    if (!arrayClean && L.Util.isArray(response) && response.length > 0) {
                         for (var k = 0; k < response.length; k++) {
-                            obj.multi.push(response[k]);
+						   if (response[k] !== undefined){
+							  obj.multi.push(response[k]);
+						   }						   
                         }
-                        _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
+            			_modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
+						
                     } else if (L.Util.isArray(response) && response.length === 0) {
                         _modifyTabContent(divId, {}, 'layerInfo-NullObject-TemplateId', false, identifiedResultObject);
                     } else if (response.features) {
@@ -129,7 +140,7 @@ $.views.helpers({
                             }
                             _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
                         }
-                    } else if ((response instanceof Array) === true && response.length > 0) {
+                    } else if ((response instanceof Array) === true && response.length > 0 && !arrayClean) {
                         for (var m = 0; m < response.length; m++) {
                             obj.multi.push(response[m]);
                         }
@@ -156,22 +167,40 @@ $.views.helpers({
             }
             if (template !== null) {
                 var currntDiv = $('#data_content_' + id).children();
-                $.templates({
-                    tmpl: template[0]
-                });
-                $(currntDiv).html($.render.tmpl(data));
+                if (!data || (data && !data.length) || (typeof data === 'object' && !Object.getOwnPropertyNames(data).length)) {
+                    var selected = false;
+                    if ($('#tab_layernameid_' + id).hasClass('tab_selected')) {
+                        selected = true;
+                    }
+                    $('#tab_layernameid_' + id).remove();
+                    $('#data_content_' + id).remove();
+
+                    if (selected === true) {
+                        if ($("li[id*='tab_layernameid_']").length > 0) {
+                            $($("li[id*='tab_layernameid_']")[0]).addClass('tab_selected');
+                            $($("div[id*='data_content_']")[0]).addClass('active');
+                        } else {
+                            $('.scroll_tab_inner').parent().parent().html('Объекты не найдены!')
+                        }
+                    }
+                } else {
+                    MapExpress.Controls.MapControlUtils.generateTemplate(identifiedResultObject.templateUrl, identifiedResultObject.templateId, data, afterGeneratecallback);
+
+                    function afterGeneratecallback(content) {
+                        $(currntDiv).html(content);
+                    }
+                }
             } else {
                 _renderData(data, id, identifiedResultObject);
             }
         }
-
         function collectData(obj) {
             $.when.apply($, [obj.numberInList]).done(function() {
                 var id = arguments[0];
                 //obj.templatePromise - если у провайдера указан урл и id теплейта, то провайдер вернет промайз, который будет обрабатываться вместе с промайзом на data
                 //если у провайдера не указаны урл и id, то вернется null, который так же будет обрабатываться совместно с data
                 $.when.apply($, [obj.templatePromise, obj.dataPromise]).done(function() {
-                    var templatePromise = arguments[0];
+					var templatePromise = arguments[0];
                     var data = arguments[1];
                     //простой аякс MapExpress возвращает массив из даты и опций, которые в большинстве случаев пустые
                     //для стороннего контента
@@ -249,50 +278,58 @@ $.views.helpers({
         } else {
             return false;
         }
-    }
+    },
+	
+	baltrosTryFixInnerUrl :function(text) {
+		if (text != null && text.indexOf) {
+			var startIndex = text.indexOf("{{BaseUrl}}");
+			if (startIndex > -1) {
+			  var firstPart = text.substring(startIndex + 11);
+			  
+			  var url = window.REALTY_MAP_SITE_ROOT + "/" + firstPart;
+			  //var result = "<a href=" + url +  'target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">'ссылка</a>
+			  //return result;		  
+			  return text.replace("{{BaseUrl}}",window.REALTY_MAP_SITE_ROOT + "/");
+			}
+		}
+		return text;
+	}
 });
 </script>
 <script id="layerInfoTemplateId" type="text/x-jsrender">
     <div id="layerInfoMenu" class="mapexpress-layer-info-control-wrapper tabs">
-            <ul id='mapexpress-tabSet' class="scroll_tabs_theme_light">
-                {{for identifiedResults}} {{if numberInList === 0}}
-                <li id="tab_layernameid_{{:numberInList}}" style="font-size:13px;" class="tab_selected">{{:layerName}}</li>
-                {{else}}
-                <li id="tab_layernameid_{{:numberInList}}" style="font-size:13px;">{{:layerName}}</li>
-                {{/if}} {{/for}}
-            </ul>
+        <ul id='mapexpress-tabSet' class="scroll_tabs_theme_light">
+            {{for identifiedResults}} {{if numberInList === 0}}
+            <li id="tab_layernameid_{{:numberInList}}" style="font-size:13px;" class="tab_selected">{{:layerName}}</li>
+            {{else}}
+            <li id="tab_layernameid_{{:numberInList}}" style="font-size:13px;">{{:layerName}}</li>
+            {{/if}} {{/for}}
+        </ul>
         {{for identifiedResults}} {{if numberInList === 0}}
         <div id="data_content_{{:numberInList}}" class="tabs__content active mapexpress-layer-info-data-wrapper">
-        {{else}}
-        <div id="data_content_{{:numberInList}}" class="tabs__content mapexpress-layer-info-data-wrapper">
+            {{else}}
+            <div id="data_content_{{:numberInList}}" class="tabs__content mapexpress-layer-info-data-wrapper">
                 {{/if}}
-                    <div>
-                        <span style="color:#757575;font-weight: 500;">Поиск объектов ...</span>
-                   </div>
+                <div>
+                    <span style="color:#757575;font-weight: 500;">Поиск объектов ...</span>
+                </div>
+            </div>
+            {{/for}}
         </div>
-        {{/for}}
-    </div>
 </script>
-
 <script id="layerInfo-Object-TemplateId" type="text/x-jsrender">
-        <ul>
-            {{props properties}} 
-                    {{if key !=='ogc_fid' && key !=='ogr_style' && key !=='label_text' && key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}} 
-                        {{if prop === 'Null' || prop === 'null'||prop === 'undefined'}}
-                            <li style="line-height: 1.8em; border-bottom: 1px solid #b2b2b2;"><span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp-</li>
-                        {{else}} 
-                        {{if ~urlIdentify(prop)}}
-                            <li>
-                                <span style="color:#757575;">{{:key}}:</span>
-                                <a href={{:prop}} target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">ссылка</a>&nbsp&nbsp&nbsp
-                            </li>
-                        {{else}}
-                            <li><span style=";color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp{{:prop}}</li>
-                        {{/if}}
-                    {{/if}} 
-                {{/if}} 
-            {{/props}}
-        </ul>
+    <ul>
+        {{props properties}} {{if key.indexOf('id') < 0 && key.indexOf('Id') < 0 &&  key !=='ogr_style' && key !=='label_text' && key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}} {{if prop === 'Null' || prop === 'null'||prop === 'undefined'}}
+        <li style="line-height: 1.8em; border-bottom: 1px solid #b2b2b2;"><span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp-</li>
+        {{else}} {{if ~urlIdentify(prop)}}
+        <li>
+            <span style="color:#757575;">{{:key}}:</span>
+            <a href={{:prop}} target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">ссылка</a>&nbsp&nbsp&nbsp
+        </li>
+        {{else}}
+        <li><span style=";color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp {{:~baltrosTryFixInnerUrl(prop)}}</li>
+        {{/if}} {{/if}} {{/if}} {{/props}}
+    </ul>
 </script>
 <script id="layerInfo-NullObject-TemplateId" type="text/x-jsrender">
     <span style="">Объектов не найдено</span>

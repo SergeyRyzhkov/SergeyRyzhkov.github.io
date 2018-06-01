@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
-    <title>АО "Скоростные магистрали"</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <meta http-equiv="Cache-Control" content="public, max-age=3600, must-revalidate" />
+    <title>Схема обращения с отходами Тульской области</title>
     <link rel="stylesheet" href="css/mapexpress.min.css" media="none" onload="if(media && media!='all')media='all'" />
     <noscript>
         <link rel="stylesheet" href="css/mapexpress.min.css" />
@@ -25,6 +25,10 @@
     <noscript>
         <link rel="stylesheet" href="css/font-awesome.min.css" />
     </noscript>
+      <link rel="stylesheet" href="css/materialdesignicons.min.css" media="none" onload="if(media && media!='all')media='all'" />
+    <noscript>
+        <link rel="stylesheet" href="css/materialdesignicons.min.css" />
+    </noscript>
     <link rel="stylesheet" href="css/scrolltabs.min.css" media="none" onload="if(media && media!='all')media='all'" />
     <noscript>
         <link rel="stylesheet" href="css/scrolltabs.min.css" />
@@ -38,8 +42,9 @@
         <link rel="stylesheet" href="css/nouislider.min.css" />
     </noscript>
     <!--[if IE]>
-    	<link rel="stylesheet" type="text/css" href="css/mapexpress-ei-css-fix.css" />
-	<![endif]-->
+        <link rel="stylesheet" type="text/css" href="/css/mapexpress-ei-css-fix.css" />
+    <![endif]-->
+    <script src="dist/bluebird.min.js"></script>
     <script src="dist/jquery.min.js"></script>
     <script src="dist/leaflet.js"></script>
     <script src="dist/jstree.min.js"></script>
@@ -55,10 +60,9 @@
     <script src="dist/proj4js-compressed.js"></script>
     <script src="dist/proj4leaflet.js"></script>
     <script src="dist/mapExpress-leaflet.min.js"></script>
-    <script src="dist/mapExpress.Export.min.js"></script>
-    <script src="dist/mapExpress.Rosreestr.min.js"></script>
-    <script src="dist/brc.vsm.min.js"></script>
-	
+
+
+    <script src="dist/brc.realty.min.js"></script>
     <style>
     html,
     body,
@@ -68,40 +72,16 @@
         overflow: hidden;
         height: 100%;
     }
-    
-    @media(max-height:900px){
-    	#header{
-    		display:none;
-	}
-	#map{
-		border:none !important;
-	}
-    }
+
     </style>
 </head>
-<body style="margin:0">
-<div id="container" style="display:flex;flex-direction: column;height:100%;width:100%">
-	<div id="header" style="width:100%">
-		<nav style="margin-bottom: 0; min-height:80px">           
-	            <div style="background-image: url('images/footer_lines.gif');height: 9px; top: 70px; width: 100%; background-repeat: repeat-x; position: absolute;border:solid 0px #00BFFF;"></div>
-	            <div style="position:absolute;right:0px;top:0;border:solid 0px #FFC0CB;">                
-	            	<div style="background-image:url('images/footer_curve_2.gif');border:solid 0px #FFFF00;height:79px;width:253px;background-position:0px -15px;background-repeat:no-repeat;position:absolute;right:0;"></div>
-	            </div>
-	            <a title="Главная страница СУПР &quot;Скоростные магистрали&quot;" href="/vsm_site/" class="navbar-brand" style="position: absolute;top: 0;left: 10px;z-index: 120;color: #fff;margin-top: 10px;">
-	                <img class="company-brand" src="images/logo.png" alt="РЖД: Российские железные дороги">
-	                <div style="    position: absolute;top: 17px;left: 50%;margin-left: 100px;"><img src="images/top_slogan.gif" width="513" height="26" alt="АО «Скоростные магистрали»"></div>
-	            </a>
-	        </nav>
-	</div>
-	<div id="map" style="border-top: 1px solid gray;width:100%;height:100%"></div>
-	<script type="text/javascript">
-		VSM_LOCAL_MAP = true;
-		VSM_SITE_ROOT = "http://188.43.2.57/vsm_site/";
-		VSM_MAP_SELECTOR = "#map";
-		MAPEXPRESS_ROOT_PATH = VSM_SITE_ROOT + "Map/Map/";
-		MAP_WORKSPACE_ID = "10";
-		InitializeMap(map);
+
+<body>
+    <div id="map"></div>
+    <script type="text/javascript">
+    window.REALTY_MAP_SITE_ROOT = "http://realty.npobaltros.ru";
+	 BaltrosPkk.Mapping.MapInitializer.initialize(map);
     </script>
-</div>
 </body>
+
 </html>

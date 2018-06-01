@@ -61,25 +61,54 @@ $.views.helpers({
                 var layer = window.MapManager.getMapModel().getLayerById(id);
                 if (layer) {
                     if (isToogleVisible) {
-                        window.MapManager.setLayerVisible(id, !layer.visibleForFavorites);
+                        window.MapManager.toogleLayerVisible(id);
+						//window.MapManager.setLayerVisible(id, !layer.visibleForFavorites);
                     }
-                    if (layer.visibleForFavorites) {
-                        img.attr('src', "images/Show_32x32.png");
-                        img.parent().parent().css("opacity", 1);
-                    } else {
-                        img.parent().parent().css("opacity", 0.4);
-                        img.attr('src', "images/Hide_32x32.png");
-                    }
+					
+					if (layer.mapLayer){
+						if (layer.mapLayer.options.visible) {
+							img.attr('src', "images/Show_32x32.png");
+							img.parent().parent().css("opacity", 1);
+						} else {
+							img.parent().parent().css("opacity", 0.4);
+							img.attr('src', "images/Hide_32x32.png");
+						}
+					}
 
+					
+					if (layer.hasChildren()){
+						if (_isAnyLayerVisibleInLayerGroup(layer)) {
+							img.attr('src', "images/Show_32x32.png");
+							img.parent().parent().css("opacity", 1);
+						} else {
+							img.parent().parent().css("opacity", 0.4);
+							img.attr('src', "images/Hide_32x32.png");
+						}
+					}
+					
+					
                     if (!isToogleVisible) {
                         var labelImgSrc = "images/label_n.gif";
                         //а если группа слоев?
-                        if (layer.mapLayer && layer.mapLayer.options && layer.mapLayer.options.labelEnabled) {
+                        if (layer.mapLayer && layer.mapLayer && layer.mapLayer.options && layer.mapLayer.options.labelEnabled) {
                             labelImgSrc = "images/label_y.gif";
                         }
                         labelImage.attr('src', labelImgSrc);
                     }
                 }
+				
+				function _isAnyLayerVisibleInLayerGroup(layerGroup) {
+					if (layerGroup.hasChildren()) {
+						var layers = layerGroup.getAllLayers();
+						for (var i = 0; i < layers.length; i++) {
+							var iterLayer = layers[i];
+							if (iterLayer.mapLayer && iterLayer.mapLayer.options.visible) {
+								return true;
+							}
+						}
+					}
+					return false;
+				}
             };
         {{:"<"}}/script>
         
