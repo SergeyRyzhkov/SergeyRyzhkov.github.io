@@ -1,1 +1,2239 @@
-{"id":"16","options":{"name":"\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u043D\u044B\u0435 \u043C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u0438","displayName":"\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u043D\u044B\u0435 \u043C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u0438","description":"GeoServer\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u043D\u044B\u0435 \u043C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u0438","zoom":17,"center":[55.7502777778,37.6363888889],"zoomControl":false,"minZoom":0,"maxZoom":23},"layers":[{"id":"OpenStreetMap","options":{"name":"OpenStreetMap","displayName":"OpenStreetMap","description":"OpenStreetMap","type":"base"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.TileServiceLayer","options":{"maxNativeZoom":null,"tileSize":256,"errorTileUrl":"","continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1.0,"updateInterval":200,"unloadInvisibleTiles":false,"updateWhenIdle":false,"reuseTiles":false,"crossOrigin":false,"visible":false,"visibleIndex":0,"minZoom":0,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.TileProvider","args":["http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"],"options":{"useQuadkey":false,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"text/html","identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"3b25287c-0c8a-4357-9833-0dbff7395e37","options":{"name":"Bing Maps","displayName":"BingMaps.\u0421\u043F\u0443\u0442\u043D\u0438\u043A","description":null,"type":"base"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.TileServiceLayer","options":{"maxNativeZoom":null,"tileSize":256,"errorTileUrl":"","continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1.0,"updateInterval":200,"unloadInvisibleTiles":false,"updateWhenIdle":false,"reuseTiles":false,"crossOrigin":false,"visible":false,"visibleIndex":0,"minZoom":6,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.TileProvider","args":["http://ecn.t{s}.tiles.virtualearth.net/tiles/a{q}.jpeg?g=0&dir=dir_n"],"options":{"useQuadkey":true,"tileSize":256,"subdomains":"123","uppercase":false,"identifyFormat":"text/html","identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"ecf6f4ab-092c-4d7d-8273-2c462cae7432","options":{"name":"Google.\u0421\u043F\u0443\u0442\u043D\u0438\u043A","displayName":"Google.\u0421\u043F\u0443\u0442\u043D\u0438\u043A","description":null,"type":"base"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.TileServiceLayer","options":{"maxNativeZoom":null,"tileSize":256,"errorTileUrl":"","continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":0.5,"updateInterval":200,"unloadInvisibleTiles":false,"updateWhenIdle":false,"reuseTiles":false,"crossOrigin":false,"visible":true,"visibleIndex":0,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.TileProvider","args":["https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"],"options":{"useQuadkey":false,"tileSize":256,"subdomains":"123","uppercase":false,"identifyFormat":"text/html","identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"552f2401-6a34-44c5-8d27-06db5feb9839","options":{"name":"Google.Maps","displayName":"Google.Maps","description":null,"type":"base"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.TileServiceLayer","options":{"maxNativeZoom":null,"tileSize":256,"errorTileUrl":"","continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1.0,"updateInterval":200,"unloadInvisibleTiles":false,"updateWhenIdle":false,"reuseTiles":false,"crossOrigin":false,"visible":false,"visibleIndex":0,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.TileProvider","args":["http://mts{s}.google.com/vt/hl=ru&x={x}&y={y}&z={z}"],"options":{"useQuadkey":false,"tileSize":256,"subdomains":"123","uppercase":false,"identifyFormat":"text/html","identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"53b19739-921f-42b5-80ba-a21770f8c241","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u041F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u043A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u0430\u044F \u043A\u0430\u0440\u0442\u0430","description":null,"type":"group"},"layers":[{"id":"23adc3f6-4451-4434-aac0-3de0698a5a25","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u043E\u0435 \u0434\u0435\u043B\u0435\u043D\u0438\u0435","description":null,"type":"group"},"layers":[{"id":"b5c68b80-5d21-48d8-8c4d-f5d8ddca7f7a","options":{"name":"\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430","displayName":"\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":29,"minZoom":5,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"1,2,3,4,5,6,7","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"bfd55a5e-7d31-45b5-80e2-8bee9cc7eead","options":{"name":"\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u0440\u0430\u0439\u043E\u043D\u044B","displayName":"\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u0440\u0430\u0439\u043E\u043D\u044B","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":28,"minZoom":10,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"9,10,11,12,13,14,15,16","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"07092ac2-be1b-47f7-ba91-404d8c7f1c16","options":{"name":"\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B","displayName":"\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":30,"minZoom":11,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"18,19,20","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}}],"layerClass":null,"dataProviderClass":null},{"id":"b5d6630e-989c-4083-bcb6-5d1b1b835bcb","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043D\u0435\u0434\u0432\u0438\u0436\u0438\u043C\u043E\u0441\u0442\u0438","description":null,"type":"group"},"layers":[{"id":"fe7e98bd-481c-4bdb-a574-c2dc2a4ce769","options":{"name":"\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438","displayName":"\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":16,"minZoom":13,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"23,24","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"1","crsCode":"","proj4":""}}},{"id":"e45e1f57-20c7-498a-b9c9-c9ba281135a3","options":{"name":"\u0427\u0430\u0441\u0442\u0438 \u0437\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0445 \u0443\u0447\u0430\u0441\u0442\u043A\u043E\u0432","displayName":"\u0427\u0430\u0441\u0442\u0438 \u0437\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0445 \u0443\u0447\u0430\u0441\u0442\u043A\u043E\u0432","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":15,"minZoom":15,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"22","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"8e920052-b234-4082-a625-1c6b2794ce9a","options":{"name":"\u0417\u0423 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043E\u0442 \u043F\u0440\u0430\u0432 \u0442\u0440\u0435\u0442\u044C\u0438\u0445 \u043B\u0438\u0446","displayName":"\u0417\u0423 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043E\u0442 \u043F\u0440\u0430\u0432 \u0442\u0440\u0435\u0442\u044C\u0438\u0445 \u043B\u0438\u0446","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":14,"minZoom":15,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"36","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"698cdab4-306b-44c5-bc84-05b1a376e864","options":{"name":"\u0417\u0423 \u0440\u0435\u0448\u0435\u043D\u0438\u0435 \u043E \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0438 \u0442\u043E\u0440\u0433\u043E\u0432","displayName":"\u0417\u0423 \u0440\u0435\u0448\u0435\u043D\u0438\u0435 \u043E \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0438 \u0442\u043E\u0440\u0433\u043E\u0432","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":13,"minZoom":15,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"37","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"3d40fc51-42d0-4040-96fb-0ca16c1cfb57","options":{"name":"\u041E\u041A\u0421","displayName":"\u041E\u041A\u0421","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":11,"minZoom":13,"maxZoom":23,"selectable":true,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"26,27,28,29,30,31","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"0","crsCode":"","proj4":""}}},{"id":"cc16aecb-0e13-4ee3-8d8d-96404d6ea21b","options":{"name":"\u0427\u0430\u0441\u0442\u0438 \u041E\u041A\u0421","displayName":"\u0427\u0430\u0441\u0442\u0438 \u041E\u041A\u0421","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":12,"minZoom":15,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"26,27,28","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}}],"layerClass":null,"dataProviderClass":null},{"id":"b1623da6-d2ea-4ed3-8998-888c7ca2671b","options":{"name":"\u0417\u041E\u0423\u0418\u0422","displayName":"\u0417\u041E\u0423\u0418\u0422","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":31,"minZoom":13,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/ZOUIT/MapServer","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"0","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"0","crsCode":"","proj4":""}}},{"id":"ec2647ef-f43c-4a6d-83bc-74ecc4963b7e","options":{"name":"\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0430\u043B\u044C\u043D\u044B\u0435 \u0437\u043E\u043D\u044B","displayName":"\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0430\u043B\u044C\u043D\u044B\u0435 \u0437\u043E\u043D\u044B","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":18,"minZoom":3,"maxZoom":23,"selectable":true,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/TERR/MapServer","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"1","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"0","crsCode":"","proj4":""}}},{"id":"9765415a-eb86-4347-944c-8a861f19bc8d","options":{"name":"\u041E\u0441\u043E\u0431\u044B\u0435 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0437\u043E\u043D\u044B","displayName":"\u041E\u0441\u043E\u0431\u044B\u0435 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0437\u043E\u043D\u044B","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":17,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"2","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"96e57a41-2460-4691-8ac9-18f372ac08ec","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u0414\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E","description":null,"type":"group"},"layers":[{"id":"654bb50b-986b-4d37-8ebd-190729ec4ab0","options":{"name":"\u041F\u0443\u043D\u043A\u0442\u044B \u0433\u0435\u043E\u0434\u0435\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0439 \u0441\u0435\u0442\u0438","displayName":"\u041F\u0443\u043D\u043A\u0442\u044B \u0433\u0435\u043E\u0434\u0435\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0439 \u0441\u0435\u0442\u0438","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":19,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"1,2,3,4,5,6","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"3a902f4e-7e92-4c58-a6d0-0f1e6b9628c6","options":{"name":"\u041F\u0443\u043D\u043A\u0442\u044B \u043E\u043F\u043E\u0440\u043D\u043E-\u043C\u0435\u0436\u0435\u0432\u043E\u0439 \u0441\u0435\u0442\u0438","displayName":"\u041F\u0443\u043D\u043A\u0442\u044B \u043E\u043F\u043E\u0440\u043D\u043E-\u043C\u0435\u0436\u0435\u0432\u043E\u0439 \u0441\u0435\u0442\u0438","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":20,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"8,9,10,11,12,13","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"5042261b-50ea-449a-8e6d-084505890289","options":{"name":"\u041A\u0440\u0430\u0441\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438","displayName":"\u041A\u0440\u0430\u0441\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":25,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"16","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"53e4dbe9-224c-4092-bc5a-9716832c0d70","options":{"name":"\u041B\u0435\u0441\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u0438 \u043B\u0435\u0441\u043E\u043F\u0430\u0440\u043A\u0438","displayName":"\u041B\u0435\u0441\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u0438 \u043B\u0435\u0441\u043E\u043F\u0430\u0440\u043A\u0438","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":26,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"18","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"a193cf44-3a81-445a-a6d3-9194857c978b","options":{"name":"\u0421\u0445\u0435\u043C\u044B \u0440\u0430\u0441\u043F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0417\u0423","displayName":"\u0421\u0445\u0435\u043C\u044B \u0440\u0430\u0441\u043F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0417\u0423","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":27,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"17","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}}],"layerClass":null,"dataProviderClass":null},{"id":"6ae6d129-33d7-4a58-ac00-d74b74b8eb44","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u0413\u0440\u0430\u043D\u0438\u0446\u044B","description":null,"type":"group"},"layers":[{"id":"709747df-bb9a-4301-a3df-16ea820db902","options":{"name":"\u0421\u0443\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u0444\u0435\u0434\u0435\u0440\u0430\u0446\u0438\u0438","displayName":"\u0421\u0443\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u0444\u0435\u0434\u0435\u0440\u0430\u0446\u0438\u0438","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":24,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"11,12,13,14,15,16,17,18","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"a1858672-1611-4525-ab01-fe3779173598","options":{"name":"\u041C\u0443\u043D\u0438\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0445 \u043E\u0431\u0440\u0430\u0437\u043E\u0432\u0430\u043D\u0438\u0439","displayName":"\u041C\u0443\u043D\u0438\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0445 \u043E\u0431\u0440\u0430\u0437\u043E\u0432\u0430\u043D\u0438\u0439","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":21,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"20,21,22,23,24,25,26","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"550adb45-0d4b-4119-95fc-10351ce993ac","options":{"name":"\u0421\u0435\u043B\u044C\u0441\u043A\u0438\u0445 \u043F\u043E\u0441\u0435\u043B\u0435\u043D\u0438\u0439","displayName":"\u0421\u0435\u043B\u044C\u0441\u043A\u0438\u0445 \u043F\u043E\u0441\u0435\u043B\u0435\u043D\u0438\u0439","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":22,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"28,29,30,31","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"6d882b8d-509b-429f-b57f-7c24ecc75d89","options":{"name":"\u041D\u0430\u0441\u0435\u043B\u0435\u043D\u043D\u044B\u0445 \u043F\u0443\u043D\u043A\u0442\u043E\u0432","displayName":"\u041D\u0430\u0441\u0435\u043B\u0435\u043D\u043D\u044B\u0445 \u043F\u0443\u043D\u043A\u0442\u043E\u0432","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":23,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.MapServiceAgsProvider","args":["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],"options":{"identifyFormat":"json","identifyUrl":"","identifyTolerance":3,"dpi":96,"format":"png32","transparent":true,"layersId":"33","tileSize":256,"subdomains":"abc","uppercase":false,"identifyLayersId":"","crsCode":"","proj4":""}}}],"layerClass":null,"dataProviderClass":null}],"layerClass":null,"dataProviderClass":null},{"id":"0aeaf2e9-ddfa-4823-9cf3-1bc14bf2e00a","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u0410\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u0438\u0432\u043D\u044B\u0435 \u0433\u0440\u0430\u043D\u0438\u0446\u044B","description":null,"type":"group"},"layers":[{"id":"017e2377-2d3d-4520-968c-2aa0537b96f1","options":{"name":"\u041C\u0443\u043D\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430","displayName":"\u041C\u0443\u043D\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":true,"visibleIndex":9,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"atd_border_mo","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"","crsCode":"","proj4":""}}},{"id":"57d01ce6-0fcf-47c6-94ba-d18d6e697862","options":{"name":"\u0420\u0430\u0439\u043E\u043D\u044B","displayName":"\u0420\u0430\u0439\u043E\u043D\u044B","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":10,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":false,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"atd_border_district","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"","crsCode":"","proj4":""}}}],"layerClass":null,"dataProviderClass":null},{"id":"5acaca21-37bc-4177-b9dc-779b52e9fca6","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u0421\u0442\u0440\u043E\u0435\u043D\u0438\u044F","description":null,"type":"group"},"layers":[{"id":"509c12c8-cc00-44db-af8a-889707fcb7af","options":{"name":"\u0421\u043E\u0445\u0440\u0430\u043D\u044F\u0435\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F","displayName":"\u0421\u043E\u0445\u0440\u0430\u043D\u044F\u0435\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F","description":"building_save_view","type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":true,"visibleIndex":7,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"building_save_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"building_save_view","crsCode":"","proj4":""}}},{"id":"5f498a5d-3e0f-4ed2-b09c-01f1329e8fb7","options":{"name":"\u0421\u043D\u043E\u0441\u0438\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F","displayName":"\u0421\u043D\u043E\u0441\u0438\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":true,"visibleIndex":6,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"building_trash_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"building_trash_view","crsCode":"","proj4":""}}}],"layerClass":null,"dataProviderClass":null},{"id":"75a75472-4cc3-4fcf-a312-69e51462bd6a","options":{"name":"\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438","displayName":"\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":true,"visibleIndex":5,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"sokol_parcel","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"sokol_parcel","crsCode":"","proj4":""}}},{"id":"aa70b31c-1091-4f5e-a2c7-637be04ef138","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043E\u0445\u0440\u0430\u043D\u044B","description":null,"type":"group"},"layers":[{"id":"dd83edaa-8cca-45bf-842d-62a19526ff89","options":{"name":"\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438 \u043E\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F","displayName":"\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438 \u043E\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":8,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"tokn_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"tokn_view","crsCode":"","proj4":""}}},{"id":"989de4c5-416f-433d-88bf-8b0e5dce07aa","options":{"name":"\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F","displayName":"\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":4,"minZoom":3,"maxZoom":23,"selectable":true,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"okn_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"okn_view","crsCode":"","proj4":""}}}],"layerClass":null,"dataProviderClass":null},{"id":"7d971a91-22fa-4d54-b459-12090c3390ff","options":{"name":"\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432","displayName":"\u041C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u044C\u043D\u044B\u0435 \u0438\u043D\u0436\u0435\u043D\u0435\u0440\u043D\u044B\u0435 \u0441\u0435\u0442\u0438","description":null,"type":"group"},"layers":[{"id":"f81b0647-621d-4df8-86d2-1728a2f8e6a3","options":{"name":"\u0422\u0435\u043F\u043B\u043E\u0441\u043D\u0430\u0431\u0436\u0435\u043D\u0438\u0435","displayName":"\u0422\u0435\u043F\u043B\u043E\u0441\u043D\u0430\u0431\u0436\u0435\u043D\u0438\u0435","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":0,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"mis_teplo_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"mis_teplo_view","crsCode":"","proj4":""}}},{"id":"b63b361e-7f6e-478d-a02f-b50ee953a5cc","options":{"name":"\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043D\u0430\u043F\u043E\u0440\u043D\u0430\u044F","displayName":"\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043D\u0430\u043F\u043E\u0440\u043D\u0430\u044F","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":2,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"mis_sewer_napor_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"mis_sewer_napor_view","crsCode":"","proj4":""}}},{"id":"d8832b32-81bc-413a-b543-f85752270585","options":{"name":"\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043B\u0438\u0432\u043D\u0435\u0432\u0430\u044F","displayName":"\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043B\u0438\u0432\u043D\u0435\u0432\u0430\u044F","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":1,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"mis_sewer_livnev_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"mis_sewer_livnev_view","crsCode":"","proj4":""}}},{"id":"5ac365a9-dcbc-4902-b227-77d214655854","options":{"name":"\u041A\u043E\u043B\u043B\u0435\u043A\u0442\u043E\u0440 \u043E\u0431\u0449\u0435\u0441\u043F\u043B\u0430\u0432\u043D\u043E\u0439","displayName":"\u041A\u043E\u043B\u043B\u0435\u043A\u0442\u043E\u0440 \u043E\u0431\u0449\u0435\u0441\u043F\u043B\u0430\u0432\u043D\u043E\u0439","description":null,"type":"overlay"},"layers":[],"layerClass":{"constructor":"MapExpress.Layers.ImageOverlayLayer","options":{"visible":false,"visibleIndex":3,"minZoom":3,"maxZoom":23,"selectable":false,"queryable":true,"labelEnabled":false,"attribution":""},"styles":[],"labels":[]},"dataProviderClass":{"constructor":"MapExpress.Service.WmsProvider","args":["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],"options":{"service":"WMS","request":"GetMap","version":"1.3.0","layers":"mis_collector_view","styles":"","format":"image/png","dpi":96,"transparent":true,"tileSize":256,"subdomains":"abc","uppercase":false,"identifyFormat":"application/json","identifyLayersId":"mis_collector_view","crsCode":"","proj4":""}}}]}]}
+{
+	"id": "16",
+	"options": {
+		"name": "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u043D\u044B\u0435 \u043C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u0438",
+		"displayName": "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u043D\u044B\u0435 \u043C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u0438",
+		"description": "GeoServer\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u043D\u044B\u0435 \u043C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u0438",
+		"zoom": 15,
+		"center": [55.7502777778, 37.6363888889],
+		"zoomControl": false,
+		"minZoom": 0,
+		"maxZoom": 23
+	},
+	"layers": [{
+		"id": "OpenStreetMap",
+		"options": {
+			"name": "OpenStreetMap",
+			"displayName": "OpenStreetMap",
+			"description": "OpenStreetMap",
+			"type": "base"
+		},
+		"layers": [],
+		"layerClass": {
+			"constructor": "MapExpress.Layers.TileServiceLayer",
+			"options": {
+				"maxNativeZoom": null,
+				"tileSize": 256,
+				"errorTileUrl": "",
+				"continuousWorld": false,
+				"noWrap": false,
+				"zoomOffset": 0,
+				"zoomReverse": false,
+				"opacity": 1.0,
+				"updateInterval": 200,
+				"unloadInvisibleTiles": false,
+				"updateWhenIdle": false,
+				"reuseTiles": false,
+				"crossOrigin": false,
+				"visible": false,
+				"visibleIndex": 0,
+				"minZoom": 0,
+				"maxZoom": 23,
+				"selectable": false,
+				"queryable": false,
+				"labelEnabled": false,
+				"attribution": ""
+			},
+			"styles": [],
+			"labels": []
+		},
+		"dataProviderClass": {
+			"constructor": "MapExpress.Service.TileProvider",
+			"args": ["http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"],
+			"options": {
+				"useQuadkey": false,
+				"tileSize": 256,
+				"subdomains": "abc",
+				"uppercase": false,
+				"identifyFormat": "text/html",
+				"identifyLayersId": "",
+				"crsCode": "",
+				"proj4": ""
+			}
+		}
+	}, {
+		"id": "3b25287c-0c8a-4357-9833-0dbff7395e37",
+		"options": {
+			"name": "Bing Maps",
+			"displayName": "BingMaps.\u0421\u043F\u0443\u0442\u043D\u0438\u043A",
+			"description": null,
+			"type": "base"
+		},
+		"layers": [],
+		"layerClass": {
+			"constructor": "MapExpress.Layers.TileServiceLayer",
+			"options": {
+				"maxNativeZoom": null,
+				"tileSize": 256,
+				"errorTileUrl": "",
+				"continuousWorld": false,
+				"noWrap": false,
+				"zoomOffset": 0,
+				"zoomReverse": false,
+				"opacity": 0.7,
+				"updateInterval": 200,
+				"unloadInvisibleTiles": false,
+				"updateWhenIdle": false,
+				"reuseTiles": false,
+				"crossOrigin": false,
+				"visible": true,
+				"visibleIndex": 0,
+				"minZoom": 6,
+				"maxZoom": 23,
+				"selectable": false,
+				"queryable": false,
+				"labelEnabled": false,
+				"attribution": ""
+			},
+			"styles": [],
+			"labels": []
+		},
+		"dataProviderClass": {
+			"constructor": "MapExpress.Service.TileProvider",
+			"args": ["http://ecn.t{s}.tiles.virtualearth.net/tiles/a{q}.jpeg?g=0&dir=dir_n"],
+			"options": {
+				"useQuadkey": true,
+				"tileSize": 256,
+				"subdomains": "123",
+				"uppercase": false,
+				"identifyFormat": "text/html",
+				"identifyLayersId": "",
+				"crsCode": "",
+				"proj4": ""
+			}
+		}
+	}, {
+		"id": "ecf6f4ab-092c-4d7d-8273-2c462cae7432",
+		"options": {
+			"name": "Google.\u0421\u043F\u0443\u0442\u043D\u0438\u043A",
+			"displayName": "Google.\u0421\u043F\u0443\u0442\u043D\u0438\u043A",
+			"description": null,
+			"type": "base"
+		},
+		"layers": [],
+		"layerClass": {
+			"constructor": "MapExpress.Layers.TileServiceLayer",
+			"options": {
+				"maxNativeZoom": null,
+				"tileSize": 256,
+				"errorTileUrl": "",
+				"continuousWorld": false,
+				"noWrap": false,
+				"zoomOffset": 0,
+				"zoomReverse": false,
+				"opacity": 1.0,
+				"updateInterval": 200,
+				"unloadInvisibleTiles": false,
+				"updateWhenIdle": false,
+				"reuseTiles": false,
+				"crossOrigin": false,
+				"visible": false,
+				"visibleIndex": 0,
+				"minZoom": 3,
+				"maxZoom": 23,
+				"selectable": false,
+				"queryable": false,
+				"labelEnabled": false,
+				"attribution": ""
+			},
+			"styles": [],
+			"labels": []
+		},
+		"dataProviderClass": {
+			"constructor": "MapExpress.Service.TileProvider",
+			"args": ["https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"],
+			"options": {
+				"useQuadkey": false,
+				"tileSize": 256,
+				"subdomains": "123",
+				"uppercase": false,
+				"identifyFormat": "text/html",
+				"identifyLayersId": "",
+				"crsCode": "",
+				"proj4": ""
+			}
+		}
+	}, {
+		"id": "552f2401-6a34-44c5-8d27-06db5feb9839",
+		"options": {
+			"name": "Google.Maps",
+			"displayName": "Google.Maps",
+			"description": null,
+			"type": "base"
+		},
+		"layers": [],
+		"layerClass": {
+			"constructor": "MapExpress.Layers.TileServiceLayer",
+			"options": {
+				"maxNativeZoom": null,
+				"tileSize": 256,
+				"errorTileUrl": "",
+				"continuousWorld": false,
+				"noWrap": false,
+				"zoomOffset": 0,
+				"zoomReverse": false,
+				"opacity": 1.0,
+				"updateInterval": 200,
+				"unloadInvisibleTiles": false,
+				"updateWhenIdle": false,
+				"reuseTiles": false,
+				"crossOrigin": false,
+				"visible": false,
+				"visibleIndex": 0,
+				"minZoom": 3,
+				"maxZoom": 23,
+				"selectable": false,
+				"queryable": false,
+				"labelEnabled": false,
+				"attribution": ""
+			},
+			"styles": [],
+			"labels": []
+		},
+		"dataProviderClass": {
+			"constructor": "MapExpress.Service.TileProvider",
+			"args": ["http://mts{s}.google.com/vt/hl=ru&x={x}&y={y}&z={z}"],
+			"options": {
+				"useQuadkey": false,
+				"tileSize": 256,
+				"subdomains": "123",
+				"uppercase": false,
+				"identifyFormat": "text/html",
+				"identifyLayersId": "",
+				"crsCode": "",
+				"proj4": ""
+			}
+		}
+	},  
+ {
+		 
+		"id": "53b19739-921f-42b5-80ba-a21770f8c241",
+		"options": {
+			"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+			"displayName": "\u041F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u043A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u0430\u044F \u043A\u0430\u0440\u0442\u0430",
+			"description": null,
+			"type": "group"
+		},
+		"layers": [{
+			"id": "23adc3f6-4451-4434-aac0-3de0698a5a25",
+			"options": {
+				"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+				"displayName": "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u043E\u0435 \u0434\u0435\u043B\u0435\u043D\u0438\u0435",
+				"description": null,
+				"type": "group"
+			},
+			"layers": [{
+				"id": "b5c68b80-5d21-48d8-8c4d-f5d8ddca7f7a",
+				"options": {
+					"name": "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430",
+					"displayName": "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 42,
+						"minZoom": 5,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": true,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "1,2,3,4,5,6,7",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "bfd55a5e-7d31-45b5-80e2-8bee9cc7eead",
+				"options": {
+					"name": "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u0440\u0430\u0439\u043E\u043D\u044B",
+					"displayName": "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u0440\u0430\u0439\u043E\u043D\u044B",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 41,
+						"minZoom": 10,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": true,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "9,10,11,12,13,14,15,16",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "07092ac2-be1b-47f7-ba91-404d8c7f1c16",
+				"options": {
+					"name": "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B",
+					"displayName": "\u041A\u0430\u0434\u0430\u0441\u0442\u0440\u043E\u0432\u044B\u0435 \u043A\u0432\u0430\u0440\u0442\u0430\u043B\u044B",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 43,
+						"minZoom": 11,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": true,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "18,19,20",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}],
+			"layerClass": null,
+			"dataProviderClass": null
+		}, {
+			"id": "b5d6630e-989c-4083-bcb6-5d1b1b835bcb",
+			"options": {
+				"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+				"displayName": "\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043D\u0435\u0434\u0432\u0438\u0436\u0438\u043C\u043E\u0441\u0442\u0438",
+				"description": null,
+				"type": "group"
+			},
+			"layers": [{
+				"id": "fe7e98bd-481c-4bdb-a574-c2dc2a4ce769",
+				"options": {
+					"name": "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
+					"displayName": "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": true,
+						"reuseTiles": true,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 21,
+						"minZoom": 13,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": true,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "23,24",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "1",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "e45e1f57-20c7-498a-b9c9-c9ba281135a3",
+				"options": {
+					"name": "\u0427\u0430\u0441\u0442\u0438 \u0437\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0445 \u0443\u0447\u0430\u0441\u0442\u043A\u043E\u0432",
+					"displayName": "\u0427\u0430\u0441\u0442\u0438 \u0437\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0445 \u0443\u0447\u0430\u0441\u0442\u043A\u043E\u0432",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 29,
+						"minZoom": 15,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "22",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "8e920052-b234-4082-a625-1c6b2794ce9a",
+				"options": {
+					"name": "\u0417\u0423 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043E\u0442 \u043F\u0440\u0430\u0432 \u0442\u0440\u0435\u0442\u044C\u0438\u0445 \u043B\u0438\u0446",
+					"displayName": "\u0417\u0423 \u0441\u0432\u043E\u0431\u043E\u0434\u043D\u044B\u0435 \u043E\u0442 \u043F\u0440\u0430\u0432 \u0442\u0440\u0435\u0442\u044C\u0438\u0445 \u043B\u0438\u0446",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 28,
+						"minZoom": 15,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "36",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "698cdab4-306b-44c5-bc84-05b1a376e864",
+				"options": {
+					"name": "\u0417\u0423 \u0440\u0435\u0448\u0435\u043D\u0438\u0435 \u043E \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0438 \u0442\u043E\u0440\u0433\u043E\u0432",
+					"displayName": "\u0417\u0423 \u0440\u0435\u0448\u0435\u043D\u0438\u0435 \u043E \u043F\u0440\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0438 \u0442\u043E\u0440\u0433\u043E\u0432",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 27,
+						"minZoom": 15,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "37",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "3d40fc51-42d0-4040-96fb-0ca16c1cfb57",
+				"options": {
+					"name": "\u041E\u041A\u0421",
+					"displayName": "\u041E\u041A\u0421",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 23,
+						"minZoom": 13,
+						"maxZoom": 23,
+						"selectable": true,
+						"queryable": true,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/CadastreSelected/MapServer",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "26,27,28,29,30,31",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "0",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "cc16aecb-0e13-4ee3-8d8d-96404d6ea21b",
+				"options": {
+					"name": "\u0427\u0430\u0441\u0442\u0438 \u041E\u041A\u0421",
+					"displayName": "\u0427\u0430\u0441\u0442\u0438 \u041E\u041A\u0421",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 26,
+						"minZoom": 15,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/Cadastre/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png",
+						"transparent": true,
+						"layersId": "26,27,28",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}],
+			"layerClass": null,
+			"dataProviderClass": null
+		}, {
+			"id": "b1623da6-d2ea-4ed3-8998-888c7ca2671b",
+			"options": {
+				"name": "\u0417\u041E\u0423\u0418\u0422",
+				"displayName": "\u0417\u041E\u0423\u0418\u0422",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.TileServiceLayer",
+				"options": {
+					"maxNativeZoom": null,
+					"tileSize": 1024,
+					"errorTileUrl": "",
+					"continuousWorld": false,
+					"noWrap": false,
+					"zoomOffset": 0,
+					"zoomReverse": false,
+					"opacity": 1.0,
+					"updateInterval": 200,
+					"unloadInvisibleTiles": false,
+					"updateWhenIdle": false,
+					"reuseTiles": false,
+					"crossOrigin": false,
+					"visible": false,
+					"visibleIndex": 44,
+					"minZoom": 13,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.MapServiceAgsProvider",
+				"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer"],
+				"options": {
+					"identifyFormat": "json",
+					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/ZOUIT/MapServer",
+					"identifyTolerance": 3,
+					"dpi": 96,
+					"format": "png32",
+					"transparent": true,
+					"layersId": "3,4,5,6",
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyLayersId": "3,4,5,6",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "ec2647ef-f43c-4a6d-83bc-74ecc4963b7e",
+			"options": {
+				"name": "\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0430\u043B\u044C\u043D\u044B\u0435 \u0437\u043E\u043D\u044B",
+				"displayName": "\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0430\u043B\u044C\u043D\u044B\u0435 \u0437\u043E\u043D\u044B",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.TileServiceLayer",
+				"options": {
+					"maxNativeZoom": null,
+					"tileSize": 1024,
+					"errorTileUrl": "",
+					"continuousWorld": false,
+					"noWrap": false,
+					"zoomOffset": 0,
+					"zoomReverse": false,
+					"opacity": 1.0,
+					"updateInterval": 200,
+					"unloadInvisibleTiles": false,
+					"updateWhenIdle": false,
+					"reuseTiles": false,
+					"crossOrigin": false,
+					"visible": false,
+					"visibleIndex": 31,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": true,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.MapServiceAgsProvider",
+				"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer"],
+				"options": {
+					"identifyFormat": "json",
+					"identifyUrl": "http://maps.rosreestr.ru/arcgis/rest/services/Cadastre/TERR/MapServer",
+					"identifyTolerance": 3,
+					"dpi": 96,
+					"format": "png32",
+					"transparent": true,
+					"layersId": "1",
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyLayersId": "0",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "9765415a-eb86-4347-944c-8a861f19bc8d",
+			"options": {
+				"name": "\u041E\u0441\u043E\u0431\u044B\u0435 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0437\u043E\u043D\u044B",
+				"displayName": "\u041E\u0441\u043E\u0431\u044B\u0435 \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0437\u043E\u043D\u044B",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.TileServiceLayer",
+				"options": {
+					"maxNativeZoom": null,
+					"tileSize": 1024,
+					"errorTileUrl": "",
+					"continuousWorld": false,
+					"noWrap": false,
+					"zoomOffset": 0,
+					"zoomReverse": false,
+					"opacity": 1.0,
+					"updateInterval": 200,
+					"unloadInvisibleTiles": false,
+					"updateWhenIdle": false,
+					"reuseTiles": false,
+					"crossOrigin": false,
+					"visible": false,
+					"visibleIndex": 30,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": false,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.MapServiceAgsProvider",
+				"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer"],
+				"options": {
+					"identifyFormat": "json",
+					"identifyUrl": "",
+					"identifyTolerance": 3,
+					"dpi": 96,
+					"format": "png32",
+					"transparent": true,
+					"layersId": "2",
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyLayersId": "",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "96e57a41-2460-4691-8ac9-18f372ac08ec",
+			"options": {
+				"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+				"displayName": "\u0414\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E",
+				"description": null,
+				"type": "group"
+			},
+			"layers": [{
+				"id": "654bb50b-986b-4d37-8ebd-190729ec4ab0",
+				"options": {
+					"name": "\u041F\u0443\u043D\u043A\u0442\u044B \u0433\u0435\u043E\u0434\u0435\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0439 \u0441\u0435\u0442\u0438",
+					"displayName": "\u041F\u0443\u043D\u043A\u0442\u044B \u0433\u0435\u043E\u0434\u0435\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0439 \u0441\u0435\u0442\u0438",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 32,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "1,2,3,4,5,6",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "3a902f4e-7e92-4c58-a6d0-0f1e6b9628c6",
+				"options": {
+					"name": "\u041F\u0443\u043D\u043A\u0442\u044B \u043E\u043F\u043E\u0440\u043D\u043E-\u043C\u0435\u0436\u0435\u0432\u043E\u0439 \u0441\u0435\u0442\u0438",
+					"displayName": "\u041F\u0443\u043D\u043A\u0442\u044B \u043E\u043F\u043E\u0440\u043D\u043E-\u043C\u0435\u0436\u0435\u0432\u043E\u0439 \u0441\u0435\u0442\u0438",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 33,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "8,9,10,11,12,13",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "5042261b-50ea-449a-8e6d-084505890289",
+				"options": {
+					"name": "\u041A\u0440\u0430\u0441\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438",
+					"displayName": "\u041A\u0440\u0430\u0441\u043D\u044B\u0435 \u043B\u0438\u043D\u0438\u0438",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 38,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "16",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "53e4dbe9-224c-4092-bc5a-9716832c0d70",
+				"options": {
+					"name": "\u041B\u0435\u0441\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u0438 \u043B\u0435\u0441\u043E\u043F\u0430\u0440\u043A\u0438",
+					"displayName": "\u041B\u0435\u0441\u043D\u0438\u0447\u0435\u0441\u0442\u0432\u0430 \u0438 \u043B\u0435\u0441\u043E\u043F\u0430\u0440\u043A\u0438",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 39,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "18",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "a193cf44-3a81-445a-a6d3-9194857c978b",
+				"options": {
+					"name": "\u0421\u0445\u0435\u043C\u044B \u0440\u0430\u0441\u043F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0417\u0423",
+					"displayName": "\u0421\u0445\u0435\u043C\u044B \u0440\u0430\u0441\u043F\u043E\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0417\u0423",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 40,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ADDON/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "17",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "1e7e7f6e-c671-4865-b249-db0ee2137f2a",
+				"options": {
+					"name": "\u0417\u043E\u043D\u044B \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0445 \u0440\u0430\u0441\u0441\u0442\u043E\u044F\u043D\u0438\u0439",
+					"displayName": "\u0417\u043E\u043D\u044B \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0445 \u0440\u0430\u0441\u0441\u0442\u043E\u044F\u043D\u0438\u0439",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 22,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/ZONES/MapServer",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "7",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "7",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}],
+			"layerClass": null,
+			"dataProviderClass": null
+		}, {
+			"id": "6ae6d129-33d7-4a58-ac00-d74b74b8eb44",
+			"options": {
+				"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+				"displayName": "\u0413\u0440\u0430\u043D\u0438\u0446\u044B",
+				"description": null,
+				"type": "group"
+			},
+			"layers": [{
+				"id": "709747df-bb9a-4301-a3df-16ea820db902",
+				"options": {
+					"name": "\u0421\u0443\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u0444\u0435\u0434\u0435\u0440\u0430\u0446\u0438\u0438",
+					"displayName": "\u0421\u0443\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u0444\u0435\u0434\u0435\u0440\u0430\u0446\u0438\u0438",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 37,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "11,12,13,14,15,16,17,18",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "a1858672-1611-4525-ab01-fe3779173598",
+				"options": {
+					"name": "\u041C\u0443\u043D\u0438\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0445 \u043E\u0431\u0440\u0430\u0437\u043E\u0432\u0430\u043D\u0438\u0439",
+					"displayName": "\u041C\u0443\u043D\u0438\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0445 \u043E\u0431\u0440\u0430\u0437\u043E\u0432\u0430\u043D\u0438\u0439",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 34,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "20,21,22,23,24,25,26",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "550adb45-0d4b-4119-95fc-10351ce993ac",
+				"options": {
+					"name": "\u0421\u0435\u043B\u044C\u0441\u043A\u0438\u0445 \u043F\u043E\u0441\u0435\u043B\u0435\u043D\u0438\u0439",
+					"displayName": "\u0421\u0435\u043B\u044C\u0441\u043A\u0438\u0445 \u043F\u043E\u0441\u0435\u043B\u0435\u043D\u0438\u0439",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 35,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "28,29,30,31",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}, {
+				"id": "6d882b8d-509b-429f-b57f-7c24ecc75d89",
+				"options": {
+					"name": "\u041D\u0430\u0441\u0435\u043B\u0435\u043D\u043D\u044B\u0445 \u043F\u0443\u043D\u043A\u0442\u043E\u0432",
+					"displayName": "\u041D\u0430\u0441\u0435\u043B\u0435\u043D\u043D\u044B\u0445 \u043F\u0443\u043D\u043A\u0442\u043E\u0432",
+					"description": null,
+					"type": "overlay"
+				},
+				"layers": [],
+				"layerClass": {
+					"constructor": "MapExpress.Layers.TileServiceLayer",
+					"options": {
+						"maxNativeZoom": null,
+						"tileSize": 1024,
+						"errorTileUrl": "",
+						"continuousWorld": false,
+						"noWrap": false,
+						"zoomOffset": 0,
+						"zoomReverse": false,
+						"opacity": 1.0,
+						"updateInterval": 200,
+						"unloadInvisibleTiles": false,
+						"updateWhenIdle": false,
+						"reuseTiles": false,
+						"crossOrigin": false,
+						"visible": false,
+						"visibleIndex": 36,
+						"minZoom": 3,
+						"maxZoom": 23,
+						"selectable": false,
+						"queryable": false,
+						"labelEnabled": false,
+						"attribution": ""
+					},
+					"styles": [],
+					"labels": []
+				},
+				"dataProviderClass": {
+					"constructor": "MapExpress.Service.MapServiceAgsProvider",
+					"args": ["http://pkk5.rosreestr.ru/arcgis/rest/services/Cadastre/BordersGKN/MapServer"],
+					"options": {
+						"identifyFormat": "json",
+						"identifyUrl": "",
+						"identifyTolerance": 3,
+						"dpi": 96,
+						"format": "png32",
+						"transparent": true,
+						"layersId": "33",
+						"tileSize": 256,
+						"subdomains": "abc",
+						"uppercase": false,
+						"identifyLayersId": "",
+						"crsCode": "",
+						"proj4": ""
+					}
+				}
+			}],
+			"layerClass": null,
+			"dataProviderClass": null
+		}],
+		"layerClass": null,
+		"dataProviderClass": null
+	
+	},
+	{
+		"id": "0aeaf2e9-ddfa-4823-9cf3-1bc14bf2e00a",
+		"options": {
+			"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+			"displayName": "\u0410\u0434\u043C\u0438\u043D\u0438\u0441\u0442\u0440\u0430\u0442\u0438\u0432\u043D\u044B\u0435 \u0433\u0440\u0430\u043D\u0438\u0446\u044B",
+			"description": null,
+			"type": "group"
+		},
+		"layers": [{
+			"id": "017e2377-2d3d-4520-968c-2aa0537b96f1",
+			"options": {
+				"name": "\u041C\u0443\u043D\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430",
+				"displayName": "\u041C\u0443\u043D\u0446\u0438\u043F\u0430\u043B\u044C\u043D\u044B\u0435 \u043E\u043A\u0440\u0443\u0433\u0430",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": true,
+					"visibleIndex": 14,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": false,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "atd_border_mo",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "57d01ce6-0fcf-47c6-94ba-d18d6e697862",
+			"options": {
+				"name": "\u0420\u0430\u0439\u043E\u043D\u044B",
+				"displayName": "\u0420\u0430\u0439\u043E\u043D\u044B",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": false,
+					"visibleIndex": 15,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": false,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "atd_border_district",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}],
+		"layerClass": null,
+		"dataProviderClass": null
+	}, {
+		"id": "5acaca21-37bc-4177-b9dc-779b52e9fca6",
+		"options": {
+			"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+			"displayName": "\u0421\u0442\u0440\u043E\u0435\u043D\u0438\u044F",
+			"description": null,
+			"type": "group"
+		},
+		"layers": [{
+			"id": "509c12c8-cc00-44db-af8a-889707fcb7af",
+			"options": {
+				"name": "\u0421\u043E\u0445\u0440\u0430\u043D\u044F\u0435\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F",
+				"displayName": "\u0421\u043E\u0445\u0440\u0430\u043D\u044F\u0435\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F",
+				"description": "building_save_view",
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": true,
+					"visibleIndex": 12,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "building_save_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "building_save_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "5f498a5d-3e0f-4ed2-b09c-01f1329e8fb7",
+			"options": {
+				"name": "\u0421\u043D\u043E\u0441\u0438\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F",
+				"displayName": "\u0421\u043D\u043E\u0441\u0438\u043C\u044B\u0435 \u0441\u0442\u0440\u043E\u0435\u043D\u0438\u044F",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": true,
+					"visibleIndex": 11,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "building_trash_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "building_trash_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}],
+		"layerClass": null,
+		"dataProviderClass": null
+	}, {
+		"id": "75a75472-4cc3-4fcf-a312-69e51462bd6a",
+		"options": {
+			"name": "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
+			"displayName": "\u0417\u0435\u043C\u0435\u043B\u044C\u043D\u044B\u0435 \u0443\u0447\u0430\u0441\u0442\u043A\u0438",
+			"description": null,
+			"type": "overlay"
+		},
+		"layers": [],
+		"layerClass": {
+			"constructor": "MapExpress.Layers.ImageOverlayLayer",
+			"options": {
+				"visible": true,
+				"visibleIndex": 10,
+				"minZoom": 3,
+				"maxZoom": 23,
+				"selectable": false,
+				"queryable": true,
+				"labelEnabled": false,
+				"attribution": ""
+			},
+			"styles": [],
+			"labels": []
+		},
+		"dataProviderClass": {
+			"constructor": "MapExpress.Service.WmsProvider",
+			"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+			"options": {
+				"service": "WMS",
+				"request": "GetMap",
+				"version": "1.3.0",
+				"layers": "sokol_parcel",
+				"styles": "",
+				"format": "image/png",
+				"dpi": 96,
+				"transparent": true,
+				"tileSize": 256,
+				"subdomains": "abc",
+				"uppercase": false,
+				"identifyFormat": "application/json",
+				"identifyLayersId": "sokol_parcel",
+				"crsCode": "",
+				"proj4": ""
+			}
+		}
+	}, {
+		"id": "aa70b31c-1091-4f5e-a2c7-637be04ef138",
+		"options": {
+			"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+			"displayName": "\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043E\u0445\u0440\u0430\u043D\u044B",
+			"description": null,
+			"type": "group"
+		},
+		"layers": [{
+			"id": "dd83edaa-8cca-45bf-842d-62a19526ff89",
+			"options": {
+				"name": "\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438 \u043E\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F",
+				"displayName": "\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u0438 \u043E\u0431\u044A\u0435\u043A\u0442\u043E\u0432 \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": false,
+					"visibleIndex": 13,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "tokn_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "tokn_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "989de4c5-416f-433d-88bf-8b0e5dce07aa",
+			"options": {
+				"name": "\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F",
+				"displayName": "\u041E\u0431\u044A\u0435\u043A\u0442\u044B \u043A\u0443\u043B\u044C\u0442\u0443\u0440\u043D\u043E\u0433\u043E \u043D\u0430\u0441\u043B\u0435\u0434\u0438\u044F",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": false,
+					"visibleIndex": 9,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": true,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "okn_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "okn_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}],
+		"layerClass": null,
+		"dataProviderClass": null
+	}, {
+		"id": "7d971a91-22fa-4d54-b459-12090c3390ff",
+		"options": {
+			"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+			"displayName": "\u041C\u0430\u0433\u0438\u0441\u0442\u0440\u0430\u043B\u044C\u043D\u044B\u0435 \u0438\u043D\u0436\u0435\u043D\u0435\u0440\u043D\u044B\u0435 \u0441\u0435\u0442\u0438",
+			"description": null,
+			"type": "group"
+		},
+		"layers": [{
+			"id": "f81b0647-621d-4df8-86d2-1728a2f8e6a3",
+			"options": {
+				"name": "\u0422\u0435\u043F\u043B\u043E\u0441\u043D\u0430\u0431\u0436\u0435\u043D\u0438\u0435",
+				"displayName": "\u0422\u0435\u043F\u043B\u043E\u0441\u043D\u0430\u0431\u0436\u0435\u043D\u0438\u0435",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": false,
+					"visibleIndex": 1,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "mis_teplo_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "mis_teplo_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "b63b361e-7f6e-478d-a02f-b50ee953a5cc",
+			"options": {
+				"name": "\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043D\u0430\u043F\u043E\u0440\u043D\u0430\u044F",
+				"displayName": "\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043D\u0430\u043F\u043E\u0440\u043D\u0430\u044F",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": false,
+					"visibleIndex": 7,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "mis_sewer_napor_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "mis_sewer_napor_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "d8832b32-81bc-413a-b543-f85752270585",
+			"options": {
+				"name": "\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043B\u0438\u0432\u043D\u0435\u0432\u0430\u044F",
+				"displayName": "\u041A\u0430\u043D\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044F \u043B\u0438\u0432\u043D\u0435\u0432\u0430\u044F",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": false,
+					"visibleIndex": 6,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "mis_sewer_livnev_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "mis_sewer_livnev_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "5ac365a9-dcbc-4902-b227-77d214655854",
+			"options": {
+				"name": "\u041A\u043E\u043B\u043B\u0435\u043A\u0442\u043E\u0440 \u043E\u0431\u0449\u0435\u0441\u043F\u043B\u0430\u0432\u043D\u043E\u0439",
+				"displayName": "\u041A\u043E\u043B\u043B\u0435\u043A\u0442\u043E\u0440 \u043E\u0431\u0449\u0435\u0441\u043F\u043B\u0430\u0432\u043D\u043E\u0439",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": false,
+					"visibleIndex": 8,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": false,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "mis_collector_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "mis_collector_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}],
+		"layerClass": null,
+		"dataProviderClass": null
+	}, {
+		"id": "c6fbecf0-a9a3-401b-84d6-afa1cbbc89ba",
+		"options": {
+			"name": "\u041D\u043E\u0432\u0430\u044F \u0433\u0440\u0443\u043F\u043F\u0430 \u0441\u043B\u043E\u0435\u0432",
+			"displayName": "\u0418\u043D\u0444\u0440\u0430\u0441\u0442\u0440\u0443\u043A\u0442\u0443\u0440\u043D\u043E-\u0441\u0435\u043B\u0438\u0442\u0435\u0431\u043D\u043E\u0435 \u043E\u043A\u0440\u0443\u0436\u0435\u043D\u0438\u0435",
+			"description": null,
+			"type": "group"
+		},
+		"layers": [{
+			"id": "342c5c79-6421-4fa2-8933-e5067258cffa",
+			"options": {
+				"name": "\u041E\u0444\u0438\u0441\u044B",
+				"displayName": "\u041E\u0444\u0438\u0441\u044B",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": true,
+					"visibleIndex": 2,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": true,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "selebit_office_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "selebit_office_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "f2872a88-1e9f-43bc-9d8d-908516fa3880",
+			"options": {
+				"name": "\u0416\u0438\u043B\u044C\u0435",
+				"displayName": "\u0416\u0438\u043B\u044C\u0435",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": true,
+					"visibleIndex": 0,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": true,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "selebit_zhil_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "selebit_zhil_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "6bbd3b63-aeab-4c33-ac11-87aa25a3f027",
+			"options": {
+				"name": "\u0422\u043E\u0440\u0433\u043E\u0432\u044B\u0435 \u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0441\u044B",
+				"displayName": "\u0422\u043E\u0440\u0433\u043E\u0432\u044B\u0435 \u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0441\u044B",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": true,
+					"visibleIndex": 5,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": true,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "selebit_tk_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "selebit_tk_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}, {
+			"id": "dd7975e0-661f-49c0-b5b1-7ffbaf10f39d",
+			"options": {
+				"name": "\u041E\u0442\u0435\u043B\u0438",
+				"displayName": "\u041E\u0442\u0435\u043B\u0438",
+				"description": null,
+				"type": "overlay"
+			},
+			"layers": [],
+			"layerClass": {
+				"constructor": "MapExpress.Layers.ImageOverlayLayer",
+				"options": {
+					"visible": true,
+					"visibleIndex": 4,
+					"minZoom": 3,
+					"maxZoom": 23,
+					"selectable": true,
+					"queryable": true,
+					"labelEnabled": false,
+					"attribution": ""
+				},
+				"styles": [],
+				"labels": []
+			},
+			"dataProviderClass": {
+				"constructor": "MapExpress.Service.WmsProvider",
+				"args": ["http://realty.npobaltros.ru:8080/geoserver/sokolov/wms"],
+				"options": {
+					"service": "WMS",
+					"request": "GetMap",
+					"version": "1.3.0",
+					"layers": "selebit_otel_view",
+					"styles": "",
+					"format": "image/png",
+					"dpi": 96,
+					"transparent": true,
+					"tileSize": 256,
+					"subdomains": "abc",
+					"uppercase": false,
+					"identifyFormat": "application/json",
+					"identifyLayersId": "selebit_otel_view",
+					"crsCode": "",
+					"proj4": ""
+				}
+			}
+		}],
+		"layerClass": null,
+		"dataProviderClass": null
+	}]
+}
