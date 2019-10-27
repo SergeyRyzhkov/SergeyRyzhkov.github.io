@@ -1,306 +1,313 @@
 ﻿<script>
-$.views.helpers({
-    layerInfoTemplateIdAfterRender: function(object, templateUrl) {
-        function _modifyTabContent(tabulId, data, templId, notJSON, identifiedResultObject) {
+  $.views.helpers({
+    layerInfoTemplateIdAfterRender: function (object, templateUrl) {
+      function _modifyTabContent(tabulId, data, templId, notJSON, identifiedResultObject) {
 
-            function _sendCallback(obj, divSelector, content) {
-                if (obj && obj.afterRenderFeatureInfoContentCallback && typeof(obj.afterRenderFeatureInfoContentCallback) === "function") {
-                    var event = {};
-                    event.identifiedResultObject = obj;
-                    event.identifiedResultData = content;
-                    event.identifiedResultDivSelector = divSelector;
-                    obj.afterRenderFeatureInfoContentCallback(event);
-                }
-            }
-
-            var currntDiv = $('#data_content_' + tabulId);
-            //для готового контента
-            if (notJSON === true) {
-                $(currntDiv.children()).html(data);
-                _sendCallback(identifiedResultObject, currntDiv, data);
-                return;
-            }
-
-            if (templId === 'layerInfo-NullObject-TemplateId') {
-                var selected = false;
-                if ($('#tab_layernameid_' + tabulId).hasClass('tab_selected')) {
-                    selected = true;
-                }
-                $('#tab_layernameid_' + tabulId).remove();
-                $('#data_content_' + tabulId).remove();
-
-                if (selected === true) {
-                    if ($("li[id*='tab_layernameid_']").length > 0) {
-                        $($("li[id*='tab_layernameid_']")[0]).addClass('tab_selected');
-                        $($("div[id*='data_content_']")[0]).addClass('active');
-                    } else {
-                        $('.scroll_tab_inner').parent().parent().html('Объекты не найдены!')
-                    }
-                }
-                selected = false;
-            }
-
-            //для рендера даты
-            var tempDiv = document.createElement('div');
-            document.body.appendChild(tempDiv);
-
-            //удалять всегда!
-            //в инф.инструменте удалять, здесь ID ставить
-
-            var templateFullPath = window.MAPEXPRESS_ROOT_PATH ? window.MAPEXPRESS_ROOT_PATH + templateUrl : templateUrl;
-
-            $(tempDiv).load(templateFullPath, function() {
-                var template = $.templates("#" + templId);
-                if (template) {
-                    if (data.multi) {
-                        try {
-                            for (var i = 0; i < data.multi.length; i++) {
-                                _render(i, data);
-                            }
-                        } catch (error) {
-                            console.log(error);
-                        } finally {
-                            $(tempDiv).remove();
-                        }
-                    } else {
-                        try {
-                            var ddata = {};
-                            ddata.multi = [data];
-                            _render(0, ddata);
-                        } catch (error) {
-                            console.log(error);
-                        } finally {
-                            $(tempDiv).remove();
-                        }
-                    }
-                } else {
-                    $(tempDiv).remove();
-                }
-
-                function _render(iterNumber, allData) {
-                    var conn = allData.multi[iterNumber];
-                    if (typeof(allData.multi[iterNumber]) !== "string") {
-                        conn = template.render(allData.multi[iterNumber])
-                    }
-                    if (iterNumber === 0) {
-                        var currntDiv = $('#data_content_' + tabulId);
-                        currntDiv.html(conn);
-                        _sendCallback(identifiedResultObject, currntDiv, conn);
-                    } else {
-                        $('#tab_layernameid_' + tabulId).clone(true)
-                            .insertAfter($('#tab_layernameid_' + tabulId))
-                            .removeClass('tab_selected')
-                            .attr('id', '#tab_layernameid_' + tabulId + '_cloned_' + iterNumber);
-
-                        var currntDiv1 = $('#data_content_' + tabulId).clone(true)
-                            .insertAfter($('#data_content_' + tabulId))
-                            .removeClass('active')
-                            .attr('id', '#tab_layernameid_' + tabulId + '_cloned_' + iterNumber);
-                        currntDiv1.html(conn);
-                        _sendCallback(identifiedResultObject, currntDiv1, conn);
-                    }
-                }
-            });
+        function _sendCallback(obj, divSelector, content) {
+          if (obj && obj.afterRenderFeatureInfoContentCallback && typeof (obj
+              .afterRenderFeatureInfoContentCallback) === "function") {
+            var event = {};
+            event.identifiedResultObject = obj;
+            event.identifiedResultData = content;
+            event.identifiedResultDivSelector = divSelector;
+            obj.afterRenderFeatureInfoContentCallback(event);
+          }
         }
 
-        function _renderData(response, divId, identifiedResultObject) {
-
-            switch (typeof(response)) {
-                case 'object':
-                    var arrayClean = false;
-					var obj = {};
-                    obj.multi = [];
-					if (L.Util.isArray(response) && response.length > 0) {
-						if (response[0].features) {
-							response.features = response[0].features;
-							arrayClean = true;
-						}
-					}
-                    
-                    if (!arrayClean && L.Util.isArray(response) && response.length > 0) {
-                        for (var k = 0; k < response.length; k++) {
-						   if (response[k] !== undefined){
-							  obj.multi.push(response[k]);
-						   }						   
-                        }
-            			_modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
-						
-                    } else if (L.Util.isArray(response) && response.length === 0) {
-                        _modifyTabContent(divId, {}, 'layerInfo-NullObject-TemplateId', false, identifiedResultObject);
-                    } else if (response.features) {
-                        if (response.features.length === 0) {
-                            _modifyTabContent(divId, {}, 'layerInfo-NullObject-TemplateId', false, identifiedResultObject);
-                        } else if (response.features.length === 1) {
-                            obj = response.features[0];
-                            obj.multi = false;
-                            _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
-                        } else if (response.features.length > 0) {
-                            for (var l = 0; l < response.features.length; l++) {
-                                obj.multi.push(response.features[l]);
-                            }
-                            _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
-                        }
-                    } else if ((response instanceof Array) === true && response.length > 0 && !arrayClean) {
-                        for (var m = 0; m < response.length; m++) {
-                            obj.multi.push(response[m]);
-                        }
-                        _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
-                    } else {
-                        _modifyTabContent(divId, response, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
-                    }
-                    break;
-                case 'string': //готовый контент
-                    _modifyTabContent(divId, response, '', false, identifiedResultObject);
-                    break;
-                case 'undefined':
-                case null:
-                    _modifyTabContent(divId, {}, 'layerInfo-NullObject-TemplateId', false, identifiedResultObject);
-                    break;
-            }
+        var currntDiv = $('#data_content_' + tabulId);
+        //для готового контента
+        if (notJSON === true) {
+          $(currntDiv.children()).html(data);
+          _sendCallback(identifiedResultObject, currntDiv, data);
+          return;
         }
 
-        //проверка на наличие сторонненого template
-        function _checkTemplatesAndRender(data, id, template, identifiedResultObject) {
-            if (data === undefined) {
-                _modifyTabContent(id, {}, 'layerInfo-NullObject-TemplateId');
-                return;
-            }
-            if (template !== null) {
-                var currntDiv = $('#data_content_' + id).children();
-                if (!data || (data && !data.length) || (typeof data === 'object' && !Object.getOwnPropertyNames(data).length)) {
-                    var selected = false;
-                    if ($('#tab_layernameid_' + id).hasClass('tab_selected')) {
-                        selected = true;
-                    }
-                    $('#tab_layernameid_' + id).remove();
-                    $('#data_content_' + id).remove();
+        if (templId === 'layerInfo-NullObject-TemplateId') {
+          var selected = false;
+          if ($('#tab_layernameid_' + tabulId).hasClass('tab_selected')) {
+            selected = true;
+          }
+          $('#tab_layernameid_' + tabulId).remove();
+          $('#data_content_' + tabulId).remove();
 
-                    if (selected === true) {
-                        if ($("li[id*='tab_layernameid_']").length > 0) {
-                            $($("li[id*='tab_layernameid_']")[0]).addClass('tab_selected');
-                            $($("div[id*='data_content_']")[0]).addClass('active');
-                        } else {
-                            $('.scroll_tab_inner').parent().parent().html('Объекты не найдены!')
-                        }
-                    }
-                } else {
-                    MapExpress.Controls.MapControlUtils.generateTemplate(identifiedResultObject.templateUrl, identifiedResultObject.templateId, data, afterGeneratecallback);
-
-                    function afterGeneratecallback(content) {
-                        $(currntDiv).html(content);
-                    }
-                }
+          if (selected === true) {
+            if ($("li[id*='tab_layernameid_']").length > 0) {
+              $($("li[id*='tab_layernameid_']")[0]).addClass('tab_selected');
+              $($("div[id*='data_content_']")[0]).addClass('active');
             } else {
-                _renderData(data, id, identifiedResultObject);
+              $('.scroll_tab_inner').parent().parent().html('Объекты не найдены!')
             }
-        }
-        function collectData(obj) {
-            $.when.apply($, [obj.numberInList]).done(function() {
-                var id = arguments[0];
-                //obj.templatePromise - если у провайдера указан урл и id теплейта, то провайдер вернет промайз, который будет обрабатываться вместе с промайзом на data
-                //если у провайдера не указаны урл и id, то вернется null, который так же будет обрабатываться совместно с data
-                $.when.apply($, [obj.templatePromise, obj.dataPromise]).done(function() {
-					var templatePromise = arguments[0];
-                    var data = arguments[1];
-                    //простой аякс MapExpress возвращает массив из даты и опций, которые в большинстве случаев пустые
-                    //для стороннего контента
-                    if ((data instanceof Array) === true && typeof(data[0]) === 'string' && data[1] === undefined) {
-                        data = data[0];
-                    }
-                    _checkTemplatesAndRender(data, id, templatePromise, obj);
-
-                }).fail(function() {
-                    _modifyTabContent(id, {}, 'layerInfo-NullObject-TemplateId');
-                });
-            });
+          }
+          selected = false;
         }
 
-        function startFunction(object) {
-            var identObj = object;
-            for (var i = 0; i < identObj.identifiedResults.length; i++) {
-                collectData(identObj.identifiedResults[i]);
-            }
-        }
+        //для рендера даты
+        var tempDiv = document.createElement('div');
+        document.body.appendChild(tempDiv);
 
-        function _modifyTabsOrList() {
-            if ($('#mapexpress-tabSet').hasClass('scroll_tabs_container')) {
-                $('#mapexpress-tabSet').destroy();
-            }
+        //удалять всегда!
+        //в инф.инструменте удалять, здесь ID ставить
 
-            $('#mapexpress-tabSet').scrollTabs({
-                click_callback: function(e) {
-                    var tabPage = e.target;
-                    if (tabPage) {
-                        window.MapManager.fire('mapexpress:identifytool:tabpageclicked', $(tabPage));
-                    }
+        var templateFullPath = window.MAPEXPRESS_ROOT_PATH ? window.MAPEXPRESS_ROOT_PATH + templateUrl :
+          templateUrl;
+
+        $(tempDiv).load(templateFullPath, function () {
+          var template = $.templates("#" + templId);
+          if (template) {
+            if (data.multi) {
+              try {
+                for (var i = 0; i < data.multi.length; i++) {
+                  _render(i, data);
                 }
-            });
-
-            $(".scroll_tabs_container div.scroll_tab_inner li").on('click', function() {
-                $(this).closest('div.tabs').find('div.tabs__content').removeClass('active').eq($(this).index()).addClass('active');
-            });
-
-
-
-            //$('.mapexpress-collapsibleLayerInfoMenu').collapsible({
-            // accordion: true
-            //});
-            //$('#mapexpress-formSet').mfs({
-            //  'autoWidth': true
-            //});
-            //$(".mfs-options li a").on('click', function() {
-            //  $(this).closest('div.dropdown-tabs').find('div.tabs__content').removeClass('active').eq($(this).parent().index()).addClass('active');
-            //});
-        }
-        _modifyTabsOrList();
-        startFunction(object);
-    },
-
-    urlIdentify: function(property) {
-        var urlReg = function(string) {
-            if (typeof property !== 'string') {
-                return false;
-            }
-            if (string.indexOf('http') !== -1 && string.indexOf('href') === -1) {
-                return true;
-            } else if (string.indexOf('https') !== -1 && string.indexOf('href') === -1) {
-                return true;
-            } else if (string.indexOf('ftp') !== -1 && string.indexOf('href') === -1) {
-                return true;
-            } else if (string.indexOf('localhost') !== -1 && string.indexOf('href') === -1) {
-                return true;
+              } catch (error) {
+                console.log(error);
+              } finally {
+                $(tempDiv).remove();
+              }
             } else {
-                return false;
+              try {
+                var ddata = {};
+                ddata.multi = [data];
+                _render(0, ddata);
+              } catch (error) {
+                console.log(error);
+              } finally {
+                $(tempDiv).remove();
+              }
             }
+          } else {
+            $(tempDiv).remove();
+          }
+
+          function _render(iterNumber, allData) {
+            var conn = allData.multi[iterNumber];
+            if (typeof (allData.multi[iterNumber]) !== "string") {
+              conn = template.render(allData.multi[iterNumber])
+            }
+            if (iterNumber === 0) {
+              var currntDiv = $('#data_content_' + tabulId);
+              currntDiv.html(conn);
+              _sendCallback(identifiedResultObject, currntDiv, conn);
+            } else {
+              $('#tab_layernameid_' + tabulId).clone(true)
+                .insertAfter($('#tab_layernameid_' + tabulId))
+                .removeClass('tab_selected')
+                .attr('id', '#tab_layernameid_' + tabulId + '_cloned_' + iterNumber);
+
+              var currntDiv1 = $('#data_content_' + tabulId).clone(true)
+                .insertAfter($('#data_content_' + tabulId))
+                .removeClass('active')
+                .attr('id', '#tab_layernameid_' + tabulId + '_cloned_' + iterNumber);
+              currntDiv1.html(conn);
+              _sendCallback(identifiedResultObject, currntDiv1, conn);
+            }
+          }
+        });
+      }
+
+      function _renderData(response, divId, identifiedResultObject) {
+
+        switch (typeof (response)) {
+          case 'object':
+            var arrayClean = false;
+            var obj = {};
+            obj.multi = [];
+            if (L.Util.isArray(response) && response.length > 0) {
+              if (response[0].features) {
+                response.features = response[0].features;
+                arrayClean = true;
+              }
+            }
+
+            if (!arrayClean && L.Util.isArray(response) && response.length > 0) {
+              for (var k = 0; k < response.length; k++) {
+                if (response[k] !== undefined) {
+                  obj.multi.push(response[k]);
+                }
+              }
+              _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
+
+            } else if (L.Util.isArray(response) && response.length === 0) {
+              _modifyTabContent(divId, {}, 'layerInfo-NullObject-TemplateId', false, identifiedResultObject);
+            } else if (response.features) {
+              if (response.features.length === 0) {
+                _modifyTabContent(divId, {}, 'layerInfo-NullObject-TemplateId', false, identifiedResultObject);
+              } else if (response.features.length === 1) {
+                obj = response.features[0];
+                obj.multi = false;
+                _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
+              } else if (response.features.length > 0) {
+                for (var l = 0; l < response.features.length; l++) {
+                  obj.multi.push(response.features[l]);
+                }
+                _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
+              }
+            } else if ((response instanceof Array) === true && response.length > 0 && !arrayClean) {
+              for (var m = 0; m < response.length; m++) {
+                obj.multi.push(response[m]);
+              }
+              _modifyTabContent(divId, obj, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
+            } else {
+              _modifyTabContent(divId, response, 'layerInfo-Object-TemplateId', false, identifiedResultObject);
+            }
+            break;
+          case 'string': //готовый контент
+            _modifyTabContent(divId, response, '', false, identifiedResultObject);
+            break;
+          case 'undefined':
+          case null:
+            _modifyTabContent(divId, {}, 'layerInfo-NullObject-TemplateId', false, identifiedResultObject);
+            break;
         }
-        if (urlReg(property) === true) {
-            return true;
+      }
+
+      //проверка на наличие сторонненого template
+      function _checkTemplatesAndRender(data, id, template, identifiedResultObject) {
+        if (data === undefined) {
+          _modifyTabContent(id, {}, 'layerInfo-NullObject-TemplateId');
+          return;
+        }
+        if (template !== null) {
+          var currntDiv = $('#data_content_' + id).children();
+          if (!data || (data && !data.length) || (typeof data === 'object' && !Object.getOwnPropertyNames(data)
+              .length)) {
+            var selected = false;
+            if ($('#tab_layernameid_' + id).hasClass('tab_selected')) {
+              selected = true;
+            }
+            $('#tab_layernameid_' + id).remove();
+            $('#data_content_' + id).remove();
+
+            if (selected === true) {
+              if ($("li[id*='tab_layernameid_']").length > 0) {
+                $($("li[id*='tab_layernameid_']")[0]).addClass('tab_selected');
+                $($("div[id*='data_content_']")[0]).addClass('active');
+              } else {
+                $('.scroll_tab_inner').parent().parent().html('Объекты не найдены!')
+              }
+            }
+          } else {
+            MapExpress.Controls.MapControlUtils.generateTemplate(identifiedResultObject.templateUrl,
+              identifiedResultObject.templateId, data, afterGeneratecallback);
+
+            function afterGeneratecallback(content) {
+              $(currntDiv).html(content);
+            }
+          }
         } else {
-            return false;
+          _renderData(data, id, identifiedResultObject);
         }
+      }
+
+      function collectData(obj) {
+        $.when.apply($, [obj.numberInList]).done(function () {
+          var id = arguments[0];
+          //obj.templatePromise - если у провайдера указан урл и id теплейта, то провайдер вернет промайз, который будет обрабатываться вместе с промайзом на data
+          //если у провайдера не указаны урл и id, то вернется null, который так же будет обрабатываться совместно с data
+          $.when.apply($, [obj.templatePromise, obj.dataPromise]).done(function () {
+            var templatePromise = arguments[0];
+            var data = arguments[1];
+            //простой аякс MapExpress возвращает массив из даты и опций, которые в большинстве случаев пустые
+            //для стороннего контента
+            if ((data instanceof Array) === true && typeof (data[0]) === 'string' && data[1] ===
+              undefined) {
+              data = data[0];
+            }
+            _checkTemplatesAndRender(data, id, templatePromise, obj);
+
+          }).fail(function () {
+            _modifyTabContent(id, {}, 'layerInfo-NullObject-TemplateId');
+          });
+        });
+      }
+
+      function startFunction(object) {
+        var identObj = object;
+        for (var i = 0; i < identObj.identifiedResults.length; i++) {
+          collectData(identObj.identifiedResults[i]);
+        }
+      }
+
+      function _modifyTabsOrList() {
+        if ($('#mapexpress-tabSet').hasClass('scroll_tabs_container')) {
+          $('#mapexpress-tabSet').destroy();
+        }
+
+        $('#mapexpress-tabSet').scrollTabs({
+          click_callback: function (e) {
+            var tabPage = e.target;
+            if (tabPage) {
+              window.MapManager.fire('mapexpress:identifytool:tabpageclicked', $(tabPage));
+            }
+          }
+        });
+
+        $(".scroll_tabs_container div.scroll_tab_inner li").on('click', function () {
+          $(this).closest('div.tabs').find('div.tabs__content').removeClass('active').eq($(this).index())
+            .addClass('active');
+        });
+
+
+
+        //$('.mapexpress-collapsibleLayerInfoMenu').collapsible({
+        // accordion: true
+        //});
+        //$('#mapexpress-formSet').mfs({
+        //  'autoWidth': true
+        //});
+        //$(".mfs-options li a").on('click', function() {
+        //  $(this).closest('div.dropdown-tabs').find('div.tabs__content').removeClass('active').eq($(this).parent().index()).addClass('active');
+        //});
+      }
+      _modifyTabsOrList();
+      startFunction(object);
     },
-	
-	baltrosTryFixInnerUrl :function(text) {
-		if (text != null && text.indexOf) {
-			var startIndex = text.indexOf("{{BaseUrl}}");
-			if (startIndex > -1) {
-			  var firstPart = text.substring(startIndex + 11);
-			  
-			  var url = window.REALTY_MAP_SITE_ROOT + "/" + firstPart;
-			  //var result = "<a href=" + url +  'target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">'ссылка</a>
-			  //return result;		  
-			  return text.replace("{{BaseUrl}}",window.REALTY_MAP_SITE_ROOT + "/");
-			}
-		}
-		if (text != null && text.replace) {
-			return text.split("{{n}}").join("<br>")
-		}
-		return text;
-	}
-});
+
+    urlIdentify: function (property) {
+      var urlReg = function (string) {
+        if (typeof property !== 'string') {
+          return false;
+        }
+        if (string.indexOf('http') !== -1 && string.indexOf('href') === -1) {
+          return true;
+        } else if (string.indexOf('https') !== -1 && string.indexOf('href') === -1) {
+          return true;
+        } else if (string.indexOf('ftp') !== -1 && string.indexOf('href') === -1) {
+          return true;
+        } else if (string.indexOf('localhost') !== -1 && string.indexOf('href') === -1) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      if (urlReg(property) === true) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    baltrosTryFixInnerUrl: function (text) {
+      if (text != null && text.indexOf) {
+        var startIndex = text.indexOf("{{BaseUrl}}");
+        if (startIndex > -1) {
+          var firstPart = text.substring(startIndex + 11);
+
+          var url = window.REALTY_MAP_SITE_ROOT + "/" + firstPart;
+          //var result = "<a href=" + url +  'target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">'ссылка</a>
+          //return result;		  
+          return text.replace("{{BaseUrl}}", window.REALTY_MAP_SITE_ROOT + "/");
+        }
+      }
+      if (text != null && text.replace) {
+        return text.split("{{n}}").join("<br>")
+      }
+      return text;
+    }
+  });
 </script>
 <script id="layerInfoTemplateId" type="text/x-jsrender">
-    <div id="layerInfoMenu" class="mapexpress-layer-info-control-wrapper tabs">
+  <div id="layerInfoMenu" class="mapexpress-layer-info-control-wrapper tabs">
         <ul id='mapexpress-tabSet' class="scroll_tabs_theme_light">
             {{for identifiedResults}} {{if numberInList === 0}}
             <li id="tab_layernameid_{{:numberInList}}" style="font-size:13px;" class="tab_selected">{{:layerName}}</li>
@@ -321,21 +328,36 @@ $.views.helpers({
         </div>
 </script>
 <script id="layerInfo-Object-TemplateId" type="text/x-jsrender">
-    <ul>
-        {{props properties}} {{if key.indexOf('id') < 0 && key.indexOf('Id') < 0 && key.indexOf('ID') < 0 && key !=='ogr_style' && key !=='label_text' && key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}} {{if prop === 'Null' || prop === 'null'||prop === 'undefined'}}
-        <li style="line-height: 1.8em; border-bottom: 1px solid #b2b2b2;">
-			<span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp
-		</li>
-        {{else}} {{if ~urlIdentify(prop)}}
-        <li>
-            <span style="color:#757575;">{{:key}}:</span>
-            <a href={{:prop}} target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">ссылка</a>&nbsp&nbsp&nbsp
-        </li>
-        {{else}}
-        <li><span style=";color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp {{:~baltrosTryFixInnerUrl(prop)}}</li>
-        {{/if}} {{/if}} {{/if}} {{/props}}
+  <ul>
+        {{props properties}} 
+            {{if key.indexOf('image') < 0 && key.indexOf('id') < 0 && key.indexOf('Id') < 0 && key.indexOf('ID') < 0 && key !=='ogr_style' && key !=='label_text' && key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !== 'wkb_geometry' && key !== 'geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE'}} 
+                  {{if prop === 'Null' || prop === 'null'||prop === 'undefined'}}
+                        <li style="line-height: 1.8em; border-bottom: 1px solid #b2b2b2;">
+                            <span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp
+                        </li>
+                  {{else}} 
+                      {{if ~urlIdentify(prop)}}
+                            <li>
+                                <span style="color:#757575;">{{:key}}:</span>
+                                <a href={{:prop}} target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">ссылка</a>&nbsp&nbsp&nbsp
+                            </li>
+                      {{else}}
+                            <li><span style=";color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp {{:~baltrosTryFixInnerUrl(prop)}}</li>
+                      {{/if}} 
+                  {{/if}} 
+            {{/if}} 
+
+            {{if key.indexOf('image') > -1}}
+                <li style="text-align: center; margin-top: 15px;margin-bottom: 5px; border-radius: 1px; ">    
+                    <a href={{:prop}} target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">
+                      <img src="{{:prop}}" style='max-height: 285px; max-width: 770p' />
+                    </a>            
+                </li>
+            {{/if}} 
+
+        {{/props}}
     </ul>
 </script>
 <script id="layerInfo-NullObject-TemplateId" type="text/x-jsrender">
-    <span style="">Объектов не найдено</span>
+  <span style="">Объектов не найдено</span>
 </script>

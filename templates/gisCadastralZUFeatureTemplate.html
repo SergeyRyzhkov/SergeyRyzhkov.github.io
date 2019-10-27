@@ -1,0 +1,258 @@
+<script>
+$.views.helpers({
+    initZuGisCadastralDocumentsTemplate: function(id) {
+        var DOC_TYPES = ['XZP', 'SOPP', 'RTH'];
+        let DOC_STATUSES = {
+            '-100': '<label  class="order-status-label">Реестр пуст</label>',
+            '-1': '<label  class="order-status-label">Идет сканирование</label>',
+            '1': '<label  class="order-status-label">Ожидает обработки</label>',
+            '2': '<label  class="order-status-label">Ожидает оплаты</label>',
+            '3': '<label  class="order-status-label">В работе</label>',
+            '4': '<label  class="order-status-label">Выполнен</label>',
+            '5': '<label  class="order-status-label">Ошибка при обработке</label>',
+            '6': '<label  class="order-status-label">Отменен</label>',
+            '7': '<label  class="order-status-label">Загрузка файлов</label>',
+            '8': '<a download target="_self">Скачать архив</a>'
+        };
+
+        let CAN_STATUSES = {
+            'cannot': '<label class="order-status-label">Недоступен для заказа</label>'
+        };
+
+        let ERROR_STATUSES = {
+            'main-error': '<label class="order-status-error-label">При формировании заказа произошла ошибка</label>'
+        };
+
+        let buttonAvaliable = true;
+        let avaliableDocCountToOrder = parseInt((window.balance || 0) / (window.defaultDocumentCost || 50));
+
+        function dataWatcher(data, id) {
+            var docData = data;
+            var elements = $(`.document-status-switch-${id}`);
+
+            for (var i = 0; i < elements.length; i++) {
+                $(elements[i]).on('click', function(e) {
+                    let totalActive = 0;
+                    $(elements).find('input').each(function(i, item) {
+                        if (item.checked) {
+                            totalActive++;
+                        }
+                    });
+                    if (totalActive > avaliableDocCountToOrder) {
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                        return;
+                    }
+                });
+
+                $(elements[i]).find('input').on('change', function(e) {
+                    // проверим кол-во возможных
+                    data[`${$(e.target).attr('id').split('-')[0].toUpperCase()}`] = e.target.checked;
+                });
+            }
+
+            if (buttonAvaliable) {
+                $(`#document-status-confirm-${id}`).click(docData, saveData);
+            }
+        }
+
+        function saveData(e) {
+            var id = e.data.CadastralId;
+            var _data = JSON.stringify({
+                order: [{
+                    CadastralId: e.data.CadastralId,
+                    XZP: e.data.XZP,
+                    SOPP: e.data.SOPP,
+                    RSN: e.data.RSN,
+                    RSP: e.data.RSP,
+                    KPT: e.data.KPT,
+                    RTH: e.data.RTH,
+                    RsnItems: e.data.RsnItems || []
+                }]
+            });
+            $(`#document-status-confirm-${id}`).off('click', saveData);
+            $.ajax({
+                type: "post",
+                url: window.REALTY_MAP_SITE_ROOT + '/Order/SaveOrder/',
+                contentType: 'application/json',
+                data: _data,
+                success: function(successData) {
+                    DOC_TYPES.forEach(function(elem) {
+                        if (e.data[elem]) {
+                            deActivateElementDocType(elem, id);
+                        }
+                    });
+
+                    if (window.MapManager.identifyWindow) {
+                        window.MapManager.identifyWindow.options.destroyOnClose = true;
+                        window.MapManager.identifyWindow.destroy();
+                        delete window.MapManager.identifyWindow;
+                    }
+                    if (successData.type === 'error') {
+                        new MapExpress.Controls.MapControl(window.MapManager._map).showErrorWindow(successData.message || "Ошибка при сохранении");
+                    } else {
+                        new MapExpress.Controls.MapControl(window.MapManager._map).showNotifyWindow(successData.message);
+                    }
+
+                },
+                error: function(error) {
+                    $(`#document-status-confirm-${id}`).click(e.data, saveData);
+                    new MapExpress.Controls.MapControl(window.MapManager._map).showErrorWindow(error.message || "Ошибка при сохранении");
+                }
+            });
+        };
+
+
+        function updateLabels(data, id) {
+            let canCounter = 3;
+            let docCounter = 3;
+            for (var i = 0; i < DOC_TYPES.length; i++) {
+                // выставляем значение
+                $(`#${DOC_TYPES[i].toLowerCase()}-document-status-checkbox-${id}`).attr('checked', data[DOC_TYPES[i]]);
+
+                // проверяем на возможность заказа
+                if (data['can' + DOC_TYPES[i]]) {
+                    // заказ возможен
+                    // проверяем на статус (заказан/не заказан)
+                    if (DOC_STATUSES[data['doc' + DOC_TYPES[i]]]) {
+                        // уже заказан
+                        // заказан меняем чекбокс на статус заказа
+                        if (!data['error' + DOC_TYPES[i]]) {
+                            // если нет ошибки в заказе
+                            $(`#${DOC_TYPES[i].toLowerCase()}-document-status-switch-${id}`).hide();
+                            $(`#${DOC_TYPES[i].toLowerCase()}-document-status-label-${id}`).html(DOC_STATUSES[data['doc' + DOC_TYPES[i]]]);
+                            if (data['doc' + DOC_TYPES[i]] === '8' || data['doc' + DOC_TYPES[i]] === 8) {
+                                var downloadElement = $(`#${DOC_TYPES[i].toLowerCase()}-document-status-label-${id}`).find('a');
+                                $(downloadElement)
+                                    .attr('id', 'document_' + data['doc' + DOC_TYPES[i] + '_id'])
+                                    .attr('href', '/Order/GetFile?fileId=' + data['doc' + DOC_TYPES[i] + '_id']);
+
+                            }
+                            docCounter--;
+                        } else {
+                            // если есть ошибка в заказе
+                            $(`#${DOC_TYPES[i].toLowerCase()}-document-status-label-${id}`).html(ERROR_STATUSES['main-error']);
+                        }
+                    }
+                } else {
+                    // заказ не возможен
+                    $(`#${DOC_TYPES[i].toLowerCase()}-document-status-switch-${id}`).hide();
+                    $(`#${DOC_TYPES[i].toLowerCase()}-document-status-label-${id}`).html(CAN_STATUSES['cannot']);
+                    canCounter--;
+                    docCounter--;
+                }
+            }
+
+            if (!window.balance || window.balance < window.defaultDocumentCost) {
+                $(`#document-status-confirm-${id}`).parent().prepend('<p style="padding:0 16px;margin: auto 0;">Средств на балансе недостаточно для заказа документов!</p>');
+                buttonAvaliable = false;
+            }
+
+            if (avaliableDocCountToOrder < 3 && avaliableDocCountToOrder > 0) {
+                $(`#document-status-confirm-${id}`).parent().prepend('<p style="padding:0 16px;margin: auto 0;">Максимальное кол-во документов, которое вы можете запросить: <strong>' + avaliableDocCountToOrder + '</strong></p>');
+            }
+
+            if (!canCounter || !docCounter) {
+                // все типы документов нельзя заказать
+                buttonAvaliable = false;
+            }
+
+
+            if (!buttonAvaliable) {
+                deActivateUITotaly(id);
+            }
+        }
+
+        function deActivateUITotaly(id) {
+            //делаем кнопку серой
+            $(`#document-status-confirm-${id}`).addClass('cancel');
+            //закрываем все чекбоксы
+            DOC_TYPES.forEach(function(elem) {
+                deActivateElementDocType(elem, id);
+            });
+        };
+
+        function deActivateElementDocType(docType, id) {
+            $(`#${docType.toLowerCase()}-document-status-checkbox-${id}`).addClass('disabled');
+            $(`#${docType.toLowerCase()}-document-status-checkbox-${id}`).parent().addClass('document-status-switch_disabled');
+            $(`#${docType.toLowerCase()}-document-status-checkbox-${id}`).parent().on('click', function(e) {
+                if ($(e.target).hasClass('disabled')) {
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                }
+            });
+        }
+
+        function genTamplate(data, id) {
+            return `` +
+                `   <div class="document-statuses-container"> ` +
+                `       <ul class="document-statuses-container_list"> ` +
+                `           <li class="document-statuses-container__item"> ` +
+                `               <div class="document-status-container" id="oks-xzp-document-status-container-${id}">` +
+                `                   <label class="document-status-switch document-status-switch-${id}" id="xzp-document-status-switch-${id}">` +
+                `                        <input id="xzp-document-status-checkbox-${id}" type="checkbox" /><div></div>` +
+                `                   </label>` +
+                `                   <div id="xzp-document-status-label-${id}"></div>` +
+                `               </div>` +
+                `               <span>Выписка из ЕГРН об объекте недвижимости</span>&nbsp&nbsp&nbsp ` +
+                `           </li> ` +
+                `           <li class="document-statuses-container__item"> ` +
+                `               <div class="document-status-container" id="oks-sopp-document-status-container-${id}">` +
+                `                   <label class="document-status-switch  document-status-switch-${id}" id="sopp-document-status-switch-${id}">` +
+                `                        <input id="sopp-document-status-checkbox-${id}" type="checkbox" /><div></div>` +
+                `                   </label>` +
+                `                   <div id="sopp-document-status-label-${id}"></div>` +
+                `               </div>` +
+                `               <span>Выписка о переходе прав на объект недвижимости</span>&nbsp&nbsp&nbsp ` +
+                `           </li> ` +
+                `           <li class="document-statuses-container__item"> ` +
+                `               <div class="document-status-container" id="oks-rth-document-status-container-${id}">` +
+                `                   <label class="document-status-switch  document-status-switch-${id}" id="rth-document-status-switch-${id}">` +
+                `                        <input id="rth-document-status-checkbox-${id}" type="checkbox" /><div></div>` +
+                `                   </label>` +
+                `                   <div id="rth-document-status-label-${id}"></div>` +
+                `               </div>` +
+                `               <span>Реестр правообладателей</span>&nbsp&nbsp&nbsp ` +
+                `           </li> ` +
+                `       </ul> ` +
+                `       <div class="mapexpress-control-footerbar__buttongroup">` +
+                `           <button class="mapexpress-control-footerbar__buttongroup__button" id="document-status-confirm-${id}">` +
+                `               <span class="mapexpress-control-footerbar__buttongroup__button__text">Подтвердить заказ</span>` +
+                `           </button>` +
+                `       </div>` +
+                `   </div>`;
+        };
+
+        $.ajax({
+            type: 'GET',
+            url: window.REALTY_MAP_SITE_ROOT + '/Order/GetDocumentForCadastral?cadastralId=' + id,
+            success: function(data) {
+                $('#zu-gis-cadastral-documents-' + id).html(genTamplate(data, id));
+                updateLabels(data, id);
+                dataWatcher(data, id);
+            }
+        });
+    }
+});
+</script>
+<script id="zuGisCadastralFeatureTemplate" type="text/x-jsrender">
+    <div style="display: flex;flex-direction: column;position: absolute;overflow: auto;width: calc(100% - 18px);height: calc(100% - 84px);">
+        <ul style="overflow-y: auto;">
+            {{props properties}} {{if key.indexOf('id')
+            < 0 && key.indexOf( 'Id') < 0 && key !=='ogc_fid' && key !=='ogr_style' && key !=='label_text' && key !=='G_AREA' && key !=='FullAddressId' && key !=='HasMunicipality2' && key !=='wkb_geometry' && key !=='geom' && key !=='style' && key !=='XMin' && key !=='XMax' && key !=='YMin' && key !=='YMax' && key !=='X_coord' && key !=='Y_coord' && key !=='SHAPE_Length' && key !=='SHAPE_Area' && key !=='X центра' && key !=='Y центра' && key !=='Экстент - X мин.' && key !=='Экстент - X макс.' && key !=='Экстент - Y мин.' && key !=='Экстент - Y макс.' && key !=='Объект обработан - можно удалять' && key !=='Shape_Length' && key !=='Shape_Area' && key !=='SHAPE' }} {{if prop==='Null' || prop==='null' ||prop==='undefined' }} <li style="line-height: 1.8em; border-bottom: 1px solid #b2b2b2;"><span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp-</li>
+                {{else}} {{if ~urlIdentify(prop)}}
+                <li>
+                    <span style="color:#757575;">{{:key}}:</span>
+                    <a href={{:prop}} target="_blank" style="text-overflow:ellipsis;white-space:nowrap;overflow:hidden;">ссылка</a>&nbsp&nbsp&nbsp
+                </li>
+                {{else}}
+                <li><span style="color:#757575;">{{:key}}:</span>&nbsp&nbsp&nbsp{{:prop}}</li>
+                {{/if}} {{/if}} {{/if}}{{/props}}
+        </ul>
+        {{props properties}} {{if key === 'cadastral_id'}} {{>~initZuGisCadastralDocumentsTemplate(prop)}}
+        <div id='zu-gis-cadastral-documents-{{:prop}}'></div>
+        {{/if}} {{/props}}
+    </div>
+</script>
