@@ -4,12 +4,9 @@
    	 	var p1 = new MapExpress.Search.YandexSearchProvider(window.MapManager._map, "Адрес Яндекс.Карты");
    	 	var p3 = new MapExpress.Search.CadastrSearchProviderPPK5(window.MapManager._map, "Кадастровый № ЗУ");
    	 	var p4 = new MapExpress.Search.OksCadastrSearchProviderPPK5(window.MapManager._map, "Кадастровый № ОКС");
-   	 	
-   	 	//var p5 = new MapExpress.Search.ToirSearchProviderEdge(window.MapManager._map, "Поиск дуг по ID");
-   	 	//var p6 = new MapExpress.Search.ToirSearchProviderConstruction(window.MapManager._map, "Поиск сооружений по ID");
    	 	var options = {
-   	 	    providers: [p3, p4, p1],
-   	 	    startProvider: p3,
+   	 	    providers: [p1, p3, p4],
+   	 	    startProvider: p1,
    	 	    drawStyleOptions: {
    	 	        color: "darkgreen",
    	 	        weight: 4,
