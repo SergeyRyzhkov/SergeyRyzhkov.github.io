@@ -3,32 +3,34 @@
     layerInfoTemplateIdAfterRender: function (object, templateUrl) {
       function _modifyTabContent(tabulId, data, templId, notJSON, identifiedResultObject) {
 
-        function _sendCallback(obj, divSelector, content) {
+        function _sendCallback(obj, divSelector, content, resultId) {
           if (obj && obj.afterRenderFeatureInfoContentCallback && typeof (obj
               .afterRenderFeatureInfoContentCallback) === "function") {
             var event = {};
             event.identifiedResultObject = obj;
             event.identifiedResultData = content;
             event.identifiedResultDivSelector = divSelector;
+            event.resultId = resultId;
             obj.afterRenderFeatureInfoContentCallback(event);
           }
         }
 
-        var currntDiv = $('#data_content_' + tabulId);
+        var currntDiv = $('#data_content_' + tabulId + '_' + identifiedResultObject.resultId);
+
         //для готового контента
         if (notJSON === true) {
           $(currntDiv.children()).html(data);
-          _sendCallback(identifiedResultObject, currntDiv, data);
+          _sendCallback(identifiedResultObject, currntDiv, data, identifiedResultObject.resultId);
           return;
         }
 
         if (templId === 'layerInfo-NullObject-TemplateId') {
           var selected = false;
-          if ($('#tab_layernameid_' + tabulId).hasClass('tab_selected')) {
+          if ($('#tab_layernameid_' + tabulId + "_" + identifiedResultObject.resultId).hasClass('tab_selected')) {
             selected = true;
           }
-          $('#tab_layernameid_' + tabulId).remove();
-          $('#data_content_' + tabulId).remove();
+          $('#tab_layernameid_' + tabulId + "_" + identifiedResultObject.resultId).remove();
+          $('#data_content_' + tabulId + '_' + identifiedResultObject.resultId).remove();
 
           if (selected === true) {
             if ($("li[id*='tab_layernameid_']").length > 0) {
@@ -84,29 +86,34 @@
             if (typeof (allData.multi[iterNumber]) !== "string") {
               conn = template.render(allData.multi[iterNumber])
             }
-            if (iterNumber === 0) {
-              var currntDiv = $('#data_content_' + tabulId);
-              currntDiv.html(conn);
-              _sendCallback(identifiedResultObject, currntDiv, conn);
-            } else {
-              $('#tab_layernameid_' + tabulId).clone(true)
-                .insertAfter($('#tab_layernameid_' + tabulId))
-                .removeClass('tab_selected')
-                .attr('id', '#tab_layernameid_' + tabulId + '_cloned_' + iterNumber);
 
-              var currntDiv1 = $('#data_content_' + tabulId).clone(true)
-                .insertAfter($('#data_content_' + tabulId))
+            if (iterNumber === 0) {
+              var currntDiv = $('#data_content_' + tabulId + '_' + identifiedResultObject.resultId);
+              currntDiv.html(conn);
+
+              _sendCallback(identifiedResultObject, currntDiv, conn, identifiedResultObject.resultId);
+            } else {
+
+              $('#tab_layernameid_' + tabulId + "_" + identifiedResultObject.resultId).clone(true)
+                .insertAfter($('#tab_layernameid_' + tabulId + "_" + identifiedResultObject.resultId))
+                .removeClass('tab_selected')
+                .attr('id', '#tab_layernameid_' + tabulId + "_" + identifiedResultObject.resultId +
+                  '_cloned_' + iterNumber);
+
+              var currntDiv1 = $('#data_content_' + tabulId + '_' + identifiedResultObject.resultId).clone(
+                  true)
+                .insertAfter($('#data_content_' + tabulId + '_' + identifiedResultObject.resultId))
                 .removeClass('active')
-                .attr('id', '#tab_layernameid_' + tabulId + '_cloned_' + iterNumber);
+                .attr('id', '#tab_layernameid_' + "_" + identifiedResultObject.resultId + tabulId +
+                  '_cloned_' + iterNumber);
               currntDiv1.html(conn);
-              _sendCallback(identifiedResultObject, currntDiv1, conn);
+              _sendCallback(identifiedResultObject, currntDiv1, conn, identifiedResultObject.resultId);
             }
           }
         });
       }
 
       function _renderData(response, divId, identifiedResultObject) {
-
         switch (typeof (response)) {
           case 'object':
             var arrayClean = false;
@@ -168,15 +175,18 @@
           return;
         }
         if (template !== null) {
-          var currntDiv = $('#data_content_' + id).children();
+          var currntDiv = $('#data_content_' + id + "_" + identifiedResultObject.resultId).children();
+
           if (!data || (data && !data.length) || (typeof data === 'object' && !Object.getOwnPropertyNames(data)
               .length)) {
             var selected = false;
+
+
             if ($('#tab_layernameid_' + id).hasClass('tab_selected')) {
               selected = true;
             }
-            $('#tab_layernameid_' + id).remove();
-            $('#data_content_' + id).remove();
+            $('#tab_layernameid_' + id + "_" + identifiedResultObject.resultId).remove();
+            $('#data_content_' + id + "_" + identifiedResultObject.resultId).remove();
 
             if (selected === true) {
               if ($("li[id*='tab_layernameid_']").length > 0) {
@@ -209,6 +219,7 @@
             var data = arguments[1];
             //простой аякс MapExpress возвращает массив из даты и опций, которые в большинстве случаев пустые
             //для стороннего контента
+
             if ((data instanceof Array) === true && typeof (data[0]) === 'string' && data[1] ===
               undefined) {
               data = data[0];
@@ -224,16 +235,18 @@
       function startFunction(object) {
         var identObj = object;
         for (var i = 0; i < identObj.identifiedResults.length; i++) {
+          identObj.identifiedResults[i].resultId = object.resultId;
           collectData(identObj.identifiedResults[i]);
         }
       }
 
-      function _modifyTabsOrList() {
-        if ($('#mapexpress-tabSet').hasClass('scroll_tabs_container')) {
-          $('#mapexpress-tabSet').destroy();
+      function _modifyTabsOrList(resultId) {
+        var tabsetId = '#mapexpress-tabSet' + '-' + resultId;
+        if ($(tabsetId).hasClass('scroll_tabs_container')) {
+          $(tabsetId).destroy();
         }
 
-        $('#mapexpress-tabSet').scrollTabs({
+        $(tabsetId).scrollTabs({
           click_callback: function (e) {
             var tabPage = e.target;
             if (tabPage) {
@@ -246,20 +259,9 @@
           $(this).closest('div.tabs').find('div.tabs__content').removeClass('active').eq($(this).index())
             .addClass('active');
         });
-
-
-
-        //$('.mapexpress-collapsibleLayerInfoMenu').collapsible({
-        // accordion: true
-        //});
-        //$('#mapexpress-formSet').mfs({
-        //  'autoWidth': true
-        //});
-        //$(".mfs-options li a").on('click', function() {
-        //  $(this).closest('div.dropdown-tabs').find('div.tabs__content').removeClass('active').eq($(this).parent().index()).addClass('active');
-        //});
       }
-      _modifyTabsOrList();
+
+      _modifyTabsOrList(object.resultId);
       startFunction(object);
     },
 
@@ -308,20 +310,20 @@
 </script>
 <script id="layerInfoTemplateId" type="text/x-jsrender">
   <div id="layerInfoMenu" class="mapexpress-layer-info-control-wrapper tabs">
-        <ul id='mapexpress-tabSet' class="scroll_tabs_theme_light">
+        <ul id='mapexpress-tabSet-{{:resultId}}' class="scroll_tabs_theme_light">
             {{for identifiedResults}} {{if numberInList === 0}}
-            <li id="tab_layernameid_{{:numberInList}}" style="font-size:13px;" class="tab_selected">{{:layerName}}</li>
+            <li id="tab_layernameid_{{:numberInList}}_{{:resultId}}" style="font-size:13px;" class="tab_selected">{{:layerName}}</li>
             {{else}}
-            <li id="tab_layernameid_{{:numberInList}}" style="font-size:13px;">{{:layerName}}</li>
+            <li id="tab_layernameid_{{:numberInList}}_{{:resultId}}" style="font-size:13px;">{{:layerName}}</li>
             {{/if}} {{/for}}
         </ul>
         {{for identifiedResults}} {{if numberInList === 0}}
-        <div id="data_content_{{:numberInList}}" class="tabs__content active mapexpress-layer-info-data-wrapper">
+        <div id='data_content_{{:numberInList}}_{{:resultId}}' class="tabs__content active mapexpress-layer-info-data-wrapper">
             {{else}}
-            <div id="data_content_{{:numberInList}}" class="tabs__content mapexpress-layer-info-data-wrapper">
+            <div id="data_content_{{:numberInList}}_{{:resultId}}" class="tabs__content mapexpress-layer-info-data-wrapper">
                 {{/if}}
                 <div>
-                    <span style="color:#757575;font-weight: 500;">Поиск объектов ...</span>
+                    <span style="color:#757575;font-weight: 500;">Поиск ...</span>
                 </div>
             </div>
             {{/for}}
