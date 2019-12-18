@@ -26,34 +26,13 @@
                 <TileMatrixSet>google3857</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png"
-                         template="https://a.tile.openstreetmap.org/{TileMatrix}/{TileCol}/{TileRow}.png"
+                         template="https://mts2.google.com/vt/hl=ru&x={TileCol}&y={TileRow}&z={TileMatrix}"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://b.tile.openstreetmap.org/{TileMatrix}/{TileCol}/{TileRow}.png"
+                         template="https://mts1.google.com/vt/hl=ru&x={TileCol}&y={TileRow}&z={TileMatrix}"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://c.tile.openstreetmap.org/{TileMatrix}/{TileCol}/{TileRow}.png"
-                         resourceType="tile"/>
-        </Layer>
-        <Layer>
-            <ows:Title>Humanitarian</ows:Title>
-            <ows:Abstract>Humanitarian OpenStreetMap Team</ows:Abstract>
-            <ows:Identifier>hot</ows:Identifier>
-            <Style isDefault="true">
-                <ows:Identifier>hot</ows:Identifier>
-            </Style>
-            <Format>image/png</Format>
-            <TileMatrixSetLink>
-                <TileMatrixSet>google3857</TileMatrixSet>
-            </TileMatrixSetLink>
-            <ResourceURL format="image/png"
-                         template="https://tile-a.openstreetmap.fr/{Style}{TileMatrix}/{TileCol}/{TileRow}.png"
-                         resourceType="tile"/>
-            <ResourceURL format="image/png"
-                         template="https://tile-b.openstreetmap.fr/{Style}/{TileMatrix}/{TileCol}/{TileRow}.png"
-                         resourceType="tile"/>
-            <ResourceURL format="image/png"
-                         template="https://tile-c.openstreetmap.fr/{Style}/{TileMatrix}/{TileCol}/{TileRow}.png"
+                         template="https://mts3.google.com/vt/hl=ru&x={TileCol}&y={TileRow}&z={TileMatrix}"
                          resourceType="tile"/>
         </Layer>
         <TileMatrixSet>
