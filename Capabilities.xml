@@ -37,6 +37,10 @@
         </Layer>
         <TileMatrixSet>
             <ows:Identifier>google3857</ows:Identifier>
+            <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+              <ows:LowerCorner>-180 -85.0511</ows:LowerCorner>
+              <ows:UpperCorner>180 85.0511</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
             <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18.3:3857</ows:SupportedCRS>
             <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
             <TileMatrix>
