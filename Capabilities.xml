@@ -18,7 +18,7 @@
             <ows:Title>OpenStreetMap</ows:Title>
             <ows:Abstract>Standard OSM Layer rendered using openstreetmap-carto and Mapnik</ows:Abstract>
             <ows:Identifier>mapnik</ows:Identifier>
-            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.18.3::3857">
+            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
               <ows:LowerCorner>-20037508 -20037508</ows:LowerCorner>
               <ows:UpperCorner>20037508 20037508</ows:UpperCorner>
             </ows:BoundingBox>
@@ -45,7 +45,7 @@
         </Layer>
         <TileMatrixSet>
             <ows:Identifier>google3857</ows:Identifier>
-            <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18.3:3857</ows:SupportedCRS>
+            <ows:SupportedCRS>urn:ogc:def:crs:EPSG::3857</ows:SupportedCRS>
             <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
             <TileMatrix>
                 <ows:Identifier>0</ows:Identifier>
