@@ -22,6 +22,10 @@
               <ows:LowerCorner>-20037508 -20037508</ows:LowerCorner>
               <ows:UpperCorner>20037508 20037508</ows:UpperCorner>
             </ows:BoundingBox>
+            <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+              <ows:LowerCorner>-180 -85.0511</ows:LowerCorner>
+              <ows:UpperCorner>180 85.0511</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
             <Style isDefault="true">
                 <ows:Identifier>mapnik</ows:Identifier>
             </Style>
