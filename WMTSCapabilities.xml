@@ -18,6 +18,14 @@
             <ows:Title>OpenStreetMap</ows:Title>
             <ows:Abstract>Standard OSM Layer rendered using openstreetmap-carto and Mapnik</ows:Abstract>
             <ows:Identifier>mapnik</ows:Identifier>
+            <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+                <ows:LowerCorner>-180.0 -85.0511287798065</ows:LowerCorner>
+                <ows:UpperCorner>180.0 85.05112877980648</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+                <ows:LowerCorner>-2.0037508342789244E7 -2.003750834278914E7</ows:LowerCorner>
+                <ows:UpperCorner>2.0037508342789244E7 2.0037508342789095E7</ows:UpperCorner>
+            </ows:BoundingBox>
             <Style isDefault="true">
                 <ows:Identifier>mapnik</ows:Identifier>
             </Style>
@@ -37,16 +45,6 @@
         </Layer>
        
         <TileMatrixSet>
-            <ows:Identifier>EPSG:3857</ows:Identifier>
-            <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
-                <ows:LowerCorner>-180.0 -85.0511287798065</ows:LowerCorner>
-                <ows:UpperCorner>180.0 85.05112877980648</ows:UpperCorner>
-            </ows:WGS84BoundingBox>
-
-            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
-                <ows:LowerCorner>-2.0037508342789244E7 -2.003750834278914E7</ows:LowerCorner>
-                <ows:UpperCorner>2.0037508342789244E7 2.0037508342789095E7</ows:UpperCorner>
-            </ows:BoundingBox>
             <TileMatrix>
                 <ows:Identifier>0</ows:Identifier>
                 <ScaleDenominator>559082264.029</ScaleDenominator>
