@@ -2,42 +2,6 @@
 <Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
 <Contents>
 <Layer>
-<ows:Title>標準地図</ows:Title>
-<ows:Identifier>std</ows:Identifier>
-<Style isDefault="true">
-<ows:Identifier>default</ows:Identifier>
-</Style>
-<Format>image/png</Format>
-<TileMatrixSetLink>
-<TileMatrixSet>z2to18</TileMatrixSet>
-</TileMatrixSetLink>
-<ResourceURL format="image/png" resourceType="tile" template="https://maps.gsi.go.jp/xyz/std/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-</Layer>
-<Layer>
-<ows:Title>淡色地図</ows:Title>
-<ows:Identifier>pale</ows:Identifier>
-<Style isDefault="true">
-<ows:Identifier>default</ows:Identifier>
-</Style>
-<Format>image/png</Format>
-<TileMatrixSetLink>
-<TileMatrixSet>z2to18</TileMatrixSet>
-</TileMatrixSetLink>
-<ResourceURL format="image/png" resourceType="tile" template="https://maps.gsi.go.jp/xyz/pale/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-</Layer>
-<Layer>
-<ows:Title>白地図</ows:Title>
-<ows:Identifier>blank</ows:Identifier>
-<Style isDefault="true">
-<ows:Identifier>default</ows:Identifier>
-</Style>
-<Format>image/png</Format>
-<TileMatrixSetLink>
-<TileMatrixSet>z5to14</TileMatrixSet>
-</TileMatrixSetLink>
-<ResourceURL format="image/png" resourceType="tile" template="https://maps.gsi.go.jp/xyz/blank/{TileMatrix}/{TileCol}/{TileRow}.png"/>
-</Layer>
-<Layer>
 <ows:Title>English</ows:Title>
 <ows:Identifier>english</ows:Identifier>
 <Style isDefault="true">
@@ -310,46 +274,6 @@
 <TileHeight>256</TileHeight>
 <MatrixWidth>16384</MatrixWidth>
 <MatrixHeight>16384</MatrixHeight>
-</TileMatrix>
-</TileMatrixSet>
-<TileMatrixSet>
-<ows:Identifier>z5to8</ows:Identifier>
-<ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.18:3:3857</ows:SupportedCRS>
-<TileMatrix>
-<ows:Identifier>5</ows:Identifier>
-<ScaleDenominator>17471320.75089743</ScaleDenominator>
-<TopLeftCorner>-20037508.34278925 20037508.34278925</TopLeftCorner>
-<TileWidth>256</TileWidth>
-<TileHeight>256</TileHeight>
-<MatrixWidth>32</MatrixWidth>
-<MatrixHeight>32</MatrixHeight>
-</TileMatrix>
-<TileMatrix>
-<ows:Identifier>6</ows:Identifier>
-<ScaleDenominator>8735660.375448715</ScaleDenominator>
-<TopLeftCorner>-20037508.34278925 20037508.34278925</TopLeftCorner>
-<TileWidth>256</TileWidth>
-<TileHeight>256</TileHeight>
-<MatrixWidth>64</MatrixWidth>
-<MatrixHeight>64</MatrixHeight>
-</TileMatrix>
-<TileMatrix>
-<ows:Identifier>7</ows:Identifier>
-<ScaleDenominator>4367830.187724357</ScaleDenominator>
-<TopLeftCorner>-20037508.34278925 20037508.34278925</TopLeftCorner>
-<TileWidth>256</TileWidth>
-<TileHeight>256</TileHeight>
-<MatrixWidth>128</MatrixWidth>
-<MatrixHeight>128</MatrixHeight>
-</TileMatrix>
-<TileMatrix>
-<ows:Identifier>8</ows:Identifier>
-<ScaleDenominator>2183915.093862179</ScaleDenominator>
-<TopLeftCorner>-20037508.34278925 20037508.34278925</TopLeftCorner>
-<TileWidth>256</TileWidth>
-<TileHeight>256</TileHeight>
-<MatrixWidth>256</MatrixWidth>
-<MatrixHeight>256</MatrixHeight>
 </TileMatrix>
 </TileMatrixSet>
 </Contents>
