@@ -38,16 +38,15 @@
        
         <TileMatrixSet>
             <ows:Identifier>EPSG:3857</ows:Identifier>
+            <ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+                <ows:LowerCorner>-180.0 -85.0511287798065</ows:LowerCorner>
+                <ows:UpperCorner>180.0 85.05112877980648</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+
             <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
-                <ows:LowerCorner>-20037508.342789 -6406581.708337</ows:LowerCorner>
-                <ows:UpperCorner>20037508.342789 -3653545.667928</ows:UpperCorner>
+                <ows:LowerCorner>-2.0037508342789244E7 -2.003750834278914E7</ows:LowerCorner>
+                <ows:UpperCorner>2.0037508342789244E7 2.0037508342789095E7</ows:UpperCorner>
             </ows:BoundingBox>
-            <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.18.3:3857">
-                <ows:LowerCorner>977650 5838030</ows:LowerCorner>
-                <ows:UpperCorner>1913530 6281290</ows:UpperCorner>
-            </ows:BoundingBox>
-            <ows:SupportedCRS>urn:ogc:def:crs:EPSG:3857</ows:SupportedCRS>
-            <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
             <TileMatrix>
                 <ows:Identifier>0</ows:Identifier>
                 <ScaleDenominator>559082264.029</ScaleDenominator>
