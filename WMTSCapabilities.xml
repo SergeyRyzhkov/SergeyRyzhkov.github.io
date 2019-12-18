@@ -31,7 +31,7 @@
             </Style>
             <Format>image/png</Format>
             <TileMatrixSetLink>
-                <TileMatrixSet>EPSG:3857</TileMatrixSet>
+                <TileMatrixSet>EPSG3857</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png"
                          template="https://a.tile.openstreetmap.org/{TileMatrix}/{TileCol}/{TileRow}.png"
@@ -45,7 +45,7 @@
         </Layer>
        
         <TileMatrixSet>
-            <ows:Identifier>EPSG:3857</ows:Identifier>
+            <ows:Identifier>EPSG3857</ows:Identifier>
             <TileMatrix>
                 <ows:Identifier>0</ows:Identifier>
                 <ScaleDenominator>559082264.029</ScaleDenominator>
