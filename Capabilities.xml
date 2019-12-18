@@ -19,8 +19,8 @@
             <ows:Abstract>Standard OSM Layer rendered using openstreetmap-carto and Mapnik</ows:Abstract>
             <ows:Identifier>mapnik</ows:Identifier>
             <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.18.3:3857">
-              <ows:LowerCorner>-2.0037508342789244E7 -2.003750834278914E7</ows:LowerCorner>
-              <ows:UpperCorner>2.0037508342789244E7 2.0037508342789095E7</ows:UpperCorner>
+              <ows:LowerCorner>-20037508 -20037508</ows:LowerCorner>
+              <ows:UpperCorner>20037508 20037508</ows:UpperCorner>
             </ows:BoundingBox>
             <Style isDefault="true">
                 <ows:Identifier>mapnik</ows:Identifier>
