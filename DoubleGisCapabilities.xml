@@ -34,13 +34,13 @@
                 <TileMatrixSet>google3857</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png"
-                         template="https://tile1.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z=16&amp;v=1"
+                         template="https://tile1.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z={TileMatrix}&amp;v=1"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://tile2.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z=16&amp;v=1"
+                         template="https://tile2.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z={TileMatrix}&amp;v=1"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://tile3.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z=16&amp;v=1"
+                         template="https://tile3.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z={TileMatrix}&amp;v=1"
                          resourceType="tile"/>
         </Layer>
         <TileMatrixSet>
