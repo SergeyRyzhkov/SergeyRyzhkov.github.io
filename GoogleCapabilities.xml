@@ -34,13 +34,13 @@
                 <TileMatrixSet>google3857</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png"
-                         template="https://mts1.google.com/vt/hl=ru&amp;x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}"
+                         template="https://mt1.google.com/vt/lyrs=y&amp;x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://mts2.google.com/vt/hl=ru&amp;x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}"
+                         template="https://mt2.google.com/vt/lyrs=y&amp;x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://mts3.google.com/vt/hl=ru&amp;x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}"
+                         template="https://mt3.google.com/vt/lyrs=y&amp;x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}"
                          resourceType="tile"/>
         </Layer>
         <TileMatrixSet>
