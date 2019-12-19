@@ -4,7 +4,7 @@
               xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd"
               version="1.0.0">
     <ows:ServiceIdentification>
-        <ows:Title>openstreetmap.org</ows:Title>
+        <ows:Title>2GIS</ows:Title>
         <ows:Abstract>
             OpenStreetMap is an initiative to create and provide free geographic data, such as street maps, to anyone.
         </ows:Abstract>
@@ -34,13 +34,13 @@
                 <TileMatrixSet>google3857</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png"
-                         template="https://tile1.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z={TileMatrix}&amp;v=1"
+                         template="https://tile1.maps.2gis.com/tiles?x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}&amp;v=1"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://tile2.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z={TileMatrix}&amp;v=1"
+                         template="https://tile2.maps.2gis.com/tiles?x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}&amp;v=1"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://tile3.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z={TileMatrix}&amp;v=1"
+                         template="https://tile3.maps.2gis.com/tiles?x={TileCol}&amp;y={TileRow}&amp;z={TileMatrix}&amp;v=1"
                          resourceType="tile"/>
         </Layer>
         <TileMatrixSet>
