@@ -17,7 +17,7 @@
         <Layer>
             <ows:Title>2GIS</ows:Title>
             <ows:Abstract>2GIS</ows:Abstract>
-            <ows:Identifier>google</ows:Identifier>
+            <ows:Identifier>2GIS</ows:Identifier>
             <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
               <ows:LowerCorner>-20037508 -20037508</ows:LowerCorner>
               <ows:UpperCorner>20037508 20037508</ows:UpperCorner>
@@ -34,13 +34,13 @@
                 <TileMatrixSet>google3857</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png"
-                         template="https://tile1.maps.2gis.com/tiles?x={TileCol}&amp;y={TileRow}&amp;z=16&amp;v=1"
+                         template="https://tile1.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z=16&amp;v=1"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://tile2.maps.2gis.com/tiles?x={TileCol}&amp;y={TileRow}&amp;z=16&amp;v=1"
+                         template="https://tile2.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z=16&amp;v=1"
                          resourceType="tile"/>
             <ResourceURL format="image/png"
-                         template="https://tile3.maps.2gis.com/tiles?x={TileCol}&amp;y={TileRow}&amp;z=16&amp;v=1"
+                         template="https://tile3.maps.2gis.com/tiles?x={TileRow}&amp;y={TileCol}&amp;z=16&amp;v=1"
                          resourceType="tile"/>
         </Layer>
         <TileMatrixSet>
